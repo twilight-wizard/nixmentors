@@ -28,21 +28,68 @@ Section 1: Partitioning
 dd is the swiss army tool of file-data, we can use dd to create 'fake' block devices
 that can be mounted and used elsewhere.
 
-`dd if=/dev/zero of=/destination/file bs=1M count=10G`
+lets create a 1G file that we can use to turn into a (fake) filesystem:
 
-creates a file, of size 10G, filled with zeros.
+`dd if=/dev/zero of=/destination/file bs=1M count=1G`
+
+
+### losetup
+
+now you can take the file you just made and associate it with a loopback device.
+In layman's terms, it takes the file and maks a block device out of it.
+...errr it makes the file look like a hard drive...
+
+`losetup /dev/loop0 /destination/file`
+
+
+### mkfs.*
+You can then make a filesystem on that (fake) device by using mkfs.
+mkfs comes with a few built in filesystem types that you can specify after the '.'
+
+let's make an ext4 system on our (fake hdd)
+
+```sh
+[root@host ~]# mkfs.ext4 /dev/loop0
+mke2fs 1.42.8 (20-Jun-2013)
+Discarding device blocks: done
+Filesystem label=
+OS type: Linux
+Block size=4096 (log=2)
+Fragment size=4096 (log=2)
+Stride=0 blocks, Stripe width=0 blocks
+32768 inodes, 131072 blocks
+6553 blocks (5.00%) reserved for the super user
+First data block=0
+Maximum filesystem blocks=134217728
+4 block groups
+32768 blocks per group, 32768 fragments per group
+8192 inodes per group
+Superblock backups stored on blocks:
+        32768, 98304
+        
+        Allocating group tables: done
+        Writing inode tables: done
+        Creating journal (4096 blocks): done
+        Writing superblocks and filesystem accounting information: done
+```
+
 
 ### lsblk
 lsblk is a quick and beautiful tool for looking at the filesystem tree.
 
 ```sh
--> % lsblk
+
+[root@fatdadd mnt]# lsblk
 NAME    MAJ:MIN RM   SIZE RO TYPE MOUNTPOINT
 sda       8:0    0 149.1G  0 disk
 ├─sda1    8:1    0  46.6G  0 part /
 └─sda2    8:2    0 102.5G  0 part /home
+loop0     7:0    0   512M  0 loop /mnt
 mmcblk0 179:0    0  59.8G  0 disk
+```
 
+here is more exapmle output from a more interesting setup.
+```sh
 -> % lsblk
 NAME                                 MAJ:MIN RM   SIZE RO TYPE MOUNTPOINT
 loop0                                  7:0    0  24.4M  0 loop /srv/node/1
@@ -94,7 +141,6 @@ Device    Boot     Start       End    Blocks  Id System
 /dev/sda1           2048  97658879  48828416  83 Linux
 /dev/sda2       97658880 312581807 107461464  83 Linux
 ```
-
 
 Section 2: LVM
 -------------------
