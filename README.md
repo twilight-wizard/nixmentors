@@ -26,9 +26,9 @@ Sessions
 
 * Lab 1: Intro to Vagrant and Intro to Web
 * Lab 2: Databases and Advanced web
-* Lab 3: NFS/LDAP/DNS
-* Lab 4: Debugging
-* Lab 5: Storage
+* Lab 3: [NFS/LDAP/DNS](Lab3-NFS-LDAP-DNS/Lab3.md)
+* Lab 4: [Debugging](Lab4-Debugging/Lab4.md)
+* Lab 5: [Storage](Lab5-Storage/Lab5.md)
 
 Setup
 -----
