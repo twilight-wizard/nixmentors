@@ -14,8 +14,8 @@
    limitations under the License.
 --->
 
-Lab 4
-=====
+Lab 4: Debugging
+================
 
 In this lab you will be debugging broken machines and services.
 

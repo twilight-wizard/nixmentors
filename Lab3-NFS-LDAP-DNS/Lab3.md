@@ -14,8 +14,8 @@
    limitations under the License.
 --->
 
-Lab 3
-=====
+Lab 3: NFS/LDAP/DNS
+===================
 
 
 In this lab you will be playing with NFS, the Network File System; LDAP, the Leightweight Directory Access Protocol, and DNS; the Domain Name Service. These are kindof the hardcore services. For Realz. Dis aint the Web Dump, homie.
