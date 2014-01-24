@@ -153,8 +153,99 @@ Section 2: LVM
 Section 3: RAID
 -------------------
 
-### mdadm
+### What is Raid?
 
+RAID (Redundant Array of Inexpensive Disks) is the ability to combine multiple disks
+to attain greater speed/redundancy/both from disk usage. After you RAID together multiple
+drives, you then go on and treat them as if the sum total is one drive.
+
+#### Levels of RAID
+
+`RAID 0`
+
+    * Striping
+    * Spread the data out over multiple disks
+    * Allows for parallel reads on the same file
+
+`RAID 1`
+
+    * Mirroring
+    * Creates redundancy, or, makes multiple copies of a file over all disks
+    * If a disk goes down, you laugh, and say "But RAID 1"
+
+`RAID 5`
+
+    * Block Level striping w/ parity
+    * The file is distributed accross multiple drives, along with parity bits
+      that allow the information of a disk to be recalulated in the event of failure
+    * Requires at least 3 disks
+    * Allows single disk failure
+
+`RAID 10`
+
+    * Combination pizza hut and taco bell
+    * Or in technical terms, both RAID 1 and RAID 0 at the same time
+    * Example, with four disks, mirror first two, mirror last two and then strip the result
+
+#### Hardware vs Software
+
+You have two choices in howyou do this thing. Either you buy a dedicated card, that does the
+RAID, and keeps track of what's going on. OR, you create a software RAID and let the OS keep
+track of what to do.
+
+### mdadm
+Linux utility for creating software RAIDs
+
+#### RAID Reconnaissance
+
+This file will show you the current status of your local RAID.
+It's jam packed full of good info that you will need for debugging and
+referencing your RAID setup.
+
+This example shows a system with a RAID0 and is using two devices `sda` and `sdb`
+```sh
+-> % cat /proc/mdstat
+Personalities : [raid1] [linear] [multipath] [raid0] [raid6] [raid5] [raid4] [raid10]
+md2 : active raid1 sda[0] sdb[1]
+      976631360 blocks super 1.2 [2/2] [UU]
+      unused devices: <none> </none>
+```
+
+Now that we know the names of the raids used on the system, we can get more details.
+
+`mdadm --detail $RAIDNAME`
+
+```sh
+root@russell:~# mdadm --detail /dev/md2
+    /dev/md2:
+        Version : 1.2
+        Creation Time : Sat Apr 27 19:16:17 2013
+            Raid Level : raid1
+            Array Size : 976631360 (931.39 GiB 1000.07 GB)
+        Used Dev Size : 976631360 (931.39 GiB 1000.07 GB)
+            Raid Devices : 2
+            Total Devices : 2
+            Persistence : Superblock is persistent
+
+            Update Time : Fri Jan 24 00:15:48 2014
+            State : clean
+            Active Devices : 2
+            Working Devices : 2
+            Failed Devices : 0
+            Spare Devices : 0
+
+            Name : ubuntu:2
+            UUID : 4032b613:380ebddb:db9a61b0:42f8680a
+            Events : 97
+
+            Number   Major   Minor   RaidDevice State
+            0       8        0        0      active sync   /dev/sda
+            1       8       16        1      active sync   /dev/sdb
+```
+
+#### Creating a RAID
+
+That's all fine and dandy. But how make a new RAID?
 
 Section 4: ZFS
 -------------------
