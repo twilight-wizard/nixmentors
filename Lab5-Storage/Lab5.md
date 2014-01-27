@@ -162,8 +162,10 @@ and dirty look at all of the handy commands.
 
 ```sh
 -> % vg
-vgcfgbackup    vgchange       vgconvert      vgdb           vgexport       vgimport       vgmerge        vgreduce       vgrename       vgscan
-vgcfgrestore   vgck           vgcreate       vgdisplay      vgextend       vgimportclone  vgmknodes      vgremove       vgs            vgsplit
+vgcfgbackup    vgchange       vgconvert      vgdb           vgexport
+vgimport       vgmerge        vgreduce       vgrename       vgscan
+vgcfgrestore   vgck           vgcreate       vgdisplay      vgextend
+vgimportclone  vgmknodes      vgremove       vgs            vgsplit
 ```
 
 #### Oh right... but what is a volume group?
@@ -181,8 +183,10 @@ software defined containers.
 
 ```sh
 -> % lv
-lvchange     lvcreate     lvextend     lvmchange    lvmdiskscan  lvmetad      lvmsar       lvremove     lvresize     lvscan
-lvconvert    lvdisplay    lvm          lvmconf      lvmdump      lvmsadc      lvreduce     lvrename     lvs
+lvchange     lvcreate     lvextend     lvmchange    lvmdiskscan
+lvmetad      lvmsar       lvremove     lvresize     lvscan
+lvconvert    lvdisplay    lvm          lvmconf      lvmdump
+lvmsadc      lvreduce     lvrename     lvs
 ```
 
 
