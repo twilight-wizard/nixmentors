@@ -30,8 +30,10 @@ that can be mounted and used elsewhere.
 
 lets create a 1G file that we can use to turn into a (fake) filesystem:
 
-`dd if=/dev/zero of=/destination/file bs=1M count=1G`
+`dd if=/dev/zero of=/destination/file bs=1 count=0 seek=1G`
 
+This command should execute rather quickly. We are using a trick with seek, to tell
+the system how big it should be without actually going and taking out all of the space.
 
 ### losetup
 
@@ -145,9 +147,43 @@ Device    Boot     Start       End    Blocks  Id System
 Section 2: LVM
 -------------------
 
+#### What is LVM?
+
+LVM (logical Volume Manager) is a software based partitioning system that is
+much more modern and flexible compared to traditional partitioning practices.
+Specifically, the creation, deletion, and resizing of a partition is much easier
+to do, after the system is loaded and running.
+
 ### Volume Groups
 
+All of the commands that deal with Volume groups are prefixed with the letters
+'vg' thus, if your tab-completion is awesome, you can vg<tab><tab> to get a quick
+and dirty look at all of the handy commands.
+
+```sh
+-> % vg
+vgcfgbackup    vgchange       vgconvert      vgdb           vgexport       vgimport       vgmerge        vgreduce       vgrename       vgscan
+vgcfgrestore   vgck           vgcreate       vgdisplay      vgextend       vgimportclone  vgmknodes      vgremove       vgs            vgsplit
+```
+
+#### Oh right... but what is a volume group?
+
+A volume group is a sectionof disk that will contain your logical volumes.
+You can think of it like a single partiton on disk, that will house multiple
+software defined containers.
+
+#### Create a Volume Group
+#### List your Volume Groups
+#### Delete a Volume Group
+
 ### Logical Volumes
+
+
+```sh
+-> % lv
+lvchange     lvcreate     lvextend     lvmchange    lvmdiskscan  lvmetad      lvmsar       lvremove     lvresize     lvscan
+lvconvert    lvdisplay    lvm          lvmconf      lvmdump      lvmsadc      lvreduce     lvrename     lvs
+```
 
 
 Section 3: RAID
