@@ -229,8 +229,8 @@ drives, you then go on and treat them as if the sum total is one drive.
 
 #### Hardware vs Software
 
-You have two choices in howyou do this thing. Either you buy a dedicated card, that does the
-RAID, and keeps track of what's going on. OR, you create a software RAID and let the OS keep
+You have two choices in how you do this thing. Either you buy a dedicated card, that does the
+RAID and keeps track of what's going on. OR, you create a software RAID and let the OS keep
 track of what to do.
 
 ### mdadm
@@ -289,8 +289,109 @@ That's all fine and dandy. But how make a new RAID?
 
 Section 4: ZFS
 -------------------
+Okay, Welcome all of y'all to the most important event of your entire life, ever.
+ZFS once stood for Zetabyte File System, but no longer means anything anymore.
+We (and a lot of other companies) use ZFS for our most critical File system needs.
+The best part of ZFS is that it is all software defined storage, and highly configurable.
+We can define what we want wit code, and ZFS sees to it that it will be done.
 
 ### zpool
+We start everything with zpool. zpool takes a list of locations, that it will pool together (heh)
+and later define filesystems on top of (with zfs). Lets's take a look:
+
+#### zpool list
+`zpool list` is our quick and dirt way for looking at all of the pools
+defined on a system with zfs enabled.
+
+Note: rpool is the typical name of the root system on a solaris system.
+
+```sh
+bunny:/# zpool list
+NAME         SIZE  ALLOC   FREE  CAP  DEDUP  HEALTH  ALTROOT
+bear        1.81T    97K  1.81T   0%  1.00x  ONLINE  -
+bobcat      1.81T    97K  1.81T   0%  1.00x  ONLINE  -
+cougar      1.81T  10.0G  1.80T   0%  1.00x  ONLINE  -
+jaguar      1.81T    97K  1.81T   0%  1.00x  ONLINE  -
+leapord     1.81T    97K  1.81T   0%  1.00x  ONLINE  -
+lion        1.81T   150K  1.81T   0%  1.00x  ONLINE  -
+panther     1.81T    97K  1.81T   0%  1.00x  ONLINE  -
+racoonSys   9.94G   716M  9.24G   7%  1.00x  ONLINE  -
+racoonSys2   592M   182K   592M   0%  1.00x  ONLINE  -
+rpool        464G  15.4G   449G   3%  1.00x  ONLINE  -
+tiger       1.36T    94K  1.36T   0%  1.00x  ONLINE  -
+
+bunny:/#
+```
+
+#### zpool create
+So to make a pool, you need three things, a name, a pooling strategy, and
+a list of devices to pool together.
+
+* Name
+    * The name of the pool
+* Pool Strategy
+    * How you want to arrange the 'disks' together
+* Devices
+    * This can be 'real' devices, or even pseudo devices (like loopback files)
+
+```sh
+bunny:/racoonSys# ls
+file1   file10  file2   file3   file4   file5   file6   file7   file8   file9
+
+bunny:/racoonSys# du -h ./*
+    64M   ./file1
+    64M   ./file10
+    64M   ./file2
+    64M   ./file3
+    64M   ./file4
+    64M   ./file5
+    64M   ./file6
+    64M   ./file7
+    64M   ./file8
+    64M   ./file9
+
+bunny:/racoonSys# zpool create racoonSys2 /racoonSys/file{1,2,3,4,5,6,7,8,9,10}
+
+bunny:/racoonSys# zpool list
+    NAME         SIZE  ALLOC   FREE  CAP  DEDUP  HEALTH  ALTROOT
+    racoonSys   9.94G   716M  9.24G   7%  1.00x  ONLINE  -
+    racoonSys2   590M   116K   590M   0%  1.00x  ONLINE  -
+    rpool        464G  15.4G   449G   3%  1.00x  ONLINE  -
+
+bunny:/racoonSys# zpool status racoonSys2
+  pool: racoonSys2
+  state: ONLINE
+  scan: none requested
+  config:
+
+    NAME                 STATE     READ WRITE CKSUM
+    racoonSys2           ONLINE       0     0     0
+      /racoonSys/file1   ONLINE       0     0     0
+      /racoonSys/file2   ONLINE       0     0     0
+      /racoonSys/file3   ONLINE       0     0     0
+      /racoonSys/file4   ONLINE       0     0     0
+      /racoonSys/file5   ONLINE       0     0     0
+      /racoonSys/file6   ONLINE       0     0     0
+      /racoonSys/file7   ONLINE       0     0     0
+      /racoonSys/file8   ONLINE       0     0     0
+      /racoonSys/file9   ONLINE       0     0     0
+      /racoonSys/file10  ONLINE       0     0     0
+
+  errors: No known data errors
+
+bunny:/racoonSys#
+```
+
+
+#### zpool destroy
+Exactly as it sounds... This will destroy that pool you worked so long to configure.
+Easy to do too! And POOF... Gone. See yeah forever! And it wont even call you back, after its done.
+
+```sh
+bunny:/# zpool destroy racoonSys2
+
+bunny:/#
+```
 
 ### zfs
 
