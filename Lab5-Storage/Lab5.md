@@ -203,29 +203,29 @@ drives, you then go on and treat them as if the sum total is one drive.
 
 `RAID 0`
 
-    * Striping
-    * Spread the data out over multiple disks
-    * Allows for parallel reads on the same file
+* Striping
+* Spread the data out over multiple disks
+* Allows for parallel reads on the same file
 
 `RAID 1`
 
-    * Mirroring
-    * Creates redundancy, or, makes multiple copies of a file over all disks
-    * If a disk goes down, you laugh, and say "But RAID 1"
+* Mirroring
+* Creates redundancy, or, makes multiple copies of a file over all disks
+* If a disk goes down, you laugh, and say "But RAID 1"
 
 `RAID 5`
 
-    * Block Level striping w/ parity
-    * The file is distributed accross multiple drives, along with parity bits
-      that allow the information of a disk to be recalulated in the event of failure
-    * Requires at least 3 disks
-    * Allows single disk failure
+* Block Level striping w/ parity
+* The file is distributed accross multiple drives, along with parity bits
+  that allow the information of a disk to be recalulated in the event of failure
+* Requires at least 3 disks
+* Allows single disk failure
 
 `RAID 10`
 
-    * Combination pizza hut and taco bell
-    * Or in technical terms, both RAID 1 and RAID 0 at the same time
-    * Example, with four disks, mirror first two, mirror last two and then strip the result
+* Combination pizza hut and taco bell
+* Or in technical terms, both RAID 1 and RAID 0 at the same time
+* Example, with four disks, mirror first two, mirror last two and then strip the result
 
 #### Hardware vs Software
 
@@ -289,6 +289,15 @@ That's all fine and dandy. But how make a new RAID?
 
 Section 4: ZFS
 -------------------
+
+20:41 < blkperl> 1) boot solaris
+20:41 < blkperl> 2) create zpool
+20:41 < blkperl> 3) create fs
+20:41 < blkperl> 4) add data
+20:41 < blkperl> 5) share over nfs
+20:41 < blkperl> 6) set zfs properties
+20:41 < blkperl> 7) turn on snapshots
+
 Okay, Welcome all of y'all to the most important event of your entire life, ever.
 ZFS once stood for Zetabyte File System, but no longer means anything anymore.
 We (and a lot of other companies) use ZFS for our most critical File system needs.
