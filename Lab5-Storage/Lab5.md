@@ -32,6 +32,16 @@ We can define what we want wit code, and ZFS sees to it that it will be done.
 
 ### Create a zpool
 
+So to make a pool, you need three things, a name, a pooling strategy, and
+a list of devices to pool together.
+
+* Name
+    * The name of the pool
+* Pool Strategy
+    * How you want to arrange the 'disks' together
+* Devices
+    * This can be 'real' devices, or even pseudo devices (like loopback files)
+
 #### Figure out which disks are on the system
 
 ```bash
@@ -124,7 +134,45 @@ mount
 Section 2: Linux Filesystems
 ----------------------------
 
+#### What is LVM?
 
-### Make an LVM volume
+LVM (logical Volume Manager) is a software based partitioning system that is
+much more modern and flexible compared to traditional partitioning practices.
+Specifically, the creation, deletion, and resizing of a partition is much easier
+to do, after the system is loaded and running.
 
-### Create an ext4 filesystem on that volume
+### Volume Groups
+
+All of the commands that deal with Volume groups are prefixed with the letters
+'vg' thus, if your tab-completion is awesome, you can vg<tab><tab> to get a quick
+and dirty look at all of the handy commands.
+
+```sh
+-> % vg
+vgcfgbackup    vgchange       vgconvert      vgdb           vgexport
+vgimport       vgmerge        vgreduce       vgrename       vgscan
+vgcfgrestore   vgck           vgcreate       vgdisplay      vgextend
+vgimportclone  vgmknodes      vgremove       vgs            vgsplit
+```
+
+#### Oh right... but what is a volume group?
+
+A volume group is a sectionof disk that will contain your logical volumes.
+You can think of it like a single partiton on disk, that will house multiple
+software defined containers.
+
+#### Create a Volume Group
+#### List your Volume Groups
+#### Delete a Volume Group
+
+### Logical Volumes
+
+
+```sh
+-> % lv
+lvchange     lvcreate     lvextend     lvmchange    lvmdiskscan
+lvmetad      lvmsar       lvremove     lvresize     lvscan
+lvconvert    lvdisplay    lvm          lvmconf      lvmdump
+lvmsadc      lvreduce     lvrename     lvs
+```
+

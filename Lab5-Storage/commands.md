@@ -122,51 +122,6 @@ Device    Boot     Start       End    Blocks  Id System
 /dev/sda2       97658880 312581807 107461464  83 Linux
 ```
 
-Section 2: LVM
--------------------
-
-#### What is LVM?
-
-LVM (logical Volume Manager) is a software based partitioning system that is
-much more modern and flexible compared to traditional partitioning practices.
-Specifically, the creation, deletion, and resizing of a partition is much easier
-to do, after the system is loaded and running.
-
-### Volume Groups
-
-All of the commands that deal with Volume groups are prefixed with the letters
-'vg' thus, if your tab-completion is awesome, you can vg<tab><tab> to get a quick
-and dirty look at all of the handy commands.
-
-```sh
--> % vg
-vgcfgbackup    vgchange       vgconvert      vgdb           vgexport
-vgimport       vgmerge        vgreduce       vgrename       vgscan
-vgcfgrestore   vgck           vgcreate       vgdisplay      vgextend
-vgimportclone  vgmknodes      vgremove       vgs            vgsplit
-```
-
-#### Oh right... but what is a volume group?
-
-A volume group is a sectionof disk that will contain your logical volumes.
-You can think of it like a single partiton on disk, that will house multiple
-software defined containers.
-
-#### Create a Volume Group
-#### List your Volume Groups
-#### Delete a Volume Group
-
-### Logical Volumes
-
-
-```sh
--> % lv
-lvchange     lvcreate     lvextend     lvmchange    lvmdiskscan
-lvmetad      lvmsar       lvremove     lvresize     lvscan
-lvconvert    lvdisplay    lvm          lvmconf      lvmdump
-lvmsadc      lvreduce     lvrename     lvs
-```
-
 
 RAID
 ----
