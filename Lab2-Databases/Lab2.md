@@ -155,9 +155,27 @@ pg_dump only gets the data from one database. It doesn't get things like roles. 
  - Back up your database
      pg_dump <databasename> > backup.sql
  - Drop your database
-     echo "drop database <databasename> | psql
+     echo "drop database <databasename>" | psql
  - Restore it
      psql <databasename> < backup.sql
  - yay!
 
-Homework: activate your postgres and mysql accounts in crack, create some tables, write a web app that queries them, show krinkle
+### Writing Applications Against Your Database
+
+The CAT makes a lot of use out of psql, but that's not really how databases are used in the wild. We can write applications against our databases so that we don't have to grab all the data manually.
+
+Write a PHP application to query your database and display the results on a web page. If you have a VM with Apache and PHP set up, or you think you can set this up before the lab is over, use that. Otherwise, you can put your PHP application in your public\_html in your Tier 1 home directory (/home/username/common/public\_html). Make sure your database is configured to allow connections from PSU!
+
+PHP scripts start wtih <?php and end with ?>.
+
+Database PHP programming: http://www.php.net/manual/en/book.pgsql.php
+
+Connect to the database with the pg\_connect function. Store the return value in a variable so you can use it later.
+Query the database with the pg\_query function. The return value of this function is the rows returned from your query.
+Fetch your result with the pg\_fetch\_all (or find another function that fetches what you want). You won't be able to get the data from your query without fetching it first.
+Display your rows with print\_r.
+Close your connection with pg\_close.
+
+
+
+Homework: activate your postgres and mysql accounts in crack, create some tables, write a web app that queries them and inserts things into them with prepared statements and error checking, show krinkle
