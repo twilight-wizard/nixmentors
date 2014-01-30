@@ -56,6 +56,12 @@ zfs create tank/media
 
 ```bash
 # TODO: wren plz pre-install package so they don't have to wait for ages
+# svcs -av  | grep snap
+disabled       -             Dec_19           - svc:/system/filesystem/zfs/auto-snapshot:frequent
+disabled       -             Dec_19           - svc:/system/filesystem/zfs/auto-snapshot:hourly
+disabled       -             Dec_19           - svc:/system/filesystem/zfs/auto-snapshot:monthly
+disabled       -             Dec_19           - svc:/system/filesystem/zfs/auto-snapshot:weekly
+disabled       -             Dec_19           - svc:/system/filesystem/zfs/auto-snapshot:daily
 ```
 
 ### Set the refquota to 5G
