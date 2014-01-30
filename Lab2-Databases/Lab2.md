@@ -20,6 +20,9 @@ Lab 2: Web Services and Databases
 install postgres
 ----------------
 
+    sudo apt-get install postgresql
+
+Result:
  - psql
  - postgres user
  - service running
@@ -27,7 +30,7 @@ install postgres
 Configuring Postgres
 --------------------
 
-## Configuration Files
+### Configuration Files
 
  /etc/postgresql/9.1/main/postgresql.conf
  - Main configuration file
@@ -38,19 +41,19 @@ Configuring Postgres
  - Client authentication file
  - Who can connect and from where
 
-### Exercises
+#### Exercises
 
  - Following the guides in the comments of postgresql.conf, change the logging destination
- - Following the guides in the comments of pg_hba.conf, allow your database to accept connections from 131.252.0.0/16.
+ - Following the guides in the comments of pg_hba.conf, allow your database to accept connections from 131.252.0.0/16. Then connect to it from another host.
 
-## Command line administration
+### Command line administration
 
 Use psql to get into the postgresql command line interface.
 
-### help commands
+#### help commands
    - \? and \h
 
-### getting information about your system
+#### getting information about your system
    - \dS shows all the possible databases you have access to, including all of the ones that postgres keeps for itself
    - \d <database name> describes what kinds of values are in the database
    - \dfS describes all the functions available to you
