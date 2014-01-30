@@ -83,7 +83,7 @@ zfs set refquota=5G tank/media
 chown $user:$group /tank/media
 ```
 
-### Set the permissions to owner/group rwx with sticky bit
+### Set the permissions to owner/group rwx with guid bit
 
 ```
 chmod 2770 /tank/media
