@@ -131,6 +131,33 @@ tiger       1.36T    94K  1.36T   0%  1.00x  ONLINE  -
 bunny:/#
 ```
 
+#### detailed status of a pool
+`zpool status` can give you detailed information about a pool at a time. If you don't give it any arguments, it will give you status reports for all of the zpools. You can see here what devices are in what raid configurations, as well as the health of the pool and any errors in the pool.
+
+```sh
+bunny:~# zpool status racoonSys2
+  pool: racoonSys2
+ state: ONLINE
+  scan: none requested
+config:
+
+        NAME                 STATE     READ WRITE CKSUM
+        racoonSys2           ONLINE       0     0     0
+          /racoonSys/file1   ONLINE       0     0     0
+          /racoonSys/file2   ONLINE       0     0     0
+          /racoonSys/file3   ONLINE       0     0     0
+          /racoonSys/file4   ONLINE       0     0     0
+          /racoonSys/file5   ONLINE       0     0     0
+          /racoonSys/file6   ONLINE       0     0     0
+          /racoonSys/file7   ONLINE       0     0     0
+          /racoonSys/file8   ONLINE       0     0     0
+          /racoonSys/file9   ONLINE       0     0     0
+          /racoonSys/file10  ONLINE       0     0     0
+
+errors: No known data errors
+bunny:~#
+```
+
 #### destroy the pool
 Exactly as it sounds... This will destroy that pool you worked so long to configure.
 Easy to do too! And POOF... Gone. See yeah forever! And it wont even call you back, after its done.
@@ -216,7 +243,24 @@ mount
 
 #### Verify users not in group cat cannot read/write
 
-#### zfs send / recv
+### zfs send and receive: Send a whole file system to another computer!
+
+#### doing it the first time
+You can use zfs send and zfs receive to copy file systems on zfs from one computer to another. In order to do this, you will need a snapshot; either use an existing snapshot, or create one with `zfs snapshot`.
+
+When you use zfs send and receive, be careful of mountpoints and names; if a file system already exists with the exact same name as the one you're about to send, it will be overwritten, and if two file systems have the same mount point, they'll fight over it.
+
+The basic zfs send/recv command (if at first you don't succeed, look into flags) looks like this:
+`zfs send racoonSys2@test | ssh ${other_host} zfs receive leopardSys2`
+
+Note: It's possible that the new file system created on the other machine won't mount automatically, in which case you will need to use `zfs mount -a`.
+
+#### Incremental snapshots
+Now that you've sent an initial snapshot of the file system, make some changes to a file in that file system (touch a new file, etc) and then create another snapshot (this part of the process is identical). Try to name the new snapshot something that indicates that it came chronologically after the first snapshot.
+
+Now, since you have two different snapshots, you can send an incremental change to the other computer! This is faster than sending the whole file system again, since you only need to send the things that have changed since you sent a snapshot.
+`zfs send -i test racoonSys2@test_the_second | ssh ${other_host} zfs receive leopardSys2`
+
 
 
 Logical Volume Manager
