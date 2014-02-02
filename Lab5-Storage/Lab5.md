@@ -303,7 +303,7 @@ lvmsadc      lvreduce     lvrename     lvs
 
 
 Advanced Section
-----------------
+================
 
 ### dd
 dd is the swiss army tool of file-data, we can use dd to create 'fake' block devices
@@ -521,5 +521,237 @@ root@russell:~# mdadm --detail /dev/md2
 
 #### Creating a RAID
 
-That's all fine and dandy. But how make a new RAID?
+That's all fine and dandy. But how make a new RAID? Say... The fabled RAID 10? The hard way?
 
+Let's make some fake disks really quick... How about Four 1G disks?
+
+```sh
+[root@fatdadd disks]# for i in `seq 4`; do dd if=/dev/zero of=./hdd$i bs=1M count=1000; done
+1000+0 records in
+1000+0 records out
+1048576000 bytes (1.0 GB) copied, 0.637248 s, 1.6 GB/s
+1000+0 records in
+1000+0 records out
+1048576000 bytes (1.0 GB) copied, 0.572313 s, 1.8 GB/s
+1000+0 records in
+1000+0 records out
+1048576000 bytes (1.0 GB) copied, 3.87051 s, 271 MB/s
+1000+0 records in
+1000+0 records out
+1048576000 bytes (1.0 GB) copied, 5.8634 s, 179 MB/s
+```
+Now lets mount them as loop devices
+
+```sh
+[root@fatdadd disks]# for i in `seq 4`;do losetup /dev/loop$i ./hdd$i; done
+
+[root@fatdadd disks]# losetup
+NAME       SIZELIMIT OFFSET AUTOCLEAR RO BACK-FILE
+/dev/loop1         0      0         0  0 /root/disks/hdd1
+/dev/loop2         0      0         0  0 /root/disks/hdd2
+/dev/loop3         0      0         0  0 /root/disks/hdd3
+/dev/loop4         0      0         0  0 /root/disks/hdd4
+```
+
+Awesome! Now we do the dirty... Raid the first two and call it `/dev/md1`
+
+```sh
+[root@fatdadd disks]# mdadm --create /dev/md1 --level=stripe --raid-devices=2 /dev/loop{1,2}
+mdadm: Defaulting to version 1.2 metadata
+mdadm: array /dev/md1 started.
+
+[root@fatdadd proc]# cat /proc/mdstat
+Personalities : [raid0]
+md1 : active raid0 loop2[1] loop1[0]
+      2045952 blocks super 1.2 512k chunks
+
+unused devices: <none>
+```
+One down, Now lets make `/dev/md2` with the other two loop devices
+
+```sh
+[root@fatdadd proc]# mdadm --create /dev/md2 --level=stripe --raid-devices=2 /dev/loop{3,4}
+mdadm: Defaulting to version 1.2 metadata
+mdadm: array /dev/md2 started.
+
+[root@fatdadd proc]# cat /proc/mdstat
+Personalities : [raid0]
+md2 : active raid0 loop4[1] loop3[0]
+      2045952 blocks super 1.2 512k chunks
+
+md1 : active raid0 loop2[1] loop1[0]
+      2045952 blocks super 1.2 512k chunks
+
+unused devices: <none>
+```
+
+Okay! Here we go, Now we are going to zip those two md devices into one mirrored device we'll call `/dev/md0`
+
+```sh
+[root@fatdadd proc]# mdadm --create /dev/md0 --level=mirror --raid-devices=2 /dev/md{1,2}
+mdadm: Note: this array has metadata at the start and
+    may not be suitable as a boot device.  If you plan to
+    store '/boot' on this device please ensure that
+    your boot-loader understands md/v1.x metadata, or use
+    --metadata=0.90
+Continue creating array? y
+mdadm: Defaulting to version 1.2 metadata
+mdadm: array /dev/md0 started.
+
+[root@fatdadd proc]# cat /proc/mdstat
+Personalities : [raid0] [raid1]
+md0 : active raid1 md2[1] md1[0]
+      2044928 blocks super 1.2 [2/2] [UU]
+      [========>............]  resync = 43.7% (895104/2044928) finish=0.1min speed=127872K/sec
+
+md2 : active raid0 loop4[1] loop3[0]
+      2045952 blocks super 1.2 512k chunks
+
+md1 : active raid0 loop2[1] loop1[0]
+      2045952 blocks super 1.2 512k chunks
+
+unused devices: <none>
+```
+
+YEEEEEEEEEEE!!!!!!! We did it!
+
+Now throw an ext4 filesystem on `/dev/md0` and then mount that sucker to `/mnt`
+
+```sh
+[root@fatdadd /]# mkfs.ext4 /dev/md0
+mke2fs 1.42.8 (20-Jun-2013)
+Discarding device blocks: done
+Filesystem label=
+OS type: Linux
+Block size=4096 (log=2)
+Fragment size=4096 (log=2)
+Stride=128 blocks, Stripe width=256 blocks
+128000 inodes, 511232 blocks
+25561 blocks (5.00%) reserved for the super user
+First data block=0
+Maximum filesystem blocks=524288000
+16 block groups
+32768 blocks per group, 32768 fragments per group
+8000 inodes per group
+Superblock backups stored on blocks:
+        32768, 98304, 163840, 229376, 294912
+
+Allocating group tables: done
+Writing inode tables: done
+Creating journal (8192 blocks): done
+Writing superblocks and filesystem accounting information: done
+
+[root@fatdadd /]# mount /dev/md0 /mnt
+
+[root@fatdadd /]# cd /mnt
+
+[root@fatdadd mnt]# ls
+lost+found
+
+[root@fatdadd mnt]# df -h .
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/md0        1.9G  3.0M  1.8G   1% /mnt
+
+[root@fatdadd mnt]# mdadm --detail /dev/md0
+/dev/md0:
+        Version : 1.2
+  Creation Time : Sat Feb  1 17:24:14 2014
+     Raid Level : raid1
+     Array Size : 2044928 (1997.34 MiB 2094.01 MB)
+  Used Dev Size : 2044928 (1997.34 MiB 2094.01 MB)
+   Raid Devices : 2
+  Total Devices : 2
+    Persistence : Superblock is persistent
+
+    Update Time : Sat Feb  1 17:25:52 2014
+          State : clean
+ Active Devices : 2
+Working Devices : 2
+ Failed Devices : 0
+  Spare Devices : 0
+
+           Name : fatdadd:0  (local to host fatdadd)
+           UUID : c08744c0:7c0e07df:03d8395e:00b0dd11
+         Events : 17
+
+    Number   Major   Minor   RaidDevice State
+       0       9        1        0      active sync   /dev/md1
+       1       9        2        1      active sync   /dev/md2
+
+```
+
+Great! Now how about a shortcut? We've used `--level=stripe` and `--level=mirror`, but
+what if I told you they had synonyms? `--level=0` and `--level=1` respectively? And then
+What if then proceeded to explain the existence of `--level=10`? Would that smash you mind
+to bits?
+
+Well tell the people around you how sorry you are about to be once you shower them with
+pieces of cerebrum and skull cause `--level=10` is in fact a thing. Tell your mom.
+
+Okay, Lets disassemble the Raid we have going now and use the loop devices. (don't forget
+to unmount it from `/mnt`)
+
+```sh
+[root@fatdadd mnt]# mdadm --misc -S /dev/md0
+mdadm: Cannot get exclusive access to /dev/md0:Perhaps a running process, mounted filesystem or active volume group?
+
+[root@fatdadd mnt]# cd /
+
+[root@fatdadd /]# umount /dev/md0
+
+[root@fatdadd /]# mdadm --misc -S /dev/md0
+mdadm: stopped /dev/md0
+
+[root@fatdadd /]# cat /proc/mdstat
+Personalities : [raid0] [raid1]
+md2 : active raid0 loop4[1] loop3[0]
+      2045952 blocks super 1.2 512k chunks
+
+md1 : active raid0 loop2[1] loop1[0]
+      2045952 blocks super 1.2 512k chunks
+
+unused devices: <none>
+[]
+</none>
+```
+
+And now take down the two stripes
+
+```sh
+[root@fatdadd /]# mdadm --misc -S /dev/md1
+mdadm: stopped /dev/md1
+
+[root@fatdadd /]# mdadm --misc -S /dev/md2
+mdadm: stopped /dev/md2
+
+[root@fatdadd /]# cat /proc/mdstat
+Personalities : [raid0] [raid1]
+unused devices: <none></none>
+```
+
+Okay ladies and Gentlemen, Let's F*cking do this sh*t
+
+```sh
+[root@fatdadd ~]# mdadm --create /dev/md0 --level=10 --raid-devices=4 /dev/loop{1,2,3,4}
+mdadm: /dev/loop1 appears to be part of a raid array:
+       level=raid0 devices=2 ctime=Sat Feb  1 17:23:17 2014
+mdadm: /dev/loop2 appears to be part of a raid array:
+       level=raid0 devices=2 ctime=Sat Feb  1 17:23:17 2014
+mdadm: /dev/loop3 appears to be part of a raid array:
+       level=raid0 devices=2 ctime=Sat Feb  1 17:23:43 2014
+mdadm: /dev/loop4 appears to be part of a raid array:
+       level=raid0 devices=2 ctime=Sat Feb  1 17:23:43 2014
+Continue creating array? y
+mdadm: Defaulting to version 1.2 metadata
+mdadm: array /dev/md0 started.
+
+[root@fatdadd ~]# cat /proc/mdstat
+Personalities : [raid0] [raid1] [raid10]
+md0 : active raid10 loop4[3] loop3[2] loop2[1] loop1[0]
+      2045952 blocks super 1.2 512K chunks 2 near-copies [4/4] [UUUU]
+      [===============>.....]  resync = 76.4% (1564992/2045952) finish=0.0min speed=223570K/sec
+
+unused devices: <none></none>
+```
+
+Pick your Jaw up, print this out and use it as wrapping paper for your mothers day present homie.
