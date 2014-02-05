@@ -755,3 +755,6 @@ unused devices: <none></none>
 ```
 
 Pick your Jaw up, print this out and use it as wrapping paper for your mothers day present homie.
+
+Now... Go do [Advanced Things with RAID](mdadm-hotspare.md)
+
