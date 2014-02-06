@@ -179,3 +179,12 @@ Close your connection with pg\_close.
 
 
 Homework: activate your postgres and mysql accounts in crack, create some tables, write a web app that queries them and inserts things into them with prepared statements and error checking, show krinkle
+
+
+Advanced:
+repeat everything using mysql
+Research postgres functions and write one.
+Add another column to the characters table that has a default value of the current time using the now() function (look up ALTER TABLE).
+
+
+Note for krinkle: create a big csv file to import so they have more data.
