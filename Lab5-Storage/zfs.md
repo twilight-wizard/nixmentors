@@ -67,6 +67,8 @@ around and teach you how to print double sided text files with `lpr`...
 The Dichotomy
 -------------
 
+![Anther Great Duo](http://fc03.deviantart.net/fs70/i/2013/131/8/9/batman_and_robin_by_cute_aholic-d64uxn1.jpg)
+
 There are two integral parts to this magical experience. You need to create the
 container for the ZFS filesystem. For this we will use a command called `zpool`.
 Secondly, will will use a command called `zfs` to make sub-systems within that
@@ -133,7 +135,65 @@ config:
 
    errors: No known data errors
 ```
+Which tells us about the pool, notably that it is in fact `ONLINE` and that the
+three disks we added to the pool are in fact in a `mirror-0` RAID configuration.
 
+### Proceed to pat yourself on the back
+
+And there you have it. You made a zpool. Good job. I can see that a {guy,girl}
+like you is definitely going places. Please take this time to catch your breath,
+eat a snickers, and/or call your mom, because you {sir,madam} have earned it.
+
+### Okay, sit back down, shut up, and let's move on
+
+Now just like my father once said:
+
+`INSERT_NAME... I brought you into this world, and I can sure as S*** take you out`
+
+![And he meant it](http://www.buzzreactor.com/sites/default/files/imagecache/picture/images/articles/clint_eastwood.jpg)
+
+and with those words of wisdom, lets take out our pool. This is done with a handy
+command called `zpool destroy <PoolName>`. Lettuce try this shall we, by taking out
+the pool we so painstakenly worked our butt off to nurture and to hold and to take
+to those darn ukelele lessons...
+
+`bunny:~# zpool destroy mpool`
+
+... wait that was it? Our pool..you mean to tell me it just up and vanished just like
+that? Yes. It did. Remember young padawan, this is \*nix, which means no news is good
+news.
+
+```
+bunny:~# zpool status mpool
+cannot open 'mpool': no such pool
+```
+
+see? that sucker does not even exist for a bit, and now we are free to re use its
+disks to create even more pools. Hopefully some more pools that will work right,
+appretiate the hard work we do and play a real instrument like the oboe...
+
+...by the way, another handy command here is `zpool list`. This handy piece of
+wisdom will tell us about all the current pools in operation, plus some bonus
+information like, how big it is, how mush is in use, how much is free, its health
+and some other stuff i haven't read about yet.
+
+```
+bunny:~# zpool list
+NAME   SIZE  ALLOC  FREE  CAP  DEDUP  HEALTH  ALTROOT
+rpool  464G  15.6G  448G   3%  1.00x  ONLINE  -
+```
+
+Pretty cool huh?
+)
+### LEVEL UP!
+
+![Get some!](https://lh3.ggpht.com/-l7K-8C5VDfQ/T9bfQLwQCGI/AAAAAAAAAt4/8NunUrza5Xk/s1600/levelup-440x300.jpg)
+
+Woh! Nice, we just leveled up here. We made a zpool and even destroyed it and most
+importantly, issued a few zpool commands, thus arranging our neurons to better understand
+the steps that are about to come. You are no longer inner tubing on the bunny slopes my friend.
+You are about to be skiing on you own (with training wheels and an ambulance on call of
+course)
 
 
 [Mirroring]: http://en.wikipedia.org/wiki/Mirroring_disks
