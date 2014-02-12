@@ -232,6 +232,114 @@ As with every great service, there is a level of logging that is necessary. In Z
 dedicate a drive for this purpose. It'll log the heck out of your ZFS system, which is really
 handy to have in some situations.
 
+### Examples you say!? "Sure" I exclaim
+
+Let's just jump straight to the point and use all of the new features we just went over. This
+is going to be a blast.
+
+```
+bunny:~# zpool create mypool raidz2 c8t1d0 c8t5d0 c7t1d0 c7t5d0 cache c10t2d0 log c10t6d0
+```
+
+I'm going to go over this:
+
+
+
+Let's see what it ended up looking like.
+
+```
+bunny:~# zpool status mypool
+  pool: mypool
+ state: ONLINE
+  scan: none requested
+config:
+
+        NAME        STATE     READ WRITE CKSUM
+        mypool      ONLINE       0     0     0
+          raidz2-0  ONLINE       0     0     0
+            c8t1d0  ONLINE       0     0     0
+            c8t5d0  ONLINE       0     0     0
+            c7t1d0  ONLINE       0     0     0
+            c7t5d0  ONLINE       0     0     0
+        logs
+          c10t6d0   ONLINE       0     0     0
+        cache
+          c10t2d0   ONLINE       0     0     0
+
+errors: No known data errors
+```
+
+Okay we can see our drives all put together like. Our drives `c8t1d0 c8t5d0 c7t1d0 c7t5d0`
+became the base for the raidz2. `c10t6d0` is going to be used to manage the logging for the
+pool. And Finally `c10t2d0` is going to give us a cache drive to ensure that we have enough
+space to keep track of all crazy stats and references that we need.
+
+If we look at the pool's listing using `zpool list <PoolName>` we can see how much space we
+are able to use, and such and such and so forth...
+
+```
+bunny:~# zpool list mypool
+NAME     SIZE  ALLOC   FREE  CAP  DEDUP  HEALTH  ALTROOT
+mypool  1.81T   351K  1.81T   0%  1.00x  ONLINE  -
+```
+
+### What!? Another sweet limo riding example!?
+
+Sure, but not without introducing another cool feature. Hot Spares. Remember those beans that
+were getting all toasty for their chance to become a part of our burrito? Well, what ZFS does
+with hot spares is exactly (give or take an analogy or two) is save a couple disks on the side
+in case of emergency. If we just so happen to lose a disk during the life of our pool, one of
+these hot spares will be used to take its place. It really is quite a heartwarming tale. Let's
+watch!
+
+First, let's revisit our command with a little bit of extra sour cream (I KNOW IT'S EXTRA!!!)
+added on top.
+```
+bunny:~# zpool create mypool raidz2 c8t1d0 c8t5d0 c7t1d0 c7t5d0 cache c10t2d0 log c10t6d0 spare c12t2d0 c12t6d0
+```
+
+All we did was add the `spare` clause at the end, followed by the disks `c12t2d0 c12t6d0` that
+we wanted chill on the bench and wait to be called in like a that scrawny kid that no one ever
+thought would end up bunting the ball that would allow the runner on third to come in and score
+the winning run in the state championship game.
+
+We can see those kids just sitting there, again with `zpool status <PoolName>`
+
+```
+bunny:~# zpool status mypool
+  pool: mypool
+ state: ONLINE
+  scan: none requested
+config:
+
+        NAME        STATE     READ WRITE CKSUM
+        mypool      ONLINE       0     0     0
+          raidz2-0  ONLINE       0     0     0
+            c8t1d0  ONLINE       0     0     0
+            c8t5d0  ONLINE       0     0     0
+            c7t1d0  ONLINE       0     0     0
+            c7t5d0  ONLINE       0     0     0
+        logs
+          c10t6d0   ONLINE       0     0     0
+        cache
+          c10t2d0   ONLINE       0     0     0
+        spares
+          c12t2d0   AVAIL
+          c12t6d0   AVAIL
+
+errors: No known data errors
+```
+
+Yup, and there they are, did our pool change much in size?
+
+```
+bunny:~# zpool list mypool
+NAME     SIZE  ALLOC   FREE  CAP  DEDUP  HEALTH  ALTROOT
+mypool  1.81T   378K  1.81T   0%  1.00x  ONLINE  -
+```
+
+Nope, but that is fine, I don't think we really should have expected it to.
+
 
 
 [Mirroring]: http://en.wikipedia.org/wiki/Mirroring_disks
