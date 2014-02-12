@@ -21,24 +21,25 @@ is like...
 
 ![I'm a Burrito!](http://fc09.deviantart.net/fs70/f/2013/051/4/8/burrito_cat_para_estetio_by_frikitty-d5vmyzj.png)
 
-Say you had a burrito, filled with tomatoes and chili
-and guacamole. And also suppose the burrito was able to self
-replicate, ensure its own survival and email you when it gets soggy.
-This burrito also had the super power of being in multiple places at
-once, including all of the mouth of your friends, family and pets.
-This burrito could set quotas on how much any one person could eat,
-and it could also 
+...filled with tomatoes, and chilies, and guacamole, and hollandaise sauce,
+and just about all of the other great burrito ingredients that you should
+so choose to decide to throw at it. The wrap is always big enough.
+And also say that this burrito had super powers, that could allow it
+to be in two places at once, as if it was in a mirror room at a carnival
+or a bad secret agent movie. Lets also suppose that you could take three
+bites of the burrito at once! Getting three times the juicy innards every
+mouth globbering go around. This burrito also shares itself with your friends
+and family, and emails you when it gets sick. The burrito is also very
+intelligent, and can even replace stales beans with magical hot spare beans
+that await their turn to become a part of this magical experience.
 
-
-Say What?
----------
+### Say What?
 
 Okay sure, I knew that analogy was kind of a stretch, and most likely
 was a sad attempt to describe this incredible technology all wrapped (hehe)
 into one golden, warm, marriage killing toilet destroyer.
 
-Let's try this again...
------------------------
+### Let's try this again...
 
 Go with me on this one. Say you wanted to create the worlds greatest
 fileserver. You would most certainly need a few things to ensure
@@ -56,12 +57,33 @@ your supremacy.
     * [Etc][ZFSProperties]
 
 
+### Are we there yet?
 
+*NO* and if you ask me one more gosh darn time I'm going to turn this paper
+around and teach you how to print double sided text files with `lpr`...
 
+...Let's just continue.
 
+The Dichotomy
+-------------
 
+There are two integral parts to this magical experience. You need to create the
+container for the ZFS filesystem. For this we will use a command called `zpool`.
+Secondly, will will use a command called `zfs` to make sub-systems within that
+container.
 
+### Just nod you heads for right now, I'll go into it
 
+Zpool is first up. What `zpool` will do is take the ingredients of our burrito,
+err... it will take the disks we want to make availible and wrap them all up into
+one nice manageable system. Now, we can do this in any number of ways. We aren't
+exactly limited to just burritos here. We can make tacos, chimichangas, tostadas,
+enchuritos, XXL Grilled Stuffed burritos(TM), and the faithful homemade, burrito.
+Saying that again in ZFS terms, we could wrap our disks up in mirrors, stripes,
+striped mirrors, mirrored stripes, stripes with parity, mirrored stripes with
+multiple parity drives with extra hotspares, the combinations are nearly endless.
+And like the burrito each different style of disk folding serves its own unique
+purpose.
 
 
 
