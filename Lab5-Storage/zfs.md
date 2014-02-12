@@ -91,18 +91,48 @@ okay, okay, hold your horses there cow{boy,girl}, I'm just having a little fun.
 When using `zpool` you have to understand how it takes its arguments. Thankfully
 its pretty straight forward and consistent in its style. Here is an example:
 
-`zpool create mpool mirror disk1 disk2 disk3`
+`bunny:~# zpool create mpool mirror c9t0d0 c9t4d0 c12t0d0`
 
 Alright, we have a couple things going on here. Let's get this over with.
 
+* `bunny:~#` is my shell prompt, its at the begining of all of my commands
 * `zpool` is the name of the command, (if you didn't get this part, quietly leave the room)
 * `create` is the action we want to take, and in this case, will create a pool
 * `mpool` is the name of the pool we are referring to, in case of create, this better be new
 * `mirror` is the type if pool that we are aiming to create, in this case, mirror the disks
-* `disk1 disk2 disk3` are the names of the disks that we want to include into our pool
+* `c9t0d0 c9t4d0 c12t0d0` are the names of the disks that we want to include into our pool
 
-after executing the command we will have a newly created filesystem that will live,
-by default in the root of the whole \*nix filesystem. 
+After executing the command will should see no output, which is a great thing. It means
+that the command executed successfully and now we will have a newly created filesystem 
+that will live, by default in the root of the whole \*nix filesystem. We can see this
+by listing the contents of root.
+
+```
+bunny:~# ls /
+bin       cat       dev       etc       home      lib       mnt       net
+opt       platform  root      sbin      system    tmp       usr       volumes
+boot      cdrom     devices   export    kernel    media     mpool     nfs4
+pkgs      proc      rpool     stash     tftpboot  u         var       www
+```
+Before I go on much further, it is also very worth mentioning that there is a very
+handy command to check the status of a pool. `zpool status <PoolName>`
+
+```
+bunny:~# zpool status mpool
+  pool: mpool
+ state: ONLINE
+  scan: none requested
+config:
+
+   NAME         STATE     READ WRITE CKSUM
+   mpool        ONLINE       0     0     0
+     mirror-0   ONLINE       0     0     0
+       c9t0d0   ONLINE       0     0     0
+       c9t4d0   ONLINE       0     0     0
+       c12t0d0  ONLINE       0     0     0
+
+   errors: No known data errors
+```
 
 
 
