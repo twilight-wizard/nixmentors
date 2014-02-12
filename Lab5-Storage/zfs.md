@@ -241,11 +241,16 @@ is going to be a blast.
 bunny:~# zpool create mypool raidz2 c8t1d0 c8t5d0 c7t1d0 c7t5d0 cache c10t2d0 log c10t6d0
 ```
 
-I'm going to go over this:
+I'm going to go over this...again:
 
+* `zpool` is the command. duh...
+* `create` is the action, of course...
+* `mypool` is the name, you know this...
+* `raidz2 c8t1d0 c8t5d0 c7t1d0 c7t5d0` is going to create a striped RAID with two levels of parity
+* `cache c10t2d0` is going to allocate a drive to serve as a caching mechanism
+* `log c10t6d0` is going to log all of the things
 
-
-Let's see what it ended up looking like.
+Let's see what it ended up looking like:
 
 ```
 bunny:~# zpool status mypool
@@ -283,14 +288,16 @@ NAME     SIZE  ALLOC   FREE  CAP  DEDUP  HEALTH  ALTROOT
 mypool  1.81T   351K  1.81T   0%  1.00x  ONLINE  -
 ```
 
-### What!? Another sweet limo riding example!?
+### What!? Another sweet example traveling by way of limo!?
+
+![OH Baller Limo Riding](http://0.s3.envato.com/files/29315893/SUV_limo%20_pv.jpg)
 
 Sure, but not without introducing another cool feature. Hot Spares. Remember those beans that
 were getting all toasty for their chance to become a part of our burrito? Well, what ZFS does
-with hot spares is exactly (give or take an analogy or two) is save a couple disks on the side
-in case of emergency. If we just so happen to lose a disk during the life of our pool, one of
-these hot spares will be used to take its place. It really is quite a heartwarming tale. Let's
-watch!
+with hot spares is exactly (give or take an analogy or two) like that. We are going to save a
+couple disks on the side in case of emergency. If we just so happen to lose a disk during the
+life of our pool, one of these hot spares will be used to take its place. It really is quite
+a heartwarming tale. Let's watch!
 
 First, let's revisit our command with a little bit of extra sour cream (I KNOW IT'S EXTRA!!!)
 added on top.
@@ -340,6 +347,50 @@ mypool  1.81T   378K  1.81T   0%  1.00x  ONLINE  -
 
 Nope, but that is fine, I don't think we really should have expected it to.
 
+### What did you say lassie? c8t1d0 is failing!?
+
+![And Lassie then proceeded to text her buttocks off](http://www.davidrdudley.com/davidrdudley.com/Lassie_texting_files/lassie_Dudley_forWeb.jpg)
+
+Well I mean, really it was inevitable right? On eof the disks was surely ready to fail
+now we got to sstep in and save the pool. Easy, because we have 
+`zpool replace <PoolName> <FailDisk> <SpareDisk>` to come and rescue us proper.
+
+```
+bunny:~# zpool replace mypool c8t1d0 c12t2d0
+```
+
+And now we can see the spare step in and save the day, taking the place of the poor
+failing disk and holding it up like a Vietnam soldier intent on getting is comrade
+home in hopes that the guys wife makes a dank apple pie.
+
+```
+bunny:~# zpool status mypool
+  pool: mypool
+ state: ONLINE
+  scan: resilvered 60K in 0h0m with 0 errors on Wed Feb 12 03:11:26 2014
+config:
+
+        NAME           STATE     READ WRITE CKSUM
+        mypool         ONLINE       0     0     0
+          raidz2-0     ONLINE       0     0     0
+            spare-0    ONLINE       0     0     0
+              c8t1d0   ONLINE       0     0     0
+              c12t2d0  ONLINE       0     0     0
+            c8t5d0     ONLINE       0     0     0
+            c7t1d0     ONLINE       0     0     0
+            c7t5d0     ONLINE       0     0     0
+        logs
+          c10t6d0      ONLINE       0     0     0
+        cache
+          c10t2d0      ONLINE       0     0     0
+        spares
+          c12t2d0      INUSE
+          c12t6d0      AVAIL
+
+errors: No known data errors
+```
+We can see now that the spare is `INUSE` and that it is aiding the poor disk in
+combat.
 
 
 [Mirroring]: http://en.wikipedia.org/wiki/Mirroring_disks
