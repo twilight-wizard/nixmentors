@@ -85,6 +85,24 @@ multiple parity drives with extra hotspares, the combinations are nearly endless
 And like the burrito each different style of disk folding serves its own unique
 purpose.
 
+### Let's Create one already!
+
+okay, okay, hold your horses there cow{boy,girl}, I'm just having a little fun.
+When using `zpool` you have to understand how it takes its arguments. Thankfully
+its pretty straight forward and consistent in its style. Here is an example:
+
+`zpool create mpool mirror disk1 disk2 disk3`
+
+Alright, we have a couple things going on here. Let's get this over with.
+
+* `zpool` is the name of the command, (if you didn't get this part, quietly leave the room)
+* `create` is the action we want to take, and in this case, will create a pool
+* `mpool` is the name of the pool we are referring to, in case of create, this better be new
+* `mirror` is the type if pool that we are aiming to create, in this case, mirror the disks
+* `disk1 disk2 disk3` are the names of the disks that we want to include into our pool
+
+after executing the command we will have a newly created filesystem that will live,
+by default in the root of the whole \*nix filesystem. 
 
 
 
