@@ -71,7 +71,7 @@ The Dichotomy
 
 There are two integral parts to this magical experience. You need to create the
 container for the ZFS filesystem. For this we will use a command called `zpool`.
-Secondly, will will use a command called `zfs` to make sub-systems within that
+Secondly, will will use a command called `ZFS` to make sub-systems within that
 container.
 
 ### Just nod you heads for right now, I'll go into it
@@ -193,7 +193,45 @@ Woh! Nice, we just leveled up here. We made a zpool and even destroyed it and mo
 importantly, issued a few zpool commands, thus arranging our neurons to better understand
 the steps that are about to come. You are no longer inner tubing on the bunny slopes my friend.
 You are about to be skiing on you own (with training wheels and an ambulance on call of
-course)
+course) down the Matterhorn at a break-neck pace here.
+
+![Good luck](http://thumbs.imagekind.com/1571596_650/Matterhorn.jpg)
+
+### Lets make some enchuritos!
+
+You remember that time... when we mirrored those disks together? That was cool and
+all, but my friends told me about this thing called striping and parity, and they
+made it sound all cool. So, lets like, hop on the bandwagon shall we?
+
+You see, the `man` page for zpool has some really good explanation as to all the
+different pools you can make. We have at our disposal things like:
+
+#### mirror
+mirrors are used to creates a pool focused on preserving data in a redundant manner.
+basically we copy data to multiple disks, so that if one goes down, we still have the
+information stored on another.
+
+#### raidz[123]?
+Sorry about that regex there, but I couldn't help myself. raidz stripes disks, and
+provides multiple levels of parity (denoted by the trailing digit) that ensure a bit
+of safty in case a disk goes down. Lemme expound upon this a bit. When we stripe drives
+we save a block of data in pieces over each of the drives. So a parity drive, takes each
+piece and calculates a value that can be used later to recover the information if a drive
+goes down. Back in the day we would dedicate an entire drive to this, but now we prefer
+to distribute the parity over all the drives. (Ask me later if this doesn't make sense, or
+if it looks like I'm bored, ask me now!)
+
+#### cache
+mirror and raidz are very common, but it also helps in certain situations to have a cache
+drive. Don't bog yourself down too hard trying to understand this part as we don't use this
+all that often but it gives us a system that will cache information about ZFS stuffs, and
+in theory make things happen faster.
+
+#### log
+As with every great service, there is a level of logging that is necessary. In ZFS you can
+dedicate a drive for this purpose. It'll log the heck out of your ZFS system, which is really
+handy to have in some situations.
+
 
 
 [Mirroring]: http://en.wikipedia.org/wiki/Mirroring_disks
