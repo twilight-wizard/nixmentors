@@ -48,5 +48,15 @@ Lab 1
 cd /path/to/nixmentors/repository/Lab1*
 vagrant up
 vagrant ssh
+sudo -i
 ```
 Note that this will install the base precise64 image into the user's homedir. It will consume 300MB of profile space.
+
+Teardown
+-------------
+
+```bash
+# exit vagrant ssh
+vagrant halt
+```
+
