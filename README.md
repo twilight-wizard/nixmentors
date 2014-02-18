@@ -37,8 +37,8 @@ Initial setup
 -------------
 
 ```bash
-mkdir /disk/trump/minerals/virtualbox
-vboxmanage setproperty machinefolder /disk/trump/minerals/virtualbox
+mkdir -p /disk/trump/minerals/$USER
+vboxmanage setproperty machinefolder /disk/trump/minerals/$USER
 ```
 
 Lab 1
