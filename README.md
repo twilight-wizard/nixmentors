@@ -30,12 +30,23 @@ Sessions
 * Lab 4: [Debugging](Lab4-Debugging/Lab4.md)
 * Lab 5: [Storage](Lab5-Storage/Lab5.md)
 
-Setup
------
+Setting up Vagrant
+==================
+
+Initial setup
+-------------
 
 ```bash
-cd Lab1*
+mkdir /disk/trump/minerals/virtualbox
+vboxmanage setproperty machinefolder /disk/trump/minerals/virtualbox
+```
+
+Lab 1
+---------
+
+```bash
+cd /path/to/nixmentors/repository/Lab1*
 vagrant up
 vagrant ssh
 ```
-
+Note that this will install the base precise64 image into the user's homedir. It will consume 300MB of profile space.
