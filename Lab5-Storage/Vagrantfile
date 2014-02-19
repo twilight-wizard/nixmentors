@@ -5,28 +5,67 @@
 VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-# centos64 base box is from https://cat.pdx.edu/~nibz/vagrant/centos-6.4-amd64.box
-# but basically any (functional) centos6 box should work
-# the centos6 box on vagrantbox.es was broken at time of writing
 
-  # The url from where the 'config.vm.box' box will be fetched if it
-  # doesn't already exist on the user's system.
-   port = 1
-   config.vm.provider :virtualbox do |vb|
-     ["b","c","d","e","f","g"].each do |disk|
-       diskname = "/disk/trump/minerals/#{ENV['USER']}/sd#{disk}.vdi"
+  config.vm.define "sunosfiler1" do |v|
+    v.vm.box = "solaris-11.1"
+    v.vm.hostname = "sunosfiler1"
+    v.vm.network :private_network, ip: "192.168.1.11"
+    v.vm.box_url = "/stash/nixmentors/boxes/packer_solaris-11.1-amd64_virtualbox.box"
+    v.vm.provider :virtualbox do |vb|
+      # Create a sata controller for our disks
+      vb.customize ["storagectl", :id, "--name", "SATA Controller", "--add", 'sata']
+      # Create a second disk for the rpool mirror
+      diskname = "/disk/trump/minerals/#{ENV['USER']}/sun-ide1.vdi"
+      vb.customize ['createhd', '--filename', diskname, '--size', 8 * 1024]
+      vb.customize ['storageattach', :id, '--storagectl', 'IDE Controller', '--port', 1, '--device', 0, '--type', 'hdd', '--medium', diskname]
+    end
+    # Create six disks for a zpool
+    v.vm.provider :virtualbox do |vb|
+      ["1","2","3","4","5","6"].each do |disk|
+       diskname = "/disk/trump/minerals/#{ENV['USER']}/sun-sata#{disk}.vdi"
        vb.customize ['createhd', '--filename', diskname, '--size', 1024]
-       vb.customize ['storageattach', :id, '--storagectl', 'SATA Controller', '--port', port, '--device', 0, '--type', 'hdd', '--medium', diskname]
-       port += 1
-     end
-   end
+       vb.customize ['storageattach', :id, '--storagectl', 'SATA Controller', '--port', disk, '--device', 0, '--type', 'hdd', '--medium', diskname]
+      end
+    end
+  end
 
+  config.vm.define "sunosfiler2" do |v|
+    v.vm.box = "solaris-11.1"
+    v.vm.hostname = "sunosfiler2"
+    v.vm.network :private_network, ip: "192.168.1.12"
+    v.vm.box_url = "/stash/nixmentors/boxes/packer_solaris-11.1-amd64_virtualbox.box"
+    v.vm.provider :virtualbox do |vb|
+      # Create a sata controller for our disks
+      vb.customize ["storagectl", :id, "--name", "SATA Controller", "--add", 'sata']
+      # Create a second disk for the rpool mirror
+      diskname = "/disk/trump/minerals/#{ENV['USER']}/sun2-ide1.vdi"
+      vb.customize ['createhd', '--filename', diskname, '--size', 8 * 1024]
+      vb.customize ['storageattach', :id, '--storagectl', 'IDE Controller', '--port', 1, '--device', 0, '--type', 'hdd', '--medium', diskname]
+    end
+    # Create six disks for a zpool
+    v.vm.provider :virtualbox do |vb|
+      ["1","2","3","4","5","6"].each do |disk|
+       diskname = "/disk/trump/minerals/#{ENV['USER']}/sun2-sata#{disk}.vdi"
+       vb.customize ['createhd', '--filename', diskname, '--size', 1024]
+       vb.customize ['storageattach', :id, '--storagectl', 'SATA Controller', '--port', disk, '--device', 0, '--type', 'hdd', '--medium', diskname]
+      end
+    end
+  end
 
   config.vm.define "linuxfiler" do |v|
     v.vm.box = "precise64"
     v.vm.hostname = "linuxfiler"
     v.vm.network :private_network, ip: "192.168.1.10"
     v.vm.box_url = "/stash/nixmentors/boxes/precise64.box"
+    port = 1
+    v.vm.provider :virtualbox do |vb|
+      ["b","c","d","e","f","g"].each do |disk|
+        diskname = "/disk/trump/minerals/#{ENV['USER']}/sd#{disk}.vdi"
+        vb.customize ['createhd', '--filename', diskname, '--size', 1024]
+        vb.customize ['storageattach', :id, '--storagectl', 'SATA Controller', '--port', port, '--device', 0, '--type', 'hdd', '--medium', diskname]
+        port += 1
+      end
+    end
   end
 
 end
