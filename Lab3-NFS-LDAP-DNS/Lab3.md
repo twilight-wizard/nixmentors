@@ -40,6 +40,21 @@ This file can be your reference for which machines have which names and ip addre
 vagrant up
 ```
 
+```shell
+hadron:Lab3-NFS-LDAP-DNS (master) $ vagrnt status
+zsh: correct 'vagrnt' to 'vagrant' [nyae]? y
+Current machine states:
+
+nfsserver                 running (virtualbox)
+nfsclient1                running (virtualbox)
+nfsclient2                running (virtualbox)
+nfsclient3                running (virtualbox)
+
+This environment represents multiple VMs. The VMs are all listed
+above with their current state. For more information about a specific
+VM, run `vagrant status NAME`.
+```
+
 ### SSH into multiple hosts
 
 Open up several terminal windows, change directory on all of them into the Lab3 directory.
