@@ -52,6 +52,19 @@ sudo -i
 ```
 Note that this will install the base precise64 image into the user's homedir. It will consume 300MB of profile space.
 
+If you have been alumnified, this will fail because there's not enough space. You can store the image somewhere else instead. Add the following environment variable to your .whateverrc:
+
+	export VAGRANT_HOME=/disk/trump/minerals/<yourusername>
+
+Note that if you try to do `vagrant up` on multiple machines, you will probably get an error about an inaccessible vm. If that happens, do like so:
+
+	VBoxManage listvms
+
+You'll see a line identifying a vm that's inaccessible, and a hash to identify it. Take that entire hash (minus the curly braces), and run this:
+
+	VBoxManage unregistervm <hash>
+
+
 Teardown
 -------------
 
