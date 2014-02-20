@@ -10,7 +10,7 @@ ZFS is a filesystem primarily used by Solaris and Solaris derivatives. It makes 
 
 ###On with the show!
 
-The first thing you probably want to do is `man zfs` and `man zpool` for creating zfs filesystems and zfs storage pools, respectively.
+The first thing you probably want to do is `man zfs` and `man zpool` for creating zfs filesystems and zfs storage pools, respectively. Also, check out the [ZFS Best Practices from Oracle][ZFS]
 
 1. Create a mirrored zpool with the disk ids
 2. find where the mirrored zpool you just created got mounted on the filesystem
@@ -22,3 +22,6 @@ The first thing you probably want to do is `man zfs` and `man zpool` for creatin
 8. create a raidz2 pool with a cache disk and spares.
 9. say you have a failing disk, replace a failing disk with a spare
 10. check the status of you rpool after the failure 
+
+
+[ZFS]:http://docs.oracle.com/cd/E23824_01/html/E24456/storage-4.html
