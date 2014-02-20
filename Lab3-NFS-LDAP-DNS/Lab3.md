@@ -76,7 +76,37 @@ vagrant ssh nfs_client_1
 #### Basic networking verification and warm up
 
 * Ping each host from one host
+
+```shell
+hadron:Lab3-NFS-LDAP-DNS (master) $ vagrant ssh nfsserver
+Last login: Tue Apr 30 21:45:04 2013 from 10.0.2.2
+Welcome to your Vagrant-built virtual machine.
+vagrant@nfsserver: ~ > ping nfsclient1
+ping: unknown host nfsclient1
+vagrant@nfsserver: ~ > ping 192.168.1.11
+PING 192.168.1.11 (192.168.1.11) 56(84) bytes of data.
+64 bytes from 192.168.1.11: icmp_seq=1 ttl=64 time=0.283 ms
+64 bytes from 192.168.1.11: icmp_seq=2 ttl=64 time=0.268 ms
+^C
+--- 192.168.1.11 ping statistics ---
+2 packets transmitted, 2 received, 0% packet loss, time 1611ms
+rtt min/avg/max/mdev = 0.268/0.275/0.283/0.018 ms
+```
+
 * View the routing table for your virtual machines
+
+```
+vagrant@nfsserver: ~ > netstat -rn
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags   MSS Window  irtt Iface
+192.168.1.0     0.0.0.0         255.255.255.0   U         0 0          0 eth1
+10.0.2.0        0.0.0.0         255.255.255.0   U         0 0          0 eth0
+169.254.0.0     0.0.0.0         255.255.0.0     U         0 0          0 eth0
+169.254.0.0     0.0.0.0         255.255.0.0     U         0 0          0 eth1
+0.0.0.0         10.0.2.2        0.0.0.0         UG        0 0          0 eth0
+````
+
+
 * Set up three users on nfs_server and nfs_client_1
         * ashley: uid=2313
         * bob:    uid=2121
