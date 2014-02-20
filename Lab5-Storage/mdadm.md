@@ -5,15 +5,126 @@ mdadm-advanced
 Welcome
 -------
 
-I congradulate your tenacity for so willingly deciding to take the next step.
+Did I ever tell you about the time I broke my leg looking for a good stick
+to use for training my frog how to fetch?
 
-Learn what RAID can do for you.
+Welcome to *mdadm*
+
+What are you talking about?
+---------------------------
+
+That is a great question that has mystified the greatest minds of my brother's
+girlfriends second grade students. Luckily our highly developed thinkerators can
+easily compress the comprehensive computer disk creating comprehension, into an
+impressive image, who's implications imply incredible inclinations, for instance.
+Let me go off on a slight tangent for at most three paragraphs.
+
+Let's just say for sake of salaciousness, We have a impressive array of redundant
+disks at our disposal. We could... just go ahead and throw these suckers into a
+cabinet and forget about them for an eternity. We could glue them together and
+turn them into a mosaic piece that expresses our inner battles with adulthood.
+Or! We can do something remotely useful like sticking them into a big ol' server
+that will hold say 47 of these puppies at once. We would then proceed to call this
+contraption 'Just a Bunch Of Disks' or... a JBOD.
+
+Once said JBOD is constructed, we would like to have an easy way to interface with
+our new storage solution. Sure we could save random things to random places across
+the array, but that would quickly turn into a large disorganized system of storage.
+If only we had some way to combine the disks... If only we had a way to make two disks
+hold the *exact* same information, so that if we lost on of the disks, we could still
+have all the information still sitting on the other. Or, say we wanted speed.. We
+could combine two disks in such a way that storing a file to them meant splitting that
+file into pieces and storing a section on a single disk. That way we could access the
+file as quickly as we can read the biggest piece. Isn't that cool? No. It's freaking
+magnexcellent. Look it up. It's true.
+
+What I'm trying to get at is the idea that once you have a JBOD, its not really in
+your best interest to use each piece as a separate mechanism. What a true uber leet
+sysAdmin will do is create a strange overly complicated combination of this disks into
+a single easy to use/access/store filesystem that does a bunch of neat stuff including
+be very fast, efficient and redundant so we can look really good in the eyes of our bosses.
+
+ENTER MDADM
+-----------
+
+Seriously though I'll tell you what this is now. mdadm is our swiss army tool for
+constructing RAID. Now.. I'm assuming you know what a RAID is especially levels
+0(stripe), 1(mirror), 5(stripe and parity), and 10(mirrored stripe) are. So what
+I'm going to focus on in this tutorial is how to go about constructing software
+RAID with mdadm. First we will need disks, so I'll show you how to spin up a few
+fake disks, using files that will emulate disks. Then I'll show you how to make some
+basic raid setups, probably one of each of the above. Then, I'll take you through
+some of mdadm's cool features, including hotspares, logging and Incremental assembly.
+
 
 
 Let's make Somes disks
 ----------------------
 
-`.......MAKE A DISC HERE........`
+All of everything that we are about to do is going to require us to be root. so...
+Root up:
+
+`sudo su`
+
+Do you feel that? The power? Well just remember what uncle Ben told us:
+
+`With straight floweres runs blank respun stability`
+
+sorry... I had a mouth full of fish sticks. Just remember you are root. You need to
+double check everything you do everywhere all the time.
+
+Let's now make a couple, say 5, blank files that we can use later on as disks. We do
+this with a tool called `dd`. Now, many people would call me crazy, telling you to
+go straight from root to `dd` in the amount of time im doing now. Mainly because `dd`
+has this really cool ability to COMPLETELY OBLITERATE EVERYTHING IN ITS PATH. So if you
+pay attention to only one thing this entire tutorial it is this. DOUBLE CHECK `dd` every
+time you use it.
+
+Okay, those disks. You can run:
+
+`dd if=/dev/zero of=./hdd1 bs=1M count=1000`
+
+to make a single file, filled with zeros that will be 1G in size. But we have to make a
+few so lets put this in a for loop:
+
+```
+for i in `seq 5`; do dd if=/dev/zero of=./hdd$i bs=1M count=1000; done
+```
+
+OH SHIT WAIT NO DON'T DO THAT!!!!!!!!!!!!!!!!!!!!!!!!!
+
+Just kidding. Just trying to keep you on your toes. You double checked that command
+right? I hope so.
+
+You should now have a directory full of blank files that look like the following:
+
+```
+[root@fatdadd disks]# ls
+hdd1  hdd2  hdd3  hdd4  hdd5
+```
+
+This is a good thing. Now that we have our files we can turn them into pseudo-disks
+by using this other command called `losetup`. What this command does is 'Setup and
+control loopback devices'. Basically it will take a file and make it pretend to be a
+'block device' which is a fancy way to describe harddrives. There is more to that
+statement that I'm going to leave to you to investigate. lets turn all of those files
+into loop devices. Of course we are going to do this in a for loop.
+
+```
+for i in `seq 5`; do losetup /dev/loop$i ./disk$i; done
+```
+
+Now we can see the loop devices listed in `/dev` like so:
+
+```
+[root@fatdadd disks]# losetup
+NAME       SIZELIMIT OFFSET AUTOCLEAR RO BACK-FILE
+/dev/loop1         0      0         0  0 /root/disks/hdd1
+/dev/loop2         0      0         0  0 /root/disks/hdd2
+/dev/loop3         0      0         0  0 /root/disks/hdd3
+/dev/loop4         0      0         0  0 /root/disks/hdd4
+/dev/loop5         0      0         0  0 /root/disks/hdd5
+```
 
 Okay, now that we have some disks, we can play
 ----------------------------------------------
