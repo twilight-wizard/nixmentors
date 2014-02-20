@@ -31,41 +31,6 @@ For this lab we will have a multi-vm setup inside vagrant. All three vms will be
 
 Take a quick look at your vagrantfile:
 
-
-```ruby
-Vagrant::Config.run do |config|
-# centos64 base box is from https://cat.pdx.edu/~nibz/vagrant/centos-6.4-amd64.box
-# but basically any (functional) centos6 box should work
-# the centos6 box on vagrantbox.es was broken at time of writing
-
-  config.vm.define :nfs_server do |nfs_server|
-    nfs_server.vm.box = "centos64"
-    nfs_server.vm.network :hostonly, "192.168.1.10"
-  end
-
-  config.vm.define :nfs_client_1 do |nfs_client_1|
-    nfs_client_1.vm.box = "centos64"
-    nfs_client_1.vm.network :hostonly, "192.168.1.11"
-  end
-
-  config.vm.define :nfs_client_2 do |nfs_client_2|
-    nfs_client_2.vm.box = "centos64"
-    nfs_client_2.vm.network :hostonly, "192.168.1.12"
-  end
-
-  config.vm.define :nfs_client_3 do |nfs_client_3|
-    nfs_client_3.vm.box = "centos64"
-    nfs_client_3.vm.network :hostonly, "192.168.2.13"
-  end
-
-  config.vm.define :dns_server do |puppet_ca_2|
-    dns_server.vm.box = "centos64"
-    dns_server.vm.network :hostonly, "192.168.1.14"
-  end
-
-end
-```
-
 This file can be your reference for which machines have which names and ip addresses.
 
 
@@ -93,6 +58,8 @@ vagrant ssh nfs_client_1
 
 ### Exercises
 
+#### Basic networking verification and warm up
+
 * Ping each host from one host
 * View the routing table for your virtual machines
 * Set up three users on nfs_server and nfs_client_1
@@ -103,7 +70,6 @@ vagrant ssh nfs_client_1
 * Create a file foo.txt with plain text in it, and copy it using scp from one host to another using your created users
 * Set up a hosts file on nfs_server to map each ip address in your network to the common name given in the vagrant file.
 * Copy that hosts file to all other servers in your infrastructure
-
 
 
 
