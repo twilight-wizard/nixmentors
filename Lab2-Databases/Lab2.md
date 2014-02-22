@@ -52,12 +52,14 @@ This is the client authentication file. It controls who can connect and from whe
 
 #### Mandatory Setup Instructions
 
-  - Edit /etc/postgresql/9.1/main/postgresql.conf
-    Uncomment the listen_address line and change it from 'localhost' to '*' so we can connect to it from places other than localhost
-  - Edit /etc/postgresql/9.1/main/pg_hba.conf
-    Add the following line to allow connections from the host lab computer
+  - Edit `/etc/postgresql/9.1/main/postgresql.conf`. Uncomment the listen_address line and change it from 'localhost' to '*' so we can connect to it from places other than localhost
+
+  - Edit `/etc/postgresql/9.1/main/pg_hba.conf`. Add the following line to allow connections from the host lab computer:
+
     `host all all 10.0.0.0/8 md5`
-  - Restart the postgres server in order to make your changes happen
+
+  - Restart the postgres server in order to make your changes happen:
+
     `sudo service postgresql restart`
 
 #### Additional Exercises
@@ -116,19 +118,19 @@ SQL
  - select everything in the table (it will be empty)
      `select * from <tablename>;`
  - import some data into your table
-      $ cp /vagrant/startrek.csv /tmp
-      $ chmod a+rx /tmp/startrek.csv
-      $ sudo -u postgres psql star_trek
-      star_trek=# copy characters from '/tmp/startrek.csv' with csv;
+      `$ cp /vagrant/startrek.csv /tmp1`
+      `$ chmod a+rx /tmp/startrek.csv`
+      `$ sudo -u postgres psql star_trek`
+      `star_trek=# copy characters from '/tmp/startrek.csv' with csv;`
  - delete one of the characters
-      star_trek=# delete from characters where name='Chakotay';
+      `star_trek=# delete from characters where name='Chakotay';`
  - insert the character back into the table
    - remember to use single quotes!
    - example character: 'William Riker', 'Commander', 'First Officer', 'The Next Generation', 'Jonathan Frakes', 30, true
    - if you're giving every field, in the order you see when you look at the table schema, the syntax is
-       insert into <tablename> values(<list of values);
+       `insert into <tablename> values(<list of values);`
    - if you're only inserting some of the fields, leaving others blank, or inserting in a random order, the syntax is
-       insert into <tablename> (<list of fields) values(<list of values in the same order as the fields);
+       `insert into <tablename> (<list of fields) values(<list of values in the same order as the fields);`
  - select everything from the table again
  - select only names from the table
  - select only ranks or series from the table (what happens if you have multiple characters with the same rank or from the same series?)
@@ -176,11 +178,11 @@ pg_dump only gets the data from one database. It doesn't get things like roles. 
 #### Exercises
 
  - Back up your database
-     pg_dump <databasename> > backup.sql
+     `pg_dump <databasename> > backup.sql`
  - Drop your database
-     echo "drop database <databasename>" | psql
+     `echo "drop database <databasename>" | psql`
  - Restore it
-     psql <databasename> < backup.sql
+     `psql <databasename> < backup.sql`
  - yay!
 
 ### Writing Applications Against Your Database
@@ -209,5 +211,3 @@ repeat everything using mysql
 Research postgres functions and write one.
 Add another column to the characters table that has a default value of the current time using the now() function (look up ALTER TABLE).
 
-
-Note for krinkle: create a big csv file to import so they have more data.
