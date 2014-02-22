@@ -29,6 +29,15 @@ Sessions
 * Lab 4: [Debugging](Lab4-Debugging/Lab4.md)
 * Lab 5: [Storage](Lab5-Storage/Lab5.md)
 
+Cloning a Repository
+====================
+
+```bash
+git clone https://github.com/pdxcat/nixmentors.git
+cd nixmentors
+cd Lab#-something-something
+```
+
 Setting up Vagrant
 ==================
 
