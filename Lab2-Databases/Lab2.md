@@ -34,40 +34,50 @@ Configuring Postgres
 
 ##### /etc/postgresql/9.1/main/postgresql.conf
 
- - Main configuration file
+This is the main configuration file. Here is where you can set things like:
+
  - Set log level, log location, logging configuration
  - change port number it runs on
+ - change the address it listens for
 
 ##### /etc/postgresql/9.1/main/pg_hba.conf
 
- - Client authentication file
- - Who can connect and from where
+This is the client authentication file. It controls who can connect and from where.
 
-#### Exercises
+#### Mandatory Setup Instructions
 
+  - Edit /etc/postgresql/9.1/main/postgresql.conf
+    Uncomment the listen_address line and change it from 'localhost' to '*' so we can connect to it from places other than localhost
+  - Edit /etc/postgresql/9.1/main/pg_hba.conf
+    Add the following line to allow connections from the host lab computer
+    `host all all 10.0.0.0/8 md5`
+  - Restart the postgres server in order to make your changes happen
+    `sudo service postgresql restart`
+
+#### Additional Exercises
  - Following the guides in the comments of postgresql.conf, change the logging destination
- - Following the guides in the comments of pg_hba.conf, allow your database to accept connections from 131.252.0.0/16. Then connect to it from another host.
 
 ### Command line administration
 
-Use psql to get into the postgresql command line interface.
+Use `psql` to get into the postgresql command line interface. To configure the database, you need to connect as the user postgres.
+    `sudo -u postgres psql`
 
 #### help commands
-   - \? and \h
+   - `\?` and `\h`
 
 #### getting information about your system
-   - \dS shows all the possible databases you have access to, including all of the ones that postgres keeps for itself
-   - \d <database name> describes what kinds of values are in the database
-   - \dfS describes all the functions available to you
+   - `\dS` shows all the possible databases you have access to, including all of the ones that postgres keeps for itself
+   - `\d <database name>` describes what kinds of values are in the database
+   - `\dfS` describes all the functions available to you
    - info functions: http://www.postgresql.org/docs/9.2/static/functions-info.html
    - administrative functions: http://www.postgresql.org/docs/9.2/static/functions-admin.html
    - variables: everything set in your configuration file is available as a variable in psql
 
 #### Try It
-   - select * from pg_database;
-   - select * from pg_stat_activity;
-   - select * from current_database;
-   - show all;
+   - `select * from pg_database;`
+   - `select * from pg_stat_activity;`
+   - `select * from current_database;`
+   - `show all;`
 
 
 SQL
@@ -84,22 +94,29 @@ SQL
 #### Exercises
 
  - create a database
-     create database <databasename>;
+     `create database <databasename>;`
    - example database: star_trek
  - create a user
-     create user <username>;
+     `create user <username>;`
+ - give the user a password
+      `alter user <username> with encrypted password '<password>';`
  - grant full admin on the database to the user
-     grant all privileges on <databasename> to <username>
+     `grant all privileges on <databasename> to <username>;`
  - connect as the user
-     psql -U <username>
- - change your password
-ter role <user> with password '<password>';
+     `psql -U <username> -h 127.0.0.1 -p 8543;`
  - create a table
-   - example table: characters(name varchar(30) primary key, rank varchar(20), position varchar(20), series varchar(50), actor varchar(30), age integer, appears_across_series boolean);
- - look at your table's schema (use \d)
+     `create table characters(name varchar(100) primary key, rank varchar(100), position varchar(100), series varchar(200), actor varchar(100));`
+ - look at your table's schema (use `\d`)
  - select everything in the table (it will be empty)
-     select * from <tablename>;
- - insert a character into the table
+     `select * from <tablename>;`
+ - import some data into your table
+      $ cp /vagrant/startrek.csv /tmp
+      $ chmod a+rx /tmp/startrek.csv
+      $ sudo -u postgres psql star_trek
+      star_trek=# copy characters from '/tmp/startrek.csv' with csv;
+ - delete one of the characters
+      star_trek=# delete from characters where name='Chakotay';
+ - insert the character back into the table
    - remember to use single quotes!
    - example character: 'William Riker', 'Commander', 'First Officer', 'The Next Generation', 'Jonathan Frakes', 30, true
    - if you're giving every field, in the order you see when you look at the table schema, the syntax is
