@@ -20,7 +20,13 @@ Lab 2: Web Services and Databases
 install postgres
 ----------------
 
+    sudo apt-get update
     sudo apt-get install postgresql
+
+Optional:
+    sudo apt-get install vim
+
+Note: if you typed sudo -i during your initial virtualbox setup then you don't need to keep typing sudo here.
 
 Result:
  - psql
