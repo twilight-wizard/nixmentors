@@ -98,6 +98,7 @@ SQL
    - Tables have columns and rows.
    - Columns have data types, the same way variables in programming languages have data types. Some common data types are varchar(number), which is like string with a max length, integer, and boolean. Postgres has many possible data types.
    - Usually tables have primary keys. This is a column that will have a unique value for every row.
+   - All SQL queries end in a ';'.
 
 #### Exercises
 
@@ -117,26 +118,6 @@ SQL
 
      `grant all privileges on database star_trek to <username>;`
 
-
- - create a table
-
-     `create table characters(name varchar(100) primary key, rank varchar(100), position varchar(100), series varchar(200), actor varchar(100));`
-
- - look at your table's schema (use `\d`)
- - select everything in the table (it will be empty)
-
-     `select * from <tablename>;`
-
- - import some data into your table.
-
-      `$ cp /vagrant/startrek.csv /tmp`
-
-      `$ chmod a+rx /tmp/startrek.csv`
-
-      `$ sudo -u postgres psql star_trek`
-
-      `copy characters from '/tmp/startrek.csv' with csv;`
-
  - From now on let's use your user to do things instead of the postgres user. We can even connect to your postgresql server remotely. 
 
       Quit psql:
@@ -151,20 +132,40 @@ SQL
 
      `$ psql -U <username> -h 127.0.0.1 -p 8543 star_trek;`
 
+ - create a table
+
+     `create table characters(name varchar(100) primary key, rank varchar(100), position varchar(100), series varchar(200), actor varchar(100));`
+
+ - look at your table's schema (use `\d`)
+ - select everything in the table (it will be empty)
+
+     `select * from characters;`
+
+ - import some data into your table. This path is on your host machine - i.e. your lab computer, not your vagrant vm.
+
+      `\copy characters from '/path/to/Lab2/startrek.csv' with csv;`
+
  - delete one of the characters
 
       `star_trek=# delete from characters where name='Chakotay';`
 
  - insert the character back into the table
    - remember to use single quotes!
-   - example character: 'William Riker', 'Commander', 'First Officer', 'The Next Generation', 'Jonathan Frakes', 30, true
    - if you're giving every field, in the order you see when you look at the table schema, the syntax is
+
        `insert into <tablename> values(<list of values);`
+
    - if you're only inserting some of the fields, leaving others blank, or inserting in a random order, the syntax is
+
        `insert into <tablename> (<list of fields) values(<list of values in the same order as the fields);`
+
  - select everything from the table again
  - select only names from the table
  - select only ranks or series from the table (what happens if you have multiple characters with the same rank or from the same series?)
+ - alter the table to have an age column:
+
+       `alter table characters add column age integer;`
+       `insert into characters value
 
 #### Advanced SQL
 
