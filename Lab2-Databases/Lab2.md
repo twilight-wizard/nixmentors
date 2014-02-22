@@ -105,8 +105,6 @@ SQL
 
      `create database star_trek;`
 
-   - example database: star_trek
-
  - create a user
 
      `create user <username>;`
@@ -119,7 +117,27 @@ SQL
 
      `grant all privileges on database star_trek to <username>;`
 
- - connect as the user from your lab computer (not your vagrant vm!)
+
+ - create a table
+
+     `create table characters(name varchar(100) primary key, rank varchar(100), position varchar(100), series varchar(200), actor varchar(100));`
+
+ - look at your table's schema (use `\d`)
+ - select everything in the table (it will be empty)
+
+     `select * from <tablename>;`
+
+ - import some data into your table.
+
+      `$ cp /vagrant/startrek.csv /tmp`
+
+      `$ chmod a+rx /tmp/startrek.csv`
+
+      `$ sudo -u postgres psql star_trek`
+
+      `copy characters from '/tmp/startrek.csv' with csv;`
+
+ - From now on let's use your user to do things instead of the postgres user. We can even connect to your postgresql server remotely. 
 
       Quit psql:
 
@@ -132,25 +150,6 @@ SQL
      Connect to postgres on your vagrant vm from your lab computer:
 
      `$ psql -U <username> -h 127.0.0.1 -p 8543 star_trek;`
-
- - create a table
-
-     `create table characters(name varchar(100) primary key, rank varchar(100), position varchar(100), series varchar(200), actor varchar(100));`
-
- - look at your table's schema (use `\d`)
- - select everything in the table (it will be empty)
-
-     `select * from <tablename>;`
-
- - import some data into your table
-
-      `$ cp /vagrant/startrek.csv /tmp1`
-
-      `$ chmod a+rx /tmp/startrek.csv`
-
-      `$ sudo -u postgres psql star_trek`
-
-      `copy characters from '/tmp/startrek.csv' with csv;`
 
  - delete one of the characters
 
