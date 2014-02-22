@@ -14,7 +14,17 @@ Apache
 
     sudo apt-get install apache2
 
-⁑ Visit http://localhost:8080, and examine your HTTP requests & responses with a browser extension
+⁑ Visit http://localhost:8080, and examine ongoing HTTP requests with the browser's inspector.
+
+Either:
+- Inspector (Firefox) - Ctrl-Shift-C or right click and select 'Inspect Element'
+- Web Inspector (Chrome) - Ctrl-Shift-I or right click and select 'Inspect Element'
+    
+Select the Network tab in either browser.
+
+Refresh the page
+- Ctrl-Shift-R in Firefox, or
+- Shift-F5 in Chrome
 
 ⁑ Take a look at your web root directory. What's in there? Who owns the files?
     
