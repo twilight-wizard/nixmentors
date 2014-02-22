@@ -40,6 +40,14 @@ mkdir -p /disk/trump/minerals/$USER
 vboxmanage setproperty machinefolder /disk/trump/minerals/$USER
 ```
 
+Clone the Repo
+--------------
+
+```bash
+git clone https://github.com/pdxcat/nixmentors.git
+cd nixmentors
+```
+
 Lab 1
 ---------
 
