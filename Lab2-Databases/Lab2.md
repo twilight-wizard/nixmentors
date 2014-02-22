@@ -102,17 +102,39 @@ SQL
 #### Exercises
 
  - create a database
+
      `create database <databasename>;`
+
    - example database: star_trek
+
  - create a user
+
      `create user <username>;`
+
  - give the user a password
+
       `alter user <username> with encrypted password '<password>';`
+
  - grant full admin on the database to the user
-     `grant all privileges on <databasename> to <username>;`
- - connect as the user
-     `psql -U <username> -h 127.0.0.1 -p 8543;`
+
+     `grant all privileges on database <databasename> to <username>;`
+
+ - connect as the user from your lab computer (not your vagrant vm!)
+
+      Quit psql:
+
+     `\q`
+
+      Log out of your vagrant vm:
+
+     `exit`
+
+     Connect to postgres on your vagrant vm from your lab computer:
+
+     `$ psql -U <username> -h 127.0.0.1 -p 8543;`
+
  - create a table
+
      `create table characters(name varchar(100) primary key, rank varchar(100), position varchar(100), series varchar(200), actor varchar(100));`
  - look at your table's schema (use `\d`)
  - select everything in the table (it will be empty)
