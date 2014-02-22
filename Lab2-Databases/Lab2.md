@@ -140,12 +140,19 @@ SQL
  - select everything in the table (it will be empty)
      `select * from <tablename>;`
  - import some data into your table
+
       `$ cp /vagrant/startrek.csv /tmp1`
+
       `$ chmod a+rx /tmp/startrek.csv`
+
       `$ sudo -u postgres psql star_trek`
-      `star_trek=# copy characters from '/tmp/startrek.csv' with csv;`
+
+      `copy characters from '/tmp/startrek.csv' with csv;`
+
  - delete one of the characters
+
       `star_trek=# delete from characters where name='Chakotay';`
+
  - insert the character back into the table
    - remember to use single quotes!
    - example character: 'William Riker', 'Commander', 'First Officer', 'The Next Generation', 'Jonathan Frakes', 30, true
