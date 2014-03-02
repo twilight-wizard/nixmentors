@@ -131,8 +131,17 @@ Install PHP
 - Mention that userdir is also a mod and is easy to do
 
 
-Setup a vhost with SSL
+Setup the default vhost with SSL
 ----------------------
+
+Enable the mod
+
+    a2ensite default-ssl
+    a2enmod ssl
+    service apache2 reload
+
+Browse to https://localhost:8443/
+
 
 Setup a vhost with CAS Auth
 ---------------------------
