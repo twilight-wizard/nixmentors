@@ -94,27 +94,27 @@ Figure out how to fix any other error messages it produces.
 
 (more apache stuff coming soon here)
 
-Enable port 8081 and 8082
+## Enable port 8081 and 8082
 
 Add two more listen directives in /etc/apache2/ports.conf
 
-   echo "Listen 8081" >> /etc/apache2/ports.conf
-   echo "Listen 8082" >> /etc/apache2/ports.conf
+    echo "Listen 8081" >> /etc/apache2/ports.conf
+    echo "Listen 8082" >> /etc/apache2/ports.conf
 
 Restart apache
 
-   service apache2 restart
+    service apache2 restart
 
 Verify the ports are listening with netstat
 
-   # netstat -tlnp | grep apache
-   tcp        0      0 0.0.0.0:80              0.0.0.0:*               LISTEN      1448/apache2    
-   tcp        0      0 0.0.0.0:8081            0.0.0.0:*               LISTEN      1448/apache2    
-   tcp        0      0 0.0.0.0:8082            0.0.0.0:*               LISTEN      1448/apache2    
+    # netstat -tlnp | grep apache
+    tcp        0      0 0.0.0.0:80              0.0.0.0:*               LISTEN      1448/apache2    
+    tcp        0      0 0.0.0.0:8081            0.0.0.0:*               LISTEN      1448/apache2    
+    tcp        0      0 0.0.0.0:8082            0.0.0.0:*               LISTEN      1448/apache2    
 
 
 Install PHP
----
+-----------
 
     sudo apt-get install php5 libapache2-mod-php5
 
@@ -139,30 +139,30 @@ Setup a vhost with CAS Auth
 
 Create the casapp
 
-   mkdir /var/www/casapp
-   cp /vagrant/casapp/index.php /var/www/casapp/
+    mkdir /var/www/casapp
+    cp /vagrant/casapp/index.php /var/www/casapp/
 
 Copy in the vhost
 
-   cp /vagrant/vhosts/025-casapp /etc/apache2/sites-enabled/025-casapp
+    cp /vagrant/vhosts/025-casapp /etc/apache2/sites-enabled/025-casapp
 
 Check the vhost syntax
 
-   apachectl -t
+    apachectl -t
 
 Restart Apache
 
-   service apache2 restart
+    service apache2 restart
 
 Now browse to http://localhost:8081/casapp/ and verify the page loads
 
-Now time to install CAS
+### Install CAS
 
 Our GlobalSign cert requires the newset version of mod-auth-cas, johnj has packaged it and placed it on our mirror.
 
     # Download from our mirror
     wget http://mirrors.cat.pdx.edu/cat/pool/main/liba/libapache2-mod-auth-cas/libapache2-mod-auth-cas_1.0.10-cat1_amd64.deb
-
+    
     # Install the package with dpkg
     dpkg -i libapache2-mod-auth-cas_1.0.10-cat1_amd64.deb
 
@@ -176,7 +176,7 @@ It might fail becuase libcurl.so is missing
 
     apt-get install curl
 
-Modify the vhost
+### Modify the vhost
 
 Add the CAS variables
 
