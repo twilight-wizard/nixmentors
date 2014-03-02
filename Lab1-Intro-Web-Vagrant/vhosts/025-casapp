@@ -1,0 +1,27 @@
+<VirtualHost *:8081>
+    ServerName casapp.lan
+    DocumentRoot /var/www/casapp
+    
+    CASLoginURL https://auth.cecs.pdx.edu/cas/login
+    CASValidateURL https://auth.cecs.pdx.edu/cas/serviceValidate
+    CASCookieDomain pdx.edu
+
+
+    <Directory "/var/www/casapp">
+      Options Includes ExecCGI Indexes FollowSymLinks All
+      AllowOverride All
+      Order allow,deny
+      Allow from all
+    </Directory>
+
+
+    <Location />
+      Authtype CAS
+      require valid-user
+      CASCookie CECS_AUTH_CAS
+      CASSecureCookie CECS_AUTH_CAS_S
+      CASGatewayCookie CECS_AUTH_CAS_G
+    </Location>
+
+</VirtualHost>
+

@@ -70,15 +70,15 @@ Note that this will install the base precise64 image into the user's homedir. It
 
 If you have been alumnified, this will fail because there's not enough space. You can store the image somewhere else instead. Add the following environment variable to your .whateverrc:
 
-	export VAGRANT_HOME=/disk/trump/minerals/<yourusername>
+    export VAGRANT_HOME=/disk/trump/minerals/$USER
 
 Note that if you try to do `vagrant up` on multiple machines, you will probably get an error about an inaccessible vm. If that happens, do like so:
 
-	VBoxManage list vms
+    VBoxManage list vms
 
 You'll see a line identifying a vm that's inaccessible, and a hash to identify it. Take that entire hash (minus the curly braces), and run this:
 
-	VBoxManage unregistervm <hash>
+    VBoxManage unregistervm <hash>
 
 
 Teardown
