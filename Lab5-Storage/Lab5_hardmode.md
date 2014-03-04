@@ -21,7 +21,7 @@ The first thing you probably want to do is `man zfs` and `man zpool` for creatin
 7. destroy the pool 
 8. create a raidz2 pool with a cache disk and spares.
 9. say you have a failing disk, replace a failing disk with a spare
-10. check the status of you rpool after the failure 
-
+10. check the status of your rpool after the failure 
+11. create a zfs filesystem and configure it to be shared over nfs
 
 [ZFS]:http://docs.oracle.com/cd/E23824_01/html/E24456/storage-4.html
