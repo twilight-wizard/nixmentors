@@ -22,9 +22,9 @@ List all updates
 
 What provides a file
 
-   rpm -qf /usr/bin/git
-   yum whatprovides '*bin/git'
+    rpm -qf /usr/bin/git
+    yum whatprovides '*bin/git'
 
 Listing groups
 
-   yum grouplist
+    yum grouplist
