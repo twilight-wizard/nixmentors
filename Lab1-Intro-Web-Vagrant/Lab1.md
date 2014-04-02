@@ -221,5 +221,79 @@ Note: CAS redirection fails after logging in. Feel free to update the docs if yo
 
 Advanced: Your casapp can be accessed via http://localhost:8080/casapp/ effectively bypassing CAS auth. How can we fix this?
 
+Wordpress
+---------
 
+Install wordpress from https://wordpress.org/download/
 
+The official docs are here:
+
+https://codex.wordpress.org/Installing_WordPress
+
+## Install Mysql
+
+    # Be sure to remember the root password you set
+    apt-get install mysql-server
+    apt-get install php5-mysql
+    service apache2 restart
+
+### Connect to mysql
+
+    mysql -p
+
+### Create a table and user 
+
+```mysql
+CREATE DATABASE wordpress;
+GRANT ALL PRIVILEGES ON databasename.* TO "wordpress"@"localhost" IDENTIFIED BY "hunter2";
+FLUSH PRIVILEGES;
+exit
+```
+
+### Test that it works
+
+    mysql -u wordpress -p
+
+## Continue with your installation
+
+http://localhost:8080/wordpress/
+
+## Configure worpress with suPHP
+
+Let's begin by removing the default vhosts
+
+### Disable the default vhosts
+
+    a2dissite default
+    a2dissite default-ssl
+    # You may wish to remove the CAS vhost as well
+    rm /etc/apache2/sites-enabled/025-casapp
+
+Here is the vhost from braindump.cat.pdx.edu, adapt to it work for your wordpress. Copy it into a file named  `/etc/apache2/sites-enabled/025-wordpress` and modify it so that it works for your new wordpress.
+
+You will need to install suPHP in order for it work.
+
+```
+<VirtualHost 131.252.208.58:8000 [2610:10:20:208::58]:8000>
+    ServerName braindump.cat.pdx.edu
+    DocumentRoot /www/braindump
+
+    # no public_html
+    UserDir disabled
+
+    # Turn on suphp for this vhost
+    AddHandler x-httpd-php .php .php3 .php4 .php5 .phtml
+    suPHP_AddHandler x-httpd-php
+    suPHP_Engine on
+    suPHP_ConfigPath /etc/php5/apache2
+
+    <Directory "/www/braindump">
+        Options Includes ExecCGI Indexes All
+        AllowOverride All
+        Order allow,deny
+        Allow from all
+    </Directory>
+</VirtualHost>
+```
+
+There are several things that need to be changed for this vhost file to work for your wordpress. Make sure to check the syntax with `apachectl -t` after editing the file. We recommend getting the vhost working without the suPHP options before trying to get suPHP working.
