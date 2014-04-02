@@ -92,8 +92,6 @@ Apache will complain. It has a lock file that still belongs to the old apache us
 
 Figure out how to fix any other error messages it produces.
 
-(more apache stuff coming soon here)
-
 ## Enable port 8081 and 8082
 
 Add two more listen directives in /etc/apache2/ports.conf
@@ -123,16 +121,28 @@ Install PHP
     sudo a2enmod php5
     sudo service apache2 restart
 
-- Add a php file in web root,`php_info()`, maybe something weird too like `date_sunrise()`. Include an error-generating thing of some sort
+- Add a php file in the web root (/var/www)
 
-- Check out php.ini
+First try the phpinfo() function
+
+
+```php
+<?php
+phpinfo();
+?>
+```
+
+Then check your new webpage to see if the PHP info page renders.
+
+- Next replace `phpinfo()` with `date_sunrise()` and debug why it doesn't work
+
+- Check out /etc/php5/apache2/php.ini
     - Set error reporting, error log
-- Look at the page again, see difference in error stuff, look at log
-- Mention that userdir is also a mod and is easy to do
+- Now look at the page again and observe the difference in output, also look at log
 
 
 Setup the default vhost with SSL
-----------------------
+--------------------------------
 
 Enable the mod
 
@@ -141,6 +151,8 @@ Enable the mod
     service apache2 reload
 
 Browse to https://localhost:8443/
+
+You should see the "It works! page"
 
 
 Setup a vhost with CAS Auth
@@ -163,7 +175,7 @@ Restart Apache
 
     service apache2 restart
 
-Now browse to http://localhost:8081/casapp/ and verify the page loads
+Now browse to http://localhost:8081 and verify the page loads
 
 ### Install CAS
 
@@ -205,5 +217,9 @@ Add a location block
 
 Now browse to http://localhost:8081/casapp/ and verify it prompts for your CAT credentials
 
+Note: CAS redirection fails after logging in. Feel free to update the docs if you figure out how to make it work.
+
 Advanced: Your casapp can be accessed via http://localhost:8080/casapp/ effectively bypassing CAS auth. How can we fix this?
+
+
 
