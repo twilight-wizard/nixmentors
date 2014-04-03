@@ -1,0 +1,33 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+# centos64 base box is from https://cat.pdx.edu/~nibz/vagrant/centos-6.4-amd64.box
+# but basically any (functional) centos6 box should work
+# the centos6 box on vagrantbox.es was broken at time of writing
+
+  # The url from where the 'config.vm.box' box will be fetched if it
+  # doesn't already exist on the user's system.
+  config.vm.box_url = "/stash/nixmentors/boxes/centos-6.4-amd64.box"
+
+  config.vm.define "syslogserver" do |syslogserver|
+    syslogserver.vm.box = "centos64"
+    syslogserver.vm.hostname = "syslogserver"
+    syslogserver.vm.network :private_network, ip: "192.168.1.10"
+  end
+
+  config.vm.define "syslogclient1" do |syslogclient1|
+    syslogclient1.vm.box = "centos64"
+    syslogclient1.vm.hostname = "syslogclient1"
+    syslogclient1.vm.network :private_network, ip: "192.168.1.11"
+  end
+
+  config.vm.define "syslogclient2" do |syslogclient2|
+    syslogclient2.vm.box = "centos64"
+    syslogclient2.vm.hostname = "syslogclient2"
+    syslogclient2.vm.network :private_network, ip: "192.168.1.12"
+  end
+end
