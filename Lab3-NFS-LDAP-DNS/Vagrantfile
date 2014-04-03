@@ -15,25 +15,25 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.define "nfsserver" do |nfsserver|
     nfsserver.vm.box = "centos64"
-    nfsserver.vm.hostname = "nfsserver"
+    nfsserver.vm.hostname = "nfsserver.local"
     nfsserver.vm.network :private_network, ip: "192.168.1.10"
   end
 
   config.vm.define "nfsclient1" do |nfsclient1|
     nfsclient1.vm.box = "centos64"
-    nfsclient1.vm.hostname = "nfsclient1"
+    nfsclient1.vm.hostname = "nfsclient1.local"
     nfsclient1.vm.network :private_network, ip: "192.168.1.11"
   end
 
   config.vm.define "nfsclient2" do |nfsclient2|
     nfsclient2.vm.box = "centos64"
-    nfsclient2.vm.hostname = "nfsclient2"
+    nfsclient2.vm.hostname = "nfsclient2.local"
     nfsclient2.vm.network :private_network, ip: "192.168.1.12"
   end
 
   config.vm.define "nfsclient3" do |nfsclient3|
     nfsclient3.vm.box = "centos64"
-    nfsclient3.vm.hostname = "nfsclient3"
+    nfsclient3.vm.hostname = "nfsclient3.local"
     nfsclient3.vm.network :private_network, ip: "192.168.2.13"
   end
 

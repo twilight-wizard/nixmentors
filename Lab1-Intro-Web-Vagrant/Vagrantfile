@@ -11,7 +11,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # Every Vagrant virtual environment requires a box to build off of.
   config.vm.box = "precise64"
-  config.vm.hostname = "lab1"
+  config.vm.hostname = "lab1.local"
   config.vm.network "forwarded_port", guest: 80, host: 8080
   config.vm.network "forwarded_port", guest: 8081, host: 8081
   config.vm.network "forwarded_port", guest: 8082, host: 8082
