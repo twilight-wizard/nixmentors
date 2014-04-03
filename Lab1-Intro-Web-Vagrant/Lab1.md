@@ -263,7 +263,7 @@ http://localhost:8080/wordpress/
 
 ## Configure wordpress with suPHP
 
-SuPHP is an Apache module which runs PHP scripts with the permissions of their respective owners, for additional security. To get it running, you'll need to install the package, enable the module, and configure a vhost. Then you can make a wordpress user and chown the wordpress files to it.
+By default, PHP scripts are run with the permissions of the apache user (or root). SuPHP is an Apache module which can instead run them as the user who owns them. This is great for environments like MCECS, where there are a lot of different users and we can't assume they all know what they're doing. To get it running, you'll need to install the package, enable the module, and configure a vhost. Then you can make a wordpress user and chown the wordpress files to it.
 
 Let's begin by removing the default vhosts
 
