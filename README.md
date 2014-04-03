@@ -26,7 +26,7 @@ Sessions
 * Lab 1: [Intro to Vagrant and Intro to Web](Lab1-Intro-Web-Vagrant/Lab1.md)
 * Lab 2: [Databases and Advanced web](Lab2-Databases/Lab2.md)
 * Lab 3: [NFS/LDAP/DNS](Lab3-NFS-LDAP-DNS/Lab3.md)
-* Lab 4: [Debugging](Lab4-Debugging/Lab4.md)
+* Lab 4: [Monitoring](Lab4-Monitoring/Lab4.md)
 * Lab 5: [Storage](Lab5-Storage/Lab5.md)
 
 Cloning a Repository
