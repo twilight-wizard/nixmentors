@@ -133,7 +133,8 @@ Then check your new webpage to see if the PHP info page renders.
 - Next replace `phpinfo()` with `date_sunrise()` and debug why it doesn't work
 
 - Check out /etc/php5/apache2/php.ini
-    - Set error reporting, error log
+    - Check error reporting, error log
+    - Turn on error display
 - Now look at the page again and observe the difference in output, also look at log
 
 
@@ -148,7 +149,7 @@ Enable the mod
 
 Browse to https://localhost:8443/
 
-You should see the "It works! page"
+You should see your customized index page.
 
 
 Setup a vhost with CAS Auth
@@ -189,13 +190,17 @@ Our GlobalSign cert requires the newset version of mod-auth-cas, johnj has packa
     # Check the configs
     apachectl -t
 
-It might fail becuase libcurl.so is missing
+It might fail if libcurl.so is missing
 
     apt-get install curl
 
 ### Modify the vhost
 
-Add the CAS variables
+Edit the vhost file you copied over earlier
+
+    vim /etc/apache2/sites-enabled/025-casapp
+
+Add the CAS variables somewhere in the top-level block
 
     CASLoginURL https://auth.cecs.pdx.edu/cas/login
     CASValidateURL https://auth.cecs.pdx.edu/cas/serviceValidate
@@ -211,7 +216,7 @@ Add a location block
       CASGatewayCookie CECS_AUTH_CAS_G
     </Location>
 
-Now browse to http://localhost:8081/casapp/ and verify it prompts for your CAT credentials
+Now browse to http://localhost:8081/ and verify it prompts for your CAT credentials
 
 Note: CAS redirection fails after logging in. Feel free to update the docs if you figure out how to make it work.
 
@@ -225,6 +230,8 @@ Install wordpress from https://wordpress.org/download/
 The official docs are here:
 
 https://codex.wordpress.org/Installing_WordPress
+
+When it tells you to edit wp-config.php, set the database name and username both to "wordpress" and the password to "hunter2". Before you open it in your browser to finish the install, pause to set up the database.
 
 ## Install Mysql
 
@@ -254,7 +261,9 @@ exit
 
 http://localhost:8080/wordpress/
 
-## Configure worpress with suPHP
+## Configure wordpress with suPHP
+
+By default, PHP scripts are run with the permissions of the apache user (or root). SuPHP is an Apache module which can instead run them as the user who owns them. This is great for environments like MCECS, where there are a lot of different users and we can't assume they all know what they're doing. To get it running, you'll need to install the package, enable the module, and configure a vhost. Then you can make a wordpress user and chown the wordpress files to it.
 
 Let's begin by removing the default vhosts
 
@@ -266,8 +275,6 @@ Let's begin by removing the default vhosts
     rm /etc/apache2/sites-enabled/025-casapp
 
 Here is the vhost from braindump.cat.pdx.edu, adapt to it work for your wordpress. Copy it into a file named  `/etc/apache2/sites-enabled/025-wordpress` and modify it so that it works for your new wordpress.
-
-You will need to install suPHP in order for it work.
 
 ```
 <VirtualHost 131.252.208.58:8000 [2610:10:20:208::58]:8000>
