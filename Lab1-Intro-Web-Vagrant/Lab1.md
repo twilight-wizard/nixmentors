@@ -245,7 +245,7 @@ https://codex.wordpress.org/Installing_WordPress
 
 ```mysql
 CREATE DATABASE wordpress;
-GRANT ALL PRIVILEGES ON databasename.* TO "wordpress"@"localhost" IDENTIFIED BY "hunter2";
+GRANT ALL PRIVILEGES ON wordpress.* TO "wordpress"@"localhost" IDENTIFIED BY "hunter2";
 FLUSH PRIVILEGES;
 exit
 ```
