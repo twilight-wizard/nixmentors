@@ -8,7 +8,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.define "sunosfiler1" do |v|
     v.vm.box = "solaris-11.1"
-    v.vm.hostname = "sunosfiler1"
+    v.vm.hostname = "sunosfiler1.local"
     v.vm.network :private_network, ip: "192.168.1.11"
     v.vm.box_url = "/stash/nixmentors/boxes/packer_solaris-11.1-amd64_virtualbox.box"
     v.vm.provider :virtualbox do |vb|
@@ -31,7 +31,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.define "sunosfiler2" do |v|
     v.vm.box = "solaris-11.1"
-    v.vm.hostname = "sunosfiler2"
+    v.vm.hostname = "sunosfiler2.local"
     v.vm.network :private_network, ip: "192.168.1.12"
     v.vm.box_url = "/stash/nixmentors/boxes/packer_solaris-11.1-amd64_virtualbox.box"
     v.vm.provider :virtualbox do |vb|
@@ -54,7 +54,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.define "linuxfiler" do |v|
     v.vm.box = "precise64"
-    v.vm.hostname = "linuxfiler"
+    v.vm.hostname = "linuxfiler.local"
     v.vm.network :private_network, ip: "192.168.1.10"
     v.vm.box_url = "/stash/nixmentors/boxes/precise64.box"
     port = 1
