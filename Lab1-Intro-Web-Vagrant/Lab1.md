@@ -86,11 +86,7 @@ Now change the name of the apache user and group in your envvars file. Restart t
 
     sudo service apache2 restart
 
-Apache will complain. It has a lock file that still belongs to the old apache user - we can fix this:
-
-    chown -R rambo:rambo /var/lock/apache2/
-
-Figure out how to fix any other error messages it produces.
+Figure out how to fix any error messages or warnings it produces.
 
 ## Enable port 8081 and 8082
 
