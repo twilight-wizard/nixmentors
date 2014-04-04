@@ -60,7 +60,6 @@ VM, run `vagrant status NAME`.
 Open up several terminal windows, change directory on all of them into the Lab3 directory.
 
 ```shell
-
 vagrant ssh nfs_server
 ```
 
@@ -111,7 +110,19 @@ Destination     Gateway         Genmask         Flags   MSS Window  irtt Iface
         * ashley: uid=2313
         * bob:    uid=2121
         * mike:   uid of your choice
+
+```shell
+useradd -u 2313 ashley
+useradd -u 2121 bob
+useradd -u $UID mike
+```
+
 * Set passwords for these users
+
+```shell
+passwd $USERNAME
+```
+
 * Create a file foo.txt with plain text in it, and copy it using scp from one host to another using your created users
 * Set up a hosts file on nfs_server to map each ip address in your network to the common name given in the vagrant file.
 * Copy that hosts file to all other servers in your infrastructure
