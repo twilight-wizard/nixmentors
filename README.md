@@ -61,7 +61,7 @@ Lab 1
 ---------
 
 ```bash
-cd /path/to/nixmentors/repository/Lab1*
+cd Lab1*
 vagrant up
 vagrant ssh
 sudo -i
