@@ -58,7 +58,7 @@ cd nixmentors
 ```
 
 Lab 1
----------
+-----
 
 ```bash
 cd Lab1*
@@ -66,7 +66,13 @@ vagrant up
 vagrant ssh
 sudo -i
 ```
+
+Now proceed to the [Lab1](Lab1-Intro-Web-Vagrant/Lab1.md) instructions.
+
 Note that this will install the base precise64 image into the user's homedir. It will consume 300MB of profile space.
+
+Additional Instructions for Alumni accounts
+-------------------------------------------
 
 If you have been alumnified, this will fail because there's not enough space. You can store the image somewhere else instead. Add the following environment variable to your .whateverrc:
 
@@ -81,8 +87,8 @@ You'll see a line identifying a vm that's inaccessible, and a hash to identify i
     VBoxManage unregistervm <hash>
 
 
-Teardown
--------------
+At the end of the lab
+---------------------
 
 ```bash
 # exit vagrant ssh
