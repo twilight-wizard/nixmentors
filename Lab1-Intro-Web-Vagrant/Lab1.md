@@ -111,9 +111,6 @@ Install PHP
 -----------
 
     sudo apt-get install php5 libapache2-mod-php5
-
-(Say something about cgi vs apache module here)
-
     sudo a2enmod php5
     sudo service apache2 restart
 
