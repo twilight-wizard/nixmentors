@@ -35,7 +35,7 @@ Cloning a Repository
 ```bash
 git clone https://github.com/pdxcat/nixmentors.git
 cd nixmentors
-cd Lab#-something-something
+cd Lab*
 ```
 
 Setting up Vagrant
