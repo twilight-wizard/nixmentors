@@ -112,15 +112,15 @@ Destination     Gateway         Genmask         Flags   MSS Window  irtt Iface
         * mike:   uid of your choice
 
 ```shell
-useradd -u 2313 ashley
-useradd -u 2121 bob
-useradd -u $UID mike
+sudo useradd -u 2313 ashley
+sudo useradd -u 2121 bob
+sudo useradd -u $UID mike
 ```
 
 * Set passwords for these users
 
 ```shell
-passwd $USERNAME
+sudo passwd $USERNAME
 ```
 
 * Create a file foo.txt with plain text in it, and copy it using scp from one host to another using your created users
