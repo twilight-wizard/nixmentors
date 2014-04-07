@@ -17,7 +17,15 @@
 Lab 2: Web Services and Databases
 =================================
 
-install postgres
+After setting up a web server and such in the last lab, you might want to know how to do things like have something users log in for (log in to comment on a Wordpress blog, play your browser-based MMO, look at a profile page for your service, etc.), and that means that you're going to need a database to keep track of everything. Wordpress handles a few of the database issues itself when you set it up (mostly setting up the tables it needs), but all is not Wordpress, and in the CAT we use databases for decidedly non-web things, so we're going to cover how to set up a database by hand.
+
+First, though, some definitions (feel free to skip this part if you already know how databases work). A **Database** is a collection of data. In general, a database is going to have a number of **tables** (y'know those tables you make in word processors by selecting how many rows and columns you want and then filling them with data? same thing as these tables) and a **schema** (definition of how the database and tables look and work). We can interact with a database using **SQL**, or **Structured Query Language**, to do things like create new tables, add or modify data in your tables, or delete tables.
+
+There's a lot more to databases than what's above, but that should be enough to get you started. If you think this is interesting, take a look at [Wikipedia](https://en.wikipedia.org/wiki/Database) for more than you could ever realize you never knew about the topic.
+
+For this lab, we'll be using PostgreSQL for the database management system. There are others out there, such as MySQL, MariaDB, and OracleDB, but we like Postgres around here, and most of what you'll learn in this lab can be used in other systems with very little difference (albeit maybe under different command names).
+
+Install postgres
 ----------------
 
     sudo apt-get update
@@ -99,6 +107,7 @@ SQL
    - Columns have data types, the same way variables in programming languages have data types. Some common data types are varchar(number), which is like string with a max length, integer, and boolean. Postgres has many possible data types.
    - Usually tables have primary keys. This is a column that will have a unique value for every row.
    - All SQL queries end in a ';'.
+   - Some of the most common SQL commands are `SELECT` (display data), `CREATE` (create a new table or database), `INSERT` (add data to table), `DELETE` (remove data from a table), `ALTER` (change settings for tables, databases, users), and `DROP` (delete whole tables, databases, columns, etc.)
 
 #### Exercises
 
@@ -118,7 +127,7 @@ SQL
 
      `grant all privileges on database star_trek to <username>;`
 
- - From now on let's use your user to do things instead of the postgres user. We can even connect to your postgresql server remotely. 
+ - From now on let's use your user to do things instead of the postgres user (the database's root user). We can even connect to your postgresql server remotely. 
 
       Quit psql:
 
@@ -132,7 +141,7 @@ SQL
 
      `$ psql -U <username> -h 127.0.0.1 -p 8543 star_trek;`
 
- - create a table
+ - create a table called characters with columns name as the primary key (values in column can't be repeated), rank, position, series, and actor
 
      `create table characters(name varchar(100) primary key, rank varchar(100), position varchar(100), series varchar(200), actor varchar(100));`
 
@@ -235,7 +244,7 @@ Close your connection with pg\_close.
 
 
 
-Homework: activate your postgres and mysql accounts in crack, create some tables, write a web app that queries them and inserts things into them with prepared statements and error checking, show krinkle
+Homework: activate your postgres and mysql accounts in crack, create some tables, write a web app that queries them and inserts things into them with prepared statements and error checking, show krinkle (Watch out for [SQL](https://en.wikipedia.org/wiki/SQL_injection) [Injections](http://xkcd.com/327/)!)
 
 
 Advanced:
