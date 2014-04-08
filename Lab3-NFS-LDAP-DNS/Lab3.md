@@ -123,12 +123,32 @@ sudo useradd -u $UID mike
 sudo passwd $USERNAME
 ```
 
-* Create a file foo.txt with plain text in it, and copy it using scp from one host to another using your created users
+* Create a file foo.txt with plain text in it, and copy it using scp from one host to another using your created user
+
+```shell
+su <username> (not just for becoming root 0.0)
+scp <file to send> <username>@<destanation ip address>:<path to save to,>
+
+#leaving out the username will use the user logged in as by default
+#ip address can be replaced with hostname if set 
+```
+
 * Set up a hosts file on nfs_server to map each ip address in your network to the common name given in the vagrant file.
+
+Add the following lines to /etc/host
+```shell
+192.168.1.11 nfsserver
+192.168.1.11 nfsclient1
+192.168.1.12 nfsclient2
+192.168.1.13 nfsclient3
+```
+Try to ping one of the other hosts by hostname
+
 * Copy that hosts file to all other servers in your infrastructure
 
+```shell
 
-
+```
 
 Section 2: NFS: The Network File System
 ---------------------------------------
