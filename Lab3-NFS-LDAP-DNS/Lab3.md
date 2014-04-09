@@ -107,9 +107,9 @@ Destination     Gateway         Genmask         Flags   MSS Window  irtt Iface
 
 
 * Set up three users on nfs_server and nfs_client_1
-        * ashley: uid=2313
-        * bob:    uid=2121
-        * mike:   uid of your choice
+        ** ashley: uid=2313
+        ** bob:    uid=2121
+        ** mike:   uid of your choice
 
 ```shell
 sudo useradd -u 2313 ashley
@@ -161,11 +161,36 @@ NFS, above all other *nix services, is the core of what the CAT does. Since the 
 On a conceptual level, NFS is one computer letting another computer use its storage space. It is also one-to-many, meaning that one NFS server can export a filesystem and many client computers can mount and utilize this file system.
 
 
-### Exercises
+### Setting up the NFS packages
 
-* Install NFS server and client from packages
+* Check if the NFS packages are installed on both the nfsserver and the clients
+
+```shell
+yum list | grep nfs
+```
+If you dont see nfs-utils.* or nfs-utils-lib.* , you can install them with
+
+```shell
+yum install nfs-utils nfs-utils-lib
+```
+
 * Start these daemons
+
+```shell
+sudo service nfs start
+```
+
 * Create directories /data/share1 through /data/share7
+
+```shell
+mkdir /data/share1
+mkdir /data/share2
+mkdir /data/share3
+mkdir /data/share4
+mkdir /data/share5
+mkdir /data/share6
+mkdir /data/share7
+```
 
 ### /etc/exports
 
