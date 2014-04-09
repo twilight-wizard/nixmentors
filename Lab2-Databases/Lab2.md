@@ -17,13 +17,15 @@
 Lab 2: Web Services and Databases
 =================================
 
-After setting up a web server and such in the last lab, you might want to know how to do things like have something users log in for (log in to comment on a Wordpress blog, play your browser-based MMO, look at a profile page for your service, etc.), and that means that you're going to need a database to keep track of everything. Wordpress handles a few of the database issues itself when you set it up (mostly setting up the tables it needs), but all is not Wordpress, and in the CAT we use databases for decidedly non-web things, so we're going to cover how to set up a database by hand.
+In the last lab we set up a web server to serve content. Web applications often use databases to store and retrieve data. For example, the Wordpress application we set up used MySQL to store user login data and other information. The CAT environment has a number of web applications that use databases, and we also often access databases directly, bypassing a web application. This lab will go over setting up and administering a database, accessing it via the command line, and writing a web application around it.
 
-First, though, some definitions (feel free to skip this part if you already know how databases work). A **Database** is a collection of data. In general, a database is going to have a number of **tables** (y'know those tables you make in word processors by selecting how many rows and columns you want and then filling them with data? same thing as these tables) and a **schema** (definition of how the database and tables look and work). We can interact with a database using **SQL**, or **Structured Query Language**, to do things like create new tables, add or modify data in your tables, or delete tables.
+Definitions
+-----------
+
+A **Database** is a collection of data. A **relational database** generally has a number of **tables**, which consists of columns, or fields, and rows, the sets of attributes related to a particular item. **Non-relational databases** are structured very differently and are not in wide use at the CAT. A **schema** is a description of the design of a database. We can also talk about an individual table schema, which is the definition of the table and its fields. We can interact with a database using **SQL**, or **Structured Query Language**, to do things like create new tables, add or modify data in your tables, view data in tables, or delete tables. a **DBMS** or **Database Management System** is the software we use to access structured data. The DBMSs that we will be using today are PostgreSQL and optionally MySQL. Most of what you learn using PostgreSQL can be applied to MySQL and other relational databases such as SQLite, MSSQL, and OracleDB.
 
 There's a lot more to databases than what's above, but that should be enough to get you started. If you think this is interesting, take a look at [Wikipedia](https://en.wikipedia.org/wiki/Database) for more than you could ever realize you never knew about the topic.
 
-For this lab, we'll be using PostgreSQL for the database management system. There are others out there, such as MySQL, MariaDB, and OracleDB, but we like Postgres around here, and most of what you'll learn in this lab can be used in other systems with very little difference (albeit maybe under different command names).
 
 Install postgres
 ----------------
@@ -34,12 +36,12 @@ Install postgres
 Optional:
     sudo apt-get install vim
 
-Note: if you typed sudo -i during your initial virtualbox setup then you don't need to keep typing sudo here.
+Note: alternatively you can type `sudo -i` first, then you don't need to keep typing sudo before each command.
 
 Result:
- - psql
- - postgres user
- - service running
+ - You should have a new command available, psql
+ - There is now postgres user
+ - The postgresql service should be running
 
 Configuring Postgres
 --------------------
@@ -71,6 +73,7 @@ This is the client authentication file. It controls who can connect and from whe
     `sudo service postgresql restart`
 
 #### Additional Exercises
+
  - Following the guides in the comments of postgresql.conf, change the logging destination
 
 ### Command line administration
@@ -98,7 +101,7 @@ Use `psql` to get into the postgresql command line interface. To configure the d
 
 SQL
 ---
-   * Note: convention is to use all caps for keywords, especially in programming. When using psql you can be lazy.
+
 
 ### Basic SQL
 
@@ -107,6 +110,8 @@ SQL
    - Columns have data types, the same way variables in programming languages have data types. Some common data types are varchar(number), which is like string with a max length, integer, and boolean. Postgres has many possible data types.
    - Usually tables have primary keys. This is a column that will have a unique value for every row.
    - All SQL queries end in a ';'.
+   - Strings are enclosed in single quotes.
+   - SQL commands are case-insensitive. However, you will often see SQL commands in all-caps which helps delimit them from the things they are operating on. It is good practice to use all-caps for SQL commands when you are writing application code in order to make it more readable. When you are interacting directly with the database via psql, however, it doesn't matter.
    - Some of the most common SQL commands are `SELECT` (display data), `CREATE` (create a new table or database), `INSERT` (add data to table), `DELETE` (remove data from a table), `ALTER` (change settings for tables, databases, users), and `DROP` (delete whole tables, databases, columns, etc.)
 
 #### Exercises
@@ -139,18 +144,19 @@ SQL
 
      Connect to postgres on your vagrant vm from your lab computer:
 
-     `$ psql -U <username> -h 127.0.0.1 -p 8543 star_trek;`
+     `$ psql -U <username> -h 127.0.0.1 -p 8543 star_trek`
 
  - create a table called characters with columns name as the primary key (values in column can't be repeated), rank, position, series, and actor
 
      `create table characters(name varchar(100) primary key, rank varchar(100), position varchar(100), series varchar(200), actor varchar(100));`
 
  - look at your table's schema (use `\d`)
+
  - select everything in the table (it will be empty)
 
      `select * from characters;`
 
- - import some data into your table. This path is on your host machine - i.e. your lab computer, not your vagrant vm.
+ - import some data into your table. This path is on your host machine - i.e. your lab computer, not your vagrant vm, since we are essentially accessing the database remotely.
 
       `\copy characters from '/path/to/Lab2/startrek.csv' with csv;`
 
@@ -169,16 +175,21 @@ SQL
        `insert into <tablename> (<list of fields) values(<list of values in the same order as the fields);`
 
  - select everything from the table again
+
  - select only names from the table
+
  - select only ranks or series from the table (what happens if you have multiple characters with the same rank or from the same series?)
+
+ - select all rows WHERE (hint hint) the name of the characters is Spock.
+
  - alter the table to have an age column:
 
        `alter table characters add column age integer;`
-       `insert into characters value
+       `update characters set age = 22 where name = 'Harry Kim';
 
 #### Advanced SQL
 
-oshi we made Geordi a Lieutenant Commander and Data a Lt. Commander, but aren't they the same rank?
+Suppose wanted to insert a new character with the rank of "Lt. Commander". Then we wanted to select all characters with that rank. What happens to the characters that we gave the rank "Lieutenant Commander"?
 
 In addition to restricting columns to be a certain data type, you can put other constraints on your columns. 
 
@@ -246,9 +257,8 @@ Close your connection with pg\_close.
 
 Homework: activate your postgres and mysql accounts in crack, create some tables, write a web app that queries them and inserts things into them with prepared statements and error checking, show krinkle (Watch out for [SQL](https://en.wikipedia.org/wiki/SQL_injection) [Injections](http://xkcd.com/327/)!)
 
-
 Advanced:
-repeat everything using mysql
-Research postgres functions and write one.
-Add another column to the characters table that has a default value of the current time using the now() function (look up ALTER TABLE).
+ - Repeat everything using mysql
+ - Research postgres functions and write one.
+ - Add another column to the characters table that has a default value of the current time using the now() function (look up ALTER TABLE).
 
