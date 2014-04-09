@@ -107,9 +107,9 @@ Destination     Gateway         Genmask         Flags   MSS Window  irtt Iface
 
 
 * Set up three users on nfs_server and nfs_client_1
-        ** ashley: uid=2313
-        ** bob:    uid=2121
-        ** mike:   uid of your choice
+        - ashley: uid=2313
+        - bob:    uid=2121
+        - mike:   uid of your choice
 
 ```shell
 sudo useradd -u 2313 ashley
