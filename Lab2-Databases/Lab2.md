@@ -209,7 +209,7 @@ Then we can use joins to get data out of both tables with one query.
         alter table star_trek_characters add constraint rank_constraint check (rank = 'Lt. Commander' OR rank = 'Captain' OR rank = 'Commander' [...]);
 
    - Option 2: separate values that have order into a different table
-     - create the new table with two columns, id (primary key) and rank
+     - create the new table called 'ranks' with two columns, id (primary key) and rank
      - insert all your ranks with corresponding ids
      - change your characters table to have the rank column use the integer data type with the ranks table as a foreign key
         - best to drop the old column and recreate with new data type and foreign key constraint
@@ -222,7 +222,7 @@ Then we can use joins to get data out of both tables with one query.
             select star_trek_characters.name, rank.name from star_trek_characters join rank on star_trek_characters.rank_id = rank.id;
 
    - Challenge: Experiment with different constraints. Maybe set a minimum age for characters (who needs Wesley anyways).
-   - Challenge: Create another reference table and alter a column to refer to that table
+   - Challenge: Create another reference table (e.g. series) and alter a column to refer to that table
 
 
 ### Backing Up Databases
@@ -246,7 +246,7 @@ pg_dump only gets the data from one database. It doesn't get things like roles. 
 
 The CAT makes a lot of use out of psql, but that's not really how databases are used in the wild. We can write applications against our databases so that we don't have to grab all the data manually.
 
-Write a PHP application to query your database and display the results on a web page. If you have a VM with Apache and PHP set up, or you think you can set this up before the lab is over, use that. Otherwise, you can put your PHP application in your public\_html in your Tier 1 home directory (/home/username/common/public\_html). Make sure your database is configured to allow connections from PSU!
+Write a PHP application to query your database and display the results on a web page. You can either set up Apache and PHP on your VM (port 80 is already forwarded to 8080) or you can put your PHP application in your public\_html in your Tier 1 home directory (/home/username/common/public\_html). 
 
 PHP scripts start wtih <?php and end with ?>.
 
@@ -257,8 +257,6 @@ Query the database with the pg\_query function. The return value of this functio
 Fetch your result with the pg\_fetch\_all (or find another function that fetches what you want). You won't be able to get the data from your query without fetching it first.
 Display your rows with print\_r.
 Close your connection with pg\_close.
-
-
 
 Homework: activate your postgres and mysql accounts in crack, create some tables, write a web app that queries them and inserts things into them with prepared statements and error checking, show krinkle (Watch out for [SQL](https://en.wikipedia.org/wiki/SQL_injection) [Injections](http://xkcd.com/327/)!)
 
