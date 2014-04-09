@@ -74,7 +74,12 @@ This is the client authentication file. It controls who can connect and from whe
 
 #### Additional Exercises
 
- - Following the guides in the comments of postgresql.conf, change the logging destination
+ - Following the guides in the comments of postgresql.conf, turn on the logging collector
+ - Change the log file name
+ - Change the log line prefix
+ - Change the logging destination to syslog. Where should you look for logs now?
+ - Change the maximum number of connections
+ - Reject connections from user blkperl on all databases
 
 ### Command line administration
 
