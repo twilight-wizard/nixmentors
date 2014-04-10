@@ -237,9 +237,9 @@ pg_dump only gets the data from one database. It doesn't get things like roles. 
  - Back up your database
      `pg_dump <databasename> > backup.sql`
  - Drop your database
-     `echo "drop database <databasename>" | psql`
+     `sudo -u postgres echo "drop database <databasename>" | sudo -u postgres psql`
  - Restore it
-     `psql <databasename> < backup.sql`
+     `sudo -u postgres psql < backup.sql`
  - yay!
 
 ### Writing Applications Against Your Database
