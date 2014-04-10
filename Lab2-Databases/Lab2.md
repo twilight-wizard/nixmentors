@@ -173,11 +173,11 @@ SQL
    - remember to use single quotes!
    - if you're giving every field, in the order you see when you look at the table schema, the syntax is
 
-       `insert into <tablename> values(<list of values);`
+       `insert into <tablename> values(<list of values>);`
 
    - if you're only inserting some of the fields, leaving others blank, or inserting in a random order, the syntax is
 
-       `insert into <tablename> (<list of fields) values(<list of values in the same order as the fields);`
+       `insert into <tablename> (<list,of,fields,separated,by,commas>) values(<list,of,values,corresponding,to,sequence,of,fields>);`
 
  - select everything from the table again
 
@@ -190,7 +190,7 @@ SQL
  - alter the table to have an age column:
 
        `alter table characters add column age integer;`
-       `update characters set age = 22 where name = 'Harry Kim';
+       `update characters set age = 22 where name = 'Harry Kim';`
 
 #### Advanced SQL
 
