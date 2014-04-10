@@ -106,10 +106,10 @@ Destination     Gateway         Genmask         Flags   MSS Window  irtt Iface
 ````
 
 
-* Set up three users on nfs_server and nfs_client_1
-        - ashley: uid=2313
-        - bob:    uid=2121
-        - mike:   uid of your choice
+* Set up three users on nfs_server and nfs_client_1-3
+- ashley: uid=2313
+- bob:    uid=2121
+- mike:   uid of your choice -
 
 ```shell
 sudo useradd -u 2313 ashley
@@ -138,7 +138,7 @@ scp $FILE_TO_SEND $USERNAME@$DEST_IP:$DEST_PATH
 
 Add the following lines to /etc/hosts
 ```shell
-192.168.1.11 nfsserver
+192.168.1.10 nfsserver
 192.168.1.11 nfsclient1
 192.168.1.12 nfsclient2
 192.168.1.13 nfsclient3
@@ -163,26 +163,21 @@ On a conceptual level, NFS is one computer letting another computer use its stor
 
 ### Setting up the NFS packages
 
-* Check if the NFS packages are installed on both the nfsserver and the clients
-
-```shell
-yum list | grep nfs
-```
-If you dont see nfs-utils.* or nfs-utils-lib.* , you can install them with
-
+* Install the NFS packages
 ```shell
 yum install nfs-utils nfs-utils-lib
 ```
 
-* Start these daemons
+* Start the daemon
 
 ```shell
 sudo service nfs start
 ```
 
-* Create directories /data/share1 through /data/share7
+* Create directories /data/share1 through /data/share7 on nfsserver
 
 ```shell
+mkdir /data
 mkdir /data/share1
 mkdir /data/share2
 mkdir /data/share3
@@ -191,6 +186,16 @@ mkdir /data/share5
 mkdir /data/share6
 mkdir /data/share7
 ```
+Make some files in these shares on nfsserver
+```shell
+touch /data/share1/file1
+touch /data/share2/file2
+touch /data/share3/file3
+touch /data/share4/file4
+touch /data/share5/file5
+touch /data/share6/file6
+touch /data/share7/file7
+```
 
 ### /etc/exports
 
@@ -198,24 +203,49 @@ The NFS server is configured by a file called /etc/exports. This file tells the 
 
 You can read about /etc/exports at http://www.centos.org/docs/5/html/Deployment_Guide-en-US/s1-nfs-server-config-exports.html
 
-### Exercises
+### Setting up NFS configs
+
+* Open nfs and tcp/udp ports on nfsserver for the ip addresses of the clients
+
+Run these commands on nfsserver
+```shell
+sudo iptables -I INPUT -p tcp -s 192.168.1.0/24 -m state --state NEW,RELATED,ESTABLISHED --dport 2049 -j ACCEPT
+sudo iptables -I INPUT -p udp -s 192.168.1.0/24 -m state --state NEW,RELATED,ESTABLISHED --dport 2049 -j ACCEPt
+sudo iptables -I INPUT -p tcp -s 192.168.1.0/24 -m state --state NEW,RELATED,ESTABLISHED --dport 111 -j ACCEPT
+sudo iptables -I INPUT -p udp -s 192.168.1.0/24 -m state --state NEW,RELATED,ESTABLISHED --dport 111 -j ACCEPT
+sudo iptables -I INPUT -p tcp -s 192.168.2.0/24 -m state --state NEW,RELATED,ESTABLISHED --dport 2049 -j ACCEPT
+sudo iptables -I INPUT -p udp -s 192.168.2.0/24 -m state --state NEW,RELATED,ESTABLISHED --dport 2049 -j ACCEPT
+sudo iptables -I INPUT -p tcp -s 192.168.2.0/24 -m state --state NEW,RELATED,ESTABLISHED --dport 111 -j ACCEPT
+sudo iptables -I INPUT -p udp -s 192.168.2.0/24 -m state --state NEW,RELATED,ESTABLISHED --dport 111 -j ACCEPT
+```
+Save the changes and restart the service
+```shell
+sudo service iptables save
+sudo service iptables restart
+```
 
 * Set the directory /data/share1 to be shared with standard permissions to all hosts
-* Execute ``exportfs -rv`` on nfs_server
+
+Add the following lines to /etc/exports on nfsserver
+```shell
+/data/share1 *(rw)
+```
+Execute ``exportfs -rv`` on nfs_server
+
 * Mount the filesystem on nfs_client_1
 
 ```shell
-
-root@nfs_client_1 ~# mkdir /data
-root@nfs_client_1 ~# mkdir /data/share1
-root@nfs_client_1 ~# mount -t nfs nfs_server:/data/share1 /data/share1
-
-
+root@nfs_client_1 ~# mount -t nfs nfs_server:/data/share1 /mnt
+```
+Check if you can see file1
+```shell
+ls /mnt
 ```
 
-### Exercises (All of these should be tested)
-
 * Share /data/share2 to only nfs_client_2
+
+Add this to /etc/exports on nfsserver
+
 * Share /data/share3 to only clients in the 192.168.1.0/24 subnets
 * Share /data/share4 to all clients in your subnet but no other ip addresses, but turn off root squashing
 
