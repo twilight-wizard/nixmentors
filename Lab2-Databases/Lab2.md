@@ -167,7 +167,7 @@ SQL
 
  - delete one of the characters
 
-      `star_trek=# delete from characters where name='Chakotay';`
+      `delete from characters where name='Chakotay';`
 
  - insert the character back into the table
    - remember to use single quotes!
