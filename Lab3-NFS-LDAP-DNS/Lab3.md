@@ -145,13 +145,24 @@ Add the following lines to /etc/hosts
 ```
 Try to ping one of the other hosts by hostname
 
-* Copy that hosts file to all other servers in your infrastructure
+* Copy that hosts file to nfsclient1
 
 ```shell
-sudo scp $USERNAME@$DEST_HOSTNAME:/etc/hosts
+sudo scp $USERNAME@nfsclient1:/etc/hosts
 
 #scp overwrites an existing file if one with the same name is found in the destination path
 ```
+Remove the line with the nfs server ip address in /etc/hosts of nfsserver
+On nfsclient1, remove ``nfsserver.local nfsserver`` from the line with the localhost ip address in /etc/hosts
+Send the /etc/hosts from nfsclient1 to clients 2 and 3
+On each client, add their hostname to the localhost ip address and remove the respective lines with their own ip addresses
+```shell
+#EX: nfsclient1 /etc/hosts should look like this
+127.0.0.1 nfsclient1 localhost localhost.localadmin localhost4 localhost4.localdomain4
+192.168.1.12 nfsclient2
+192.168.2.13 nfsclient3
+```
+
 
 Section 2: NFS: The Network File System
 ---------------------------------------
@@ -196,6 +207,10 @@ touch /data/share5/file5
 touch /data/share6/file6
 touch /data/share7/file7
 ```
+Change the perms on the directories so anybody can create and edit files on them
+```shell
+root@nfsserver: data > chmod 777 share*
+```
 
 ### /etc/exports
 
@@ -235,18 +250,46 @@ Execute ``exportfs -rv`` on nfs_server
 * Mount the filesystem on nfs_client_1
 
 ```shell
-root@nfs_client_1 ~# mount -t nfs nfs_server:/data/share1 /mnt
+root@nfsclient1: ~ > mount -t nfs nfs_server:/data/share1 /mnt
 ```
 Check if you can see file1
 ```shell
 ls /mnt
 ```
+su into another user and try to make a file on the mounted filesystem
+```shell
+touch /mnt/testfile
+```
+Now mount share1 on another nfs_client. Can you see testfile there?
+su into the same user and edit the file. Go back to nfs_client_1 and look at the file. Can you see the changes?
+
+Dont forget to unmount the filesystems when you are done with them
+```shell
+umount /mnt
+```
 
 * Share /data/share2 to only nfs_client_2
 
 Add this to /etc/exports on nfsserver
+```shell
+/data/share2 nfsclient2(rw)
+```o
+Execute ``exportfs -rv`` on nfs_server
+Try mounting share2 on a nfsclient other than client2. Does it work? (it shouldnt)
+Now try mounting share2 on nfs_client2. Does this work? If no error messages pop up, check if you can see file2.
 
+Unmount the FS when you are done with it.
 * Share /data/share3 to only clients in the 192.168.1.0/24 subnets
+
+Add this to /etc/exports on nfsserver
+```shell
+/data/share3 192.168.1.0/24(rw)
+```
+Execute ``exportfs -rv`` on nfs_server
+Try mounting share3 on a nfsclient3. Does it work? (it shouldnt)
+Now try mounting share3 on either nfsclient 1 or 2. Does this work? If no error messages pop up, check if you can see file3.
+
+
 * Share /data/share4 to all clients in your subnet but no other ip addresses, but turn off root squashing
 
 ### Exercises 
