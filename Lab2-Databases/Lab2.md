@@ -100,7 +100,7 @@ Use `psql` to get into the postgresql command line interface. To configure the d
 #### Try It
    - `select * from pg_database;`
    - `select * from pg_stat_activity;`
-   - `select * from current_database;`
+   - `select * from current_database();`
    - `show all;`
 
 
@@ -153,7 +153,7 @@ SQL
 
  - create a table called characters with columns name as the primary key (values in column can't be repeated), rank, position, series, and actor
 
-     `create table characters(name varchar(100) primary key, rank varchar(100), position varchar(100), series varchar(200), actor varchar(100));`
+     `create table characters(name varchar(100) primary key, rank varchar(100), position varchar(100), actor varchar(100));`
 
  - look at your table's schema (use `\d`)
 
