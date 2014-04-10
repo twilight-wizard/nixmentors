@@ -232,14 +232,16 @@ The pg_dump command takes all of the stuff stored in a single database and puts 
 Use psql to import the file into a database.
 pg_dump only gets the data from one database. It doesn't get things like roles. pg_dumpall can get all the databases in postgres along with any roles. You can use pg_restore to restore from a pg_dumpall.
 
+Note: This should be done on the vagrant vm as the postgres user.
+
 #### Exercises
 
  - Back up your database
-     `pg_dump <databasename> > backup.sql`
+     `sudo -u postgres pg_dump <databasename> > backup.sql`
  - Drop your database
-     `echo "drop database <databasename>" | psql`
+     `sudo -u postgres echo "drop database <databasename>" | psql`
  - Restore it
-     `psql <databasename> < backup.sql`
+     `sudo -u postgres psql <databasename> < backup.sql`
  - yay!
 
 ### Writing Applications Against Your Database
