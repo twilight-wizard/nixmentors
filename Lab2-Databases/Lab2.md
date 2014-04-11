@@ -219,7 +219,7 @@ Then we can use joins to get data out of both tables with one query.
 
      - get reasonable data out of both of your tables
 	 
-            select star_trek_characters.name, rank.name from star_trek_characters join rank on star_trek_characters.rank_id = rank.id;
+            select characters.name, rank.name from characters join rank on characters.rank_id = rank.id;
 
    - Challenge: Experiment with different constraints. Maybe set a minimum age for characters (who needs Wesley anyways).
    - Challenge: Create another reference table (e.g. series) and alter a column to refer to that table
