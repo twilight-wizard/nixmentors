@@ -206,7 +206,7 @@ Then we can use joins to get data out of both tables with one query.
 
    - Option 1: add constraints
 
-        alter table star_trek_characters add constraint rank_constraint check (rank = 'Lt. Commander' OR rank = 'Captain' OR rank = 'Commander' [...]);
+        `alter table characters add constraint rank_constraint check (rank = 'Lt. Commander' OR rank = 'Captain' OR rank = 'Commander' [...]);`
 
    - Option 2: separate values that have order into a different table
      - create the new table called 'ranks' with two columns, id (primary key) and rank
@@ -239,9 +239,9 @@ Note: This should be done on the vagrant vm as the postgres user.
  - Back up your database
      `sudo -u postgres pg_dump <databasename> > backup.sql`
  - Drop your database
-     `sudo -u postgres echo "drop database <databasename>" | psql`
+     `sudo -u postgres echo "drop database <databasename>" | sudo -u postgres psql`
  - Restore it
-     `sudo -u postgres psql <databasename> < backup.sql`
+     `sudo -u postgres psql < backup.sql`
  - yay!
 
 ### Writing Applications Against Your Database
