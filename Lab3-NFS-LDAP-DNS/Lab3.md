@@ -176,7 +176,7 @@ On a conceptual level, NFS is one computer letting another computer use its stor
 
 * Install the NFS packages
 ```shell
-yum install nfs-utils nfs-utils-lib
+yum install nfs-utils
 ```
 
 * Start the daemon
@@ -209,7 +209,7 @@ touch /data/share7/file7
 ```
 Change the perms on the directories so anybody can create and edit files on them
 ```shell
-root@nfsserver: data > chmod 777 share*
+root@nfsserver: data > chmod 777 /data/share*
 ```
 
 ### /etc/exports
