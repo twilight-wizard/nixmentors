@@ -285,13 +285,18 @@ Remotes
 - Listing your remotes will give you two URLs, one to get data from and one to push data to. By default these are the same.
 - It is common to name your main remote 'origin' but this is not required.
 
+Pushing to Github
+-----------------
+
+- Pushing means copying your local repository over to a remote one.
+
+        $ git push -u origin master
+
+- origin is your remote repository. master is the branch you want to push.
+- -u tells git to set this origin as upstream, which means in the future you can just say "git push"
+
 <!--
 Other things to cover:
-Remote repository
-make github account
-make github repo
-git remote
-push to github repo
 
 Working with an existing project
 forking
