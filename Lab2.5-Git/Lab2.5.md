@@ -39,6 +39,11 @@ Initial Setup
         vim
         $
 
+- Tell Git that you want colors enabled!
+
+        $ git config --global color.ui always
+        $
+
 - Take a look at your handywork:
 
         $ less ~/.gitconfig
