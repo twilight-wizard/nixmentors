@@ -362,20 +362,122 @@ Pull Requesting
   - Click the "Send pull request" button.
   - If/when the maintainer accepts your pull request, you will need to update your master branch by pulling from upstream again before you start more work.
 
+Git rebase
+----------
+
+- Sometimes after you have made a number of commits, you need to change your history. You may need to reword a commit, or change the order of commits, or combine multiple commits into one commit. This is what git rebase is for.
+- Scenario 1: You need to reword a commit you made three commits ago.
+
+        $ git log  # check your commit history, count how many commits before the current commit the problem commit occurs (three).
+        $ git rebase -i HEAD~3  # -i means interactive mode; HEAD~3 means go back three commits before the current commit on the current branch
+
+  - You will be presented with a text editor containing your last three commits. On the line for the commit you want to change, replace 'pick' with 'reword'. Save and exit.
+  - The commit will be opened in another editor. You can edit the commit here. Save and quit again.
+  - git log to see your change.
+- Scenario 2: You want to swap the order of two commits.
+  - Do another interactive rebase
+  - Swap the order of the two commits in the editor that opens up. Save and quit.
+- Scenario 3: You need to combine multiple commits into one commit message. This comes up a lot in the CAT, where we need to push committed code to a testing branch in order to deploy it, and then later need to rewrite our commit messages so that they succinctly sum up the purpose of the code. This doesn't necessarily happen a lot in other environments, since every you make a commit it should be for one small change.
+  - Interactive rebase, going back as long as you need to encompass all the commits you want to combine.
+  - The action for the commit you want to keep will either be 'pick', if you like the commit message, or 'reword' if you want to change the wording
+  - The action for the commits you want to combine with the main commit will either be 'squash' or 'fixup'. 'squash' will insert the commit message into the new commit. 'fixup' will discard the message.
+  - In any case, you are not losing your work. The work from the squashed commits will be merged into the main commit.
+  - After you finish your rebase, run `git log -p` to see that all of your changes are now under your main commit.
+- Scenario 4: You are working on a test branch, but since you started working, the master branch has changed. You need to keep your branch updated.
+
+        $ git fetch origin master   # fetches changes from the remote without merging them into your local repo
+        $ git rebase origin/master  # merges changes from master, placing your changes at the top; notice no -i
+
+Making Mistakes
+---------------
+
+- Git makes is possible to recover from mistakes, even when git caused them.
+
+### Amending a commit
+
+- You can fix your last commit message
+
+        $ git commit --amend
+
+- You can also add new changes to your last commit
+
+        $ git add newfile
+        $ git commit --amend
+
+### Undo all unstaged changes to a file
+
+    $ git checkout file    # restores the file to the state it was at at the last commit. This is very destructive! You cannot recover from this!
+
+- Git will recommend using the syntax `git checkout -- file`. The -- is to protect you from accidentally adding flags to git checkout if the file name contains a -. If this doesn't make sense, it is just safer to use `git checkout -- file`.
+
+### Git Reset
+
+- git reset restores the repo to a previous state.
+
+- Scenario 1: You have added a file to the staging area that you did not mean to add. You can unstage it with:
+
+        $ git reset HEAD badfile
+
+  - You will not lose your changes to the file. It has just moved out of the staging area.
+
+- Scenario 2: You have committed two changes and you want to undo the commit without undoing the work.
+
+        $ git reset --soft HEAD~2  # Undo the last two commits, keeping the work that you did in the staging area.
+
+  - From here you can reorganize your commits, reword your commits, unstage files, or discard changes completely (using git checkout)
+
+- Scenario 3: You have committed a change and you want to undo the commit and all of the work that you did with it.
+
+        $ git reset --hard HEAD^  # Undo the last commit, discarding all changes
+
+  - Note the syntax HEAD^, which is equivalent to HEAD~1.
+
+### Git Revert
+
+- The problem with changing your commit history via git commit --amend or git reset is that, if you have already pushed your commits to a remote repository, your repo may have been used by someone else. Changing history completely breaks their ability to re-pull or to contribute back changes. If you have already publicized your mistakes, it is best to admit to it and fix it publicly.
+
+        $ git log  # Find the hash of the commit you want to revert
+        $ git revert <hash>   # This will add a commit describing that you reverted a previous commit
+
+- Never `git push -f` (force push) to the master branch of a repository. If you feel like you need to, you need to rethink how to undo your mistake.
+
+### Git Reflog
+
+- If everything else fails and you have completely lost track of what you were trying to do, git reflog is the answer. `git reflog` shows the state of the repository at every point that you made some sort of change with git: staging files, committing things, merging things, checking out different branches. 
+
+        $ git reflog    # See what you've been doing
+        $ git checkout HEAD@{2}  # Go to whatever state you were in two git commands ago (like, prior to committing something)
+        $ git checkout -b newbranch  # After checking out HEAD@{2} you will be in a "headless state". You need to create a branch to work on from here.
+
+Other Useful Commands
+---------------------
+
+- git blame
+
+        $ git blame file.txt   # Provides line-by-line documentation for who made what commit
+
+- git grep
+
+        $ git grep searchterm  # Searches the repository recursively starting from your current directory
+
+- git stash
+
+        $ git stash            # Saves your current modifications without committing anything, so you can go to an unmodified state or switch to a different branch
+        $ git stash pop        # Get your stashed changes back
+
+Git and Github Etiquette
+------------------------
+
+- things about etiquette...
+
 <!--
 Other things to cover:
 
 Working with an existing project
-git rebase
-git blame
 git cherry-pick
 
-making mistakes
-git reset
-git checkout
-git revert
-git commit -amend
-git reflog
+fixing merge conflicts
+git rebase --abort and git merge --abort
 
 git/github ettiquette
 - good commit messages
@@ -391,10 +493,6 @@ Advanced/miscellaneous
 customization
 additional git commands (git-thing in path)
 ssh keys
-git grep
-
-git help <command>
-man git-command
 
 --->
 For an excellent reference:
