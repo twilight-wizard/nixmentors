@@ -273,7 +273,7 @@ umount /mnt
 Add this to /etc/exports on nfsserver
 ```shell
 /data/share2 nfsclient2(rw)
-```o
+```
 Execute ``exportfs -rv`` on nfs_server
 Try mounting share2 on a nfsclient other than client2. Does it work? (it shouldnt)
 Now try mounting share2 on nfs_client2. Does this work? If no error messages pop up, check if you can see file2.
@@ -286,11 +286,16 @@ Add this to /etc/exports on nfsserver
 /data/share3 192.168.1.0/24(rw)
 ```
 Execute ``exportfs -rv`` on nfs_server
-Try mounting share3 on a nfsclient3. Does it work? (it shouldnt)
-Now try mounting share3 on either nfsclient 1 or 2. Does this work? If no error messages pop up, check if you can see file3.
+Now try mounting share3 on all of the nfsclients . Does this work? If no error messages pop up, check if you can see file3.
 
-
+Unmount share3 from all of the clients.
 * Share /data/share4 to all clients in your subnet but no other ip addresses, but turn off root squashing
+Add this to /etc/exports on nfsserver
+```shell
+/data/share4 192.168.1.0/24(rw,no_root_squash)
+```
+Run ``exportfs -rv`` on nfsserver
+Mount share4 on any nfs_client. Trying making a file as root on the share. Run ``ls -l``. Who is the owner of the file (with root squashing on, it should be "nobody")
 
 ### Exercises 
 
@@ -298,13 +303,9 @@ Now try mounting share3 on either nfsclient 1 or 2. Does this work? If no error 
 * On one client, create a large file and open it with vim. On another client, rm the file. What happens?
 
 
-
-
 Section 3: LDAP Client connection
 ---------------------------------------
 
 Section 4: DNS
 ---------------------------------------
-
-
 
