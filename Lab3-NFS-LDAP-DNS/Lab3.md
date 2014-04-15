@@ -60,14 +60,14 @@ VM, run `vagrant status NAME`.
 Open up several terminal windows, change directory on all of them into the Lab3 directory.
 
 ```shell
-vagrant ssh nfs_server
+vagrant ssh nfsserver
 ```
 
 And in a different window:
 
 
 ```shell
-vagrant ssh nfs_client_1
+vagrant ssh nfsclient1
 ```
 
 ### Exercises
@@ -106,10 +106,10 @@ Destination     Gateway         Genmask         Flags   MSS Window  irtt Iface
 ````
 
 
-* Set up three users on nfs_server and nfs_client_1-3
+* Set up three users on nfsserver and nfsclient1, nfsclient2, and nfsclient3
 - ashley: uid=2313
 - bob:    uid=2121
-- mike:   uid of your choice -
+- mike:   uid of your choice
 
 ```shell
 sudo useradd -u 2313 ashley
@@ -123,16 +123,21 @@ sudo useradd -u $UID mike
 sudo passwd $USERNAME
 ```
 
-* Create a file foo.txt with plain text in it, and copy it using scp from one host to another using your created user
+* Create a file foo.txt with plain text in it, and copy it using scp from one host to another using your created users
 
+As each of the users you just created (on any host), create a file foo.txt and send it to different hosts (have destinations be different for each file)
 ```shell
 sudo su $USERNAME (not just for becoming root 0.0)
 touch foo.txt
 scp $FILE_TO_SEND $USERNAME@$DEST_IP:$DEST_PATH
 
-#leaving out the username will use the user logged in as by default
-#ip address can be replaced with hostname if set 
+#Leaving out the username will use the user logged in as by default
+#ip address can be replaced with hostname if set
+#Leaving out the $DEST_PATH will use /home/$USER by default
 ```
+Verify that the file was sent successfully by running ``ls /home/$USER`` on the destination host.
+
+Run ``exit`` to go back to root user
 
 * Set up a hosts file on nfs_server to map each ip address in your network to the common name given in the vagrant file.
 
@@ -143,7 +148,7 @@ Add the following lines to /etc/hosts
 192.168.1.12 nfsclient2
 192.168.1.13 nfsclient3
 ```
-Try to ping one of the other hosts by hostname
+Try to ping one of the other hosts by hostname. You should get the same output you would if you pinged by ip addresses.
 
 * Copy that hosts file to nfsclient1
 
@@ -216,6 +221,8 @@ You can read about /etc/exports at http://www.centos.org/docs/5/html/Deployment_
 
 * Open nfs and tcp/udp ports on nfsserver for the ip addresses of the clients
 
+We need to open ports 2049 (default port for nfs) and 111 (default port for portmapper) to allow tcp/udp protocols on our subnet
+
 Run these commands on nfsserver
 ```shell
 sudo iptables -I INPUT -p tcp -s 192.168.1.0/24 -m state --state NEW,RELATED,ESTABLISHED --dport 2049 -j ACCEPT
@@ -223,6 +230,7 @@ sudo iptables -I INPUT -p udp -s 192.168.1.0/24 -m state --state NEW,RELATED,EST
 sudo iptables -I INPUT -p tcp -s 192.168.1.0/24 -m state --state NEW,RELATED,ESTABLISHED --dport 111 -j ACCEPT
 sudo iptables -I INPUT -p udp -s 192.168.1.0/24 -m state --state NEW,RELATED,ESTABLISHED --dport 111 -j ACCEPT
 ```
+
 Save the changes and restart the service
 ```shell
 sudo service iptables save
