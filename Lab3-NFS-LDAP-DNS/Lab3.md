@@ -300,6 +300,34 @@ Mount share4 on any nfs_client. Trying making a file as root on the share. Run `
 * On the clients, verify that you can create a file on an NFS share with one user, and pull it off with another user on another system
 * On one client, create a large file and open it with vim. On another client, rm the file. What happens?
 
+### Have NFS share mounted on boot
+
+So we have a few shares setup, but we have to mount them every time the host is rebooted. If you a using NFS for user homedirs (for example), you want that FS to be mounted for you.
+
+* Modify /etc/fstab
+
+fstab is the configuration file that manages filesystems on Unix operatings systems. Upon booting, the machine mounts different FS based on this file.
+
+Lets add share1 to be mounted on startup. We shouldnt mount this on /mnt because it should be left for more dynamic mounts.
+
+Create a directory any of the nfsclients for /data/share1 to me mounted to
+```shell
+sudo mkdir /datashare
+```
+Now lets add this NFS share to be mounted on startup.
+```shell
+sudo vim /etc/fstab
+
+#Though the file does not have headers for the columns, this is what each column specifies
+# Device                   mountpoint   fs-type   options       dump  fsckord
+
+#add this line to the bottom
+ nfsserver:/data/share1    /datashare     nfs    rw,hard,intr    0      0
+```
+Run ``sudo shutdown -r now``
+
+Wait a couple of minutes, then run ``vagrant ssh nfsclient($NUM)``
+Run ``ls /datashare``. Can you see "file1"? (You should)
 
 Section 3: LDAP Client connection
 ---------------------------------------
