@@ -295,16 +295,67 @@ Pushing to Github
 - origin is your remote repository. master is the branch you want to push.
 - -u tells git to set this origin as upstream, which means in the future you can just say "git push"
 
+Working with an existing project
+--------------------------------
+
+- Often you will want to contribute to a project that is already on Github. If you are a registered **contributor**
+  to the project. you will be able to make changes directly to the repository. Otherwise, you will have to **fork**
+  the repository and ask the maintainers to merge your changes. This is called making a **pull request**.
+- Visit [https://github.com/pdxcat/nixmentors]. Click the button in the upper right labeled "Fork".
+- Notice the namespace changes from pdxcat to your username.
+- This fork will NOT automatically update when **upstream** (the pdxcat version) changes. You need to keep it updated yourself.
+
+Pull Requesting
+---------------
+
+- Get a copy of your forked repository. There should be a "clone URL" on the right side of the page. Copy the HTTPS version if you have not added
+  SSH keys to Github yet. You can use the SSH version if you have uploaded SSH keys. The Subversion button doesn't exist.
+
+        $ git clone https://github.com/cmurphy/nixmentors.git
+        Cloning into 'nixmentors'...
+        remote: Reusing existing pack: 495, done.
+        remote: Counting objects: 12, done.
+        remote: Compressing objects: 100% (9/9), done.
+        remote: Total 507 (delta 4), reused 0 (delta 0)
+        Receiving objects: 100% (507/507), 118.02 KiB, done.
+        Resolving deltas: 100% (234/234), done.
+        $ cd nixmentors
+        $ ls
+
+- Set the original repository as "upstream" so you can keep your copy up-to-date
+
+        $ git remote add upstream https://github.com/pdxcat/nixmentors.git
+        $ git remote -v
+        origin  https://github.com/cmurphy/nixmentors.git (fetch)
+        origin  https://github.com/cmurphy/nixmentors.git (push)
+        upstream  https://github.com/pdxcat/nixmentors.git (fetch)
+        upstream  https://github.com/pdxcat/nixmentors.git (push)
+        $ 
+
+- Any time you are going to work on new changes, you should pull from upstream before you start your work. This will help reduce merge conflicts later.
+
+        $ git pull upstream master
+
+- Often we checkout a new branch to make it clear what we're working on, but you can also do you work on master.
+
+        $ git checkout -b fix_lab2
+        $ # Make changes
+        $ # git add changes
+        $ # git commit changes with descriptive message
+        $ git push origin fix_lab2
+
+- Now use the Github UI to ask for your changes to be merged.
+  - Your fork should now have a "Compare & pull request" button. Click it.
+  - Write a comment about your change. You should include what the change is, and any documented issues/bugs that this change addresses.
+  - Pay attention to the note on the right side of the comment section. If your branch is not able to merge cleanly, the maintainer will likely ask you to fix your conflicts.
+  - Click the "Send pull request" button.
+  - If/when the maintainer accepts your pull request, you will need to update your master branch by pulling from upstream again before you start more work.
+
 <!--
 Other things to cover:
 
 Working with an existing project
-forking
-git clone
-git pull
-git push
 git rebase
-pull requesting
 git blame
 setting upstream
 git cherry-pick
@@ -330,6 +381,7 @@ Advanced/miscellaneous
 customization
 additional git commands (git-thing in path)
 ssh keys
+git grep
 
 git help <command>
 man git-command
