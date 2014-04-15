@@ -193,9 +193,6 @@ mkdir /data/share1
 mkdir /data/share2
 mkdir /data/share3
 mkdir /data/share4
-mkdir /data/share5
-mkdir /data/share6
-mkdir /data/share7
 ```
 Make some files in these shares on nfsserver
 ```shell
@@ -203,9 +200,6 @@ touch /data/share1/file1
 touch /data/share2/file2
 touch /data/share3/file3
 touch /data/share4/file4
-touch /data/share5/file5
-touch /data/share6/file6
-touch /data/share7/file7
 ```
 Change the perms on the directories so anybody can create and edit files on them
 ```shell
