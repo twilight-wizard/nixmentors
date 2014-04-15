@@ -154,6 +154,8 @@ Reviewing History
         Descriptive message
     $
 
+- Notice the Author section. You configured this early on in this workshop.
+
 Getting the Rhythm
 ------------------
 
