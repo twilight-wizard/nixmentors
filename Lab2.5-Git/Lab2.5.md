@@ -50,6 +50,15 @@ Initial Setup
 
 - You can edit this file directly if you prefer.
 
+Documentation
+-------------
+
+- You can look up some commands with `git --help`
+- All git commands have a --help flag which brings up a man page
+- You can also look up documentation for a git command with man directly: you just need to hyphenate the command, like
+
+        $ man git-config
+
 The Basics: a Local Repository
 ------------------------------
 
@@ -359,7 +368,6 @@ Other things to cover:
 Working with an existing project
 git rebase
 git blame
-setting upstream
 git cherry-pick
 
 making mistakes
