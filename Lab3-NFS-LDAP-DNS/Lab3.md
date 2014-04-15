@@ -160,7 +160,7 @@ On each client, add their hostname to the localhost ip address and remove the re
 #EX: nfsclient1 /etc/hosts should look like this
 127.0.0.1 nfsclient1 localhost localhost.localadmin localhost4 localhost4.localdomain4
 192.168.1.12 nfsclient2
-192.168.2.13 nfsclient3
+192.168.1.13 nfsclient3
 ```
 
 
@@ -228,10 +228,6 @@ sudo iptables -I INPUT -p tcp -s 192.168.1.0/24 -m state --state NEW,RELATED,EST
 sudo iptables -I INPUT -p udp -s 192.168.1.0/24 -m state --state NEW,RELATED,ESTABLISHED --dport 2049 -j ACCEPt
 sudo iptables -I INPUT -p tcp -s 192.168.1.0/24 -m state --state NEW,RELATED,ESTABLISHED --dport 111 -j ACCEPT
 sudo iptables -I INPUT -p udp -s 192.168.1.0/24 -m state --state NEW,RELATED,ESTABLISHED --dport 111 -j ACCEPT
-sudo iptables -I INPUT -p tcp -s 192.168.2.0/24 -m state --state NEW,RELATED,ESTABLISHED --dport 2049 -j ACCEPT
-sudo iptables -I INPUT -p udp -s 192.168.2.0/24 -m state --state NEW,RELATED,ESTABLISHED --dport 2049 -j ACCEPT
-sudo iptables -I INPUT -p tcp -s 192.168.2.0/24 -m state --state NEW,RELATED,ESTABLISHED --dport 111 -j ACCEPT
-sudo iptables -I INPUT -p udp -s 192.168.2.0/24 -m state --state NEW,RELATED,ESTABLISHED --dport 111 -j ACCEPT
 ```
 Save the changes and restart the service
 ```shell

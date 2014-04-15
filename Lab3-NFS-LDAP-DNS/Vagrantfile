@@ -34,7 +34,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.define "nfsclient3" do |nfsclient3|
     nfsclient3.vm.box = "centos64"
     nfsclient3.vm.hostname = "nfsclient3.local"
-    nfsclient3.vm.network :private_network, ip: "192.168.2.13"
+    nfsclient3.vm.network :private_network, ip: "192.168.1.13"
   end
 
 end
