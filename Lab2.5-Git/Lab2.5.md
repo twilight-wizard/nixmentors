@@ -496,29 +496,22 @@ Other Useful Commands
 Git and Github Etiquette
 ------------------------
 
-- things about etiquette...
+- Commit messages should be in the imperative, i.e. "Add feature", not "Added feature" or "Adds feature".
+- Commit messages have a subject that should be under 80 characters and optionally a longer message, separated by a newline from the subject, also wrapped to 80 characters per line.
+- Never force push to a master branch or any branch that anyone may be working on. Use git revert to backtrack your mistakes on public branches.
+- Be polite when working with contributors or maintainers. You do not want to be known as [this guy](https://gist.github.com/uppfinnarn/9956023).
+- For more about etiquette:
+  - http://jamiethepiper.com/git-commit-good-etiquette/
+  - http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html
 
 <!--
 Other things to cover:
 
-Working with an existing project
 git cherry-pick
-
-fixing merge conflicts
-git rebase --abort and git merge --abort
-
-git/github ettiquette
-- good commit messages
-- small commits
-- changing history
-- working with maintainers/contributors
-    https://gist.github.com/uppfinnarn/9956023
-- always include a README, preferably using markdown
-- software should have a license
 
 Advanced/miscellaneous
 .gitignore
-customization
+aliases, other configs
 additional git commands (git-thing in path)
 ssh keys
 
