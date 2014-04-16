@@ -1,7 +1,8 @@
 Intro to Git and Github
 =======================
 
-## Why Version Control?
+Why Version Control?
+--------------------
 
 - Keeping old versions of your work in case new changes break old work
 - Collaboration
@@ -102,12 +103,12 @@ The Basics: a Local Repository
 Stages of a file
 ----------------
 
-- A file starts its life as an **Untracked file**.  
-    We call it Untracked, but it is still kind of tracked in the sense that git knows it is has come into existence.  
+- A file starts its life as an **Untracked file**.
+    We call it Untracked, but it is still kind of tracked in the sense that git knows it is has come into existence.
     It just won't track changes in the contents of the file.
 
-- We need to explicitly tell git that we care about this file, that we want to know what happens to it.  
-    This happens when we add the file to the **staging area**.  
+- We need to explicitly tell git that we care about this file, that we want to know what happens to it.
+    This happens when we add the file to the **staging area**.
     The **staging area** is a snapshot of what we are going to commit when we are ready.
 
 - A **commit** is a snapshot of the current point in history, marked by a message describing what was changed since the last commit
