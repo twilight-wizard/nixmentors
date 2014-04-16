@@ -1,4 +1,4 @@
-<!---
+!---
    Copyright 2014 Portland State University
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -41,8 +41,8 @@ vagrant up
 ```
 
 ```shell
-hadron:Lab3-NFS-LDAP-DNS (master) $ vagrnt status
-zsh: correct 'vagrnt' to 'vagrant' [nyae]? y
+hadron:Lab3-NFS-LDAP-DNS (master) $ vagrant status
+
 Current machine states:
 
 nfsserver                 running (virtualbox)
@@ -104,7 +104,11 @@ Destination     Gateway         Genmask         Flags   MSS Window  irtt Iface
 169.254.0.0     0.0.0.0         255.255.0.0     U         0 0          0 eth1
 0.0.0.0         10.0.2.2        0.0.0.0         UG        0 0          0 eth0
 ````
-
+Destination: The subnet for ip adress ranges, the final destenation. It the case of the first one, the addresses 192.168.1.0-255  
+Gateway: The next level up for routing. A 0.0.0.0 gateway means "unspecified", and any ipaddress going through the netmask would be let through this gateway  
+Genmask: The netmask for the destination host  
+Flags: Flag U means that the interface is up, the G flag indicates a route to host via a gateway  
+Iface: Interface to which packets are sent to  
 
 * Set up three users on nfsserver and nfsclient1, nfsclient2, and nfsclient3
 - ashley: uid=2313
@@ -139,7 +143,7 @@ Verify that the file was sent successfully by running ``ls /home/$USER`` on the 
 
 Run ``exit`` to go back to root user
 
-* Set up a hosts file on nfs_server to map each ip address in your network to the common name given in the vagrant file.
+* Set up a hosts file on nfsserver to map each ip address in your network to the common name given in the vagrant file.
 
 Add the following lines to /etc/hosts
 ```shell
@@ -250,12 +254,12 @@ Add the following lines to /etc/exports on nfsserver
 ```shell
 /data/share1 *(rw)
 ```
-Execute ``exportfs -rv`` on nfs_server
+Execute ``exportfs -rv`` on nfsserver
 
-* Mount the filesystem on nfs_client_1
+* Mount the filesystem on nfsclient1
 
 ```shell
-root@nfsclient1: ~ > mount -t nfs nfs_server:/data/share1 /mnt
+root@nfsclient1: ~ > mount -t nfs nfsserver:/data/share1 /mnt
 ```
 Check if you can see file1
 ```shell
@@ -266,22 +270,23 @@ su into another user and try to make a file on the mounted filesystem
 touch /mnt/testfile
 ```
 Now mount share1 on another nfs_client. Can you see testfile there?
-su into the same user and edit the file. Go back to nfs_client_1 and look at the file. Can you see the changes?
+su into the same user and edit the file. Go back to nfsclient1 and look at the file. Can you see the changes?
 
 Dont forget to unmount the filesystems when you are done with them
 ```shell
-umount /mnt
-```
+umount /mnt```
 
-* Share /data/share2 to only nfs_client_2
+NOTE: If you try to create a file as root on a share with root_squash on (on by default), it will be created under user "nobody".
+
+* Share /data/share2 to only nfsclient2
 
 Add this to /etc/exports on nfsserver
 ```shell
 /data/share2 nfsclient2(rw)
 ```
-Execute ``exportfs -rv`` on nfs_server
+Execute ``exportfs -rv`` on nfsserver
 Try mounting share2 on a nfsclient other than client2. Does it work? (it shouldnt)
-Now try mounting share2 on nfs_client2. Does this work? If no error messages pop up, check if you can see file2.
+Now try mounting share2 on nfsclient2. Does this work? If no error messages pop up, check if you can see file2.
 
 Unmount the FS when you are done with it.
 * Share /data/share3 to only clients in the 192.168.1.0/24 subnets
@@ -290,7 +295,7 @@ Add this to /etc/exports on nfsserver
 ```shell
 /data/share3 192.168.1.0/24(rw)
 ```
-Execute ``exportfs -rv`` on nfs_server
+Execute ``exportfs -rv`` on nfsserver
 Now try mounting share3 on all of the nfsclients . Does this work? If no error messages pop up, check if you can see file3.
 
 Unmount share3 from all of the clients.
@@ -300,9 +305,9 @@ Add this to /etc/exports on nfsserver
 /data/share4 192.168.1.0/24(rw,no_root_squash)
 ```
 Run ``exportfs -rv`` on nfsserver
-Mount share4 on any nfs_client. Trying making a file as root on the share. Run ``ls -l``. Who is the owner of the file (with root squashing on, it should be "nobody")
+Mount share4 on any nfs_client. Trying making a file as root on the share. Run ``ls -l``. Who is the owner of the file (with root squashing off, it should be "root")
 
-### Exercises 
+### Exercises
 
 * On the clients, verify that you can create a file on an NFS share with one user, and pull it off with another user on another system
 * On one client, create a large file and open it with vim. On another client, rm the file. What happens?
