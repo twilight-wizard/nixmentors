@@ -275,6 +275,33 @@ Merging
 
            Descriptive message
 
+Resolving Merge Conflicts
+-------------------------
+
+- Merge conflicts can be the most difficult thing about git. First let's simulate a merge conflict:
+
+        $ git branch
+        * master
+        $ git checkout -b newbranch
+        echo "derp" > derpfile
+        $ git add derpfile
+        $ git commit -m "derp commit"
+        $ git checkout master
+        $ echo "nonderp" > derpfile
+        $ git add derpfile
+        $ git commit -m "non derp commit"
+        $ git merge derp
+
+- At this point you have made two changes to the same line of the same file, in two different branches. Git does not know which change you mean to keep in master. If you run `git status` it will tell you which problem file has been modified on both branches. Open it in your editor. You should see something like this:
+
+        <<<<<<< HEAD
+        non derp
+        =======
+        derp
+        >>>>>>> newbranch
+
+- The part between <<<<<<< HEAD and ======= is the part of your commit that comes from your current branch. The part between ======= and >>>>>>> newbranch comes from the branch you are trying to merge in. Pick which line you want to keep, then delete the other line and all of the separators. Save and quit. Then `git commit` and save the merge message it gives you.
+
 Intro to Github
 ---------------
 
