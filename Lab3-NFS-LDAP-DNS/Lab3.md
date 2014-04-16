@@ -221,15 +221,22 @@ You can read about /etc/exports at http://www.centos.org/docs/5/html/Deployment_
 
 * Open nfs and tcp/udp ports on nfsserver for the ip addresses of the clients
 
-We need to open ports 2049 (default port for nfs) and 111 (default port for portmapper) to allow tcp/udp protocols on our subnet
+We need to open ports 2049 (default port for nfs) and 111 (default port for portmapper) to allow tcp/udp protocols on our subnet.
 
 Run these commands on nfsserver
 ```shell
 sudo iptables -I INPUT -p tcp -s 192.168.1.0/24 -m state --state NEW,RELATED,ESTABLISHED --dport 2049 -j ACCEPT
-sudo iptables -I INPUT -p udp -s 192.168.1.0/24 -m state --state NEW,RELATED,ESTABLISHED --dport 2049 -j ACCEPt
+sudo iptables -I INPUT -p udp -s 192.168.1.0/24 -m state --state NEW,RELATED,ESTABLISHED --dport 2049 -j ACCEPT
 sudo iptables -I INPUT -p tcp -s 192.168.1.0/24 -m state --state NEW,RELATED,ESTABLISHED --dport 111 -j ACCEPT
 sudo iptables -I INPUT -p udp -s 192.168.1.0/24 -m state --state NEW,RELATED,ESTABLISHED --dport 111 -j ACCEPT
 ```
+This will add some rules to iptables that will allow nfs request packets to be accepted on nfsserver.  
+``-I INPUT`` specifies what will be done with the packets. Option "INPUT" means this host will be recieving packets.  
+``-m state --state NEW,RELATED,ESTABLISHED`` defines the state of the connection that the rule should obey.  
+-NEW : The connection has not been seen before  
+-RELATED : The connection is NEW, but is realated to a connection already permitted  
+-ESTABLISHED : The connection has been made before  
+``-j ACCEPT`` tells the host what to do with the packet. "ACCEPT" tells it to accept the packet and stop reading the rule.
 
 Save the changes and restart the service
 ```shell
