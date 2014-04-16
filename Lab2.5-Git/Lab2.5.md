@@ -340,7 +340,7 @@ Working with an existing project
 - Often you will want to contribute to a project that is already on Github. If you are a registered **contributor**
   to the project. you will be able to make changes directly to the repository. Otherwise, you will have to **fork**
   the repository and ask the maintainers to merge your changes. This is called making a **pull request**.
-- Visit [https://github.com/pdxcat/nixmentors]. Click the button in the upper right labeled "Fork".
+- Visit https://github.com/pdxcat/nixmentors. Click the button in the upper right labeled "Fork".
 - Notice the namespace changes from pdxcat to your username.
 - This fork will NOT automatically update when **upstream** (the pdxcat version) changes. You need to keep it updated yourself.
 
@@ -499,7 +499,7 @@ Git and Github Etiquette
 - Commit messages should be in the imperative, i.e. "Add feature", not "Added feature" or "Adds feature".
 - Commit messages have a subject that should be under 80 characters and optionally a longer message, separated by a newline from the subject, also wrapped to 80 characters per line.
 - Never force push to a master branch or any branch that anyone may be working on. Use git revert to backtrack your mistakes on public branches.
-- Be polite when working with contributors or maintainers. You do not want to be known as [this guy](https://gist.github.com/uppfinnarn/9956023).
+- Be polite when working with contributors or maintainers. You do not want to be [this guy](https://gist.github.com/uppfinnarn/9956023).
 - For more about etiquette:
   - http://jamiethepiper.com/git-commit-good-etiquette/
   - http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html
@@ -519,4 +519,4 @@ ssh keys
 For an excellent reference:
 ---------------------------
 
-Try [http://git-scm.com/book]
+Try http://git-scm.com/book
