@@ -132,7 +132,7 @@ sudo passwd $USERNAME
 As each of the users you just created (on any host), create a file foo.txt and send it to different hosts (have destinations be different for each file)
 ```shell
 sudo su $USERNAME (not just for becoming root 0.0)
-touch foo.txt
+echo "I AM A FILE!" > foo.txt
 scp $FILE_TO_SEND $USERNAME@$DEST_IP:$DEST_PATH
 
 #Leaving out the username will use the user logged in as by default
@@ -145,33 +145,16 @@ Run ``exit`` to go back to root user
 
 * Set up a hosts file on nfsserver to map each ip address in your network to the common name given in the vagrant file.
 
-Add the following lines to /etc/hosts
+Add the following lines to /etc/hosts on each server, leaving out the line of the server you are currently on
 ```shell
+#EXAMPLE: on nfsclient1 leave out the line with nfsclient1 and its ip addr
+
 192.168.1.10 nfsserver
 192.168.1.11 nfsclient1
 192.168.1.12 nfsclient2
 192.168.1.13 nfsclient3
 ```
 Try to ping one of the other hosts by hostname. You should get the same output you would if you pinged by ip addresses.
-
-* Copy that hosts file to nfsclient1
-
-```shell
-sudo scp $USERNAME@nfsclient1:/etc/hosts
-
-#scp overwrites an existing file if one with the same name is found in the destination path
-```
-Remove the line with the nfs server ip address in /etc/hosts of nfsserver
-On nfsclient1, remove ``nfsserver.local nfsserver`` from the line with the localhost ip address in /etc/hosts
-Send the /etc/hosts from nfsclient1 to clients 2 and 3
-On each client, add their hostname to the localhost ip address and remove the respective lines with their own ip addresses
-```shell
-#EX: nfsclient1 /etc/hosts should look like this
-127.0.0.1 nfsclient1 localhost localhost.localadmin localhost4 localhost4.localdomain4
-192.168.1.12 nfsclient2
-192.168.1.13 nfsclient3
-```
-
 
 Section 2: NFS: The Network File System
 ---------------------------------------
