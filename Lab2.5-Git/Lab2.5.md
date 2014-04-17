@@ -1,12 +1,12 @@
 Intro to Git and Github
 =======================
 
+You will not need a vagrant vm for this lab. The lab computers all have git installed.
+
 Why Version Control?
 --------------------
 
-- Keeping old versions of your work in case new changes break old work
-- Collaboration
-- Remote backups
+Version control is a way of recording changes to a set of files over time. You can use it to make sure new changes don't break the work you've already done. It is critical for collaboration on projects, since it keeps track of who made what changes when and provides means to resolve conflicts between two people's changes. In many version control systems, it allows for a central server where the versioned files are stored, which can serve as a remote backup mechanism.
 
 Why Git?
 --------
@@ -17,8 +17,8 @@ Largely based on http://thkoch2001.github.io/whygitisbetter
 - Git allows for local development, which means less network overhead
 - Git is fast, partly because of the lack of network overhead and partly because of its snapshotting design
 - Git is distributed: every client copy is a full backup of the server copy
-- Git is versatile
-- Git is the standard
+- Git is versatile: there are innumerable ways to use git
+- Git is the standard: modern companies are moving away from older version control technologies toward git
 
 Initial Setup
 -------------
@@ -63,7 +63,7 @@ Documentation
 The Basics: a Local Repository
 ------------------------------
 
-- git init
+- Initialize a new repository
 
         $ mkdir myproject
         $ cd myproject
@@ -178,6 +178,10 @@ Getting the Rhythm
         $ git commit
         $ git status
 
+- Here's the shortcut:
+
+        $ git commit -a   # Automatically adds all tracked changes to the staging area before committing
+
 Seeing the differences
 ----------------------
 
@@ -233,7 +237,7 @@ Branching
         $ git add testfile.txt
         $ git commit
 
-- Check on your history in your testing
+- Check on your history in your testing branch
 
         $ git log
 
@@ -305,7 +309,7 @@ Resolving Merge Conflicts
 Intro to Github
 ---------------
 
-- Visit github.com and create an account.
+- Visit http://github.com and create an account.
 - Click the '+' in the upper right corner. Click Create New Repository from that dropdown.
 - Give it a name and a description. Don't click the "Initialize this repository with a README" checkbox.
 - Follow the instructions to "Push an existing repository from the command line"
@@ -332,7 +336,7 @@ Pushing to Github
         $ git push -u origin master
 
 - origin is your remote repository. master is the branch you want to push.
-- -u tells git to set this origin as upstream, which means in the future you can just say "git push"
+- -u tells git to set this origin as upstream, which means in the future you can just say `git push`
 
 Working with an existing project
 --------------------------------
@@ -405,11 +409,11 @@ Git rebase
 - Scenario 2: You want to swap the order of two commits.
   - Do another interactive rebase
   - Swap the order of the two commits in the editor that opens up. Save and quit.
-- Scenario 3: You need to combine multiple commits into one commit message. This comes up a lot in the CAT, where we need to push committed code to a testing branch in order to deploy it, and then later need to rewrite our commit messages so that they succinctly sum up the purpose of the code. This doesn't necessarily happen a lot in other environments, since every you make a commit it should be for one small change.
+- Scenario 3: You need to combine multiple commits into one commit message. This comes up a lot in the CAT, where we need to push committed code to a testing branch in order to deploy it, and then later need to rewrite our commit messages so that they succinctly sum up the purpose of the code. This doesn't necessarily happen a lot in other environments, since every time you make a commit it should be for one small change.
   - Interactive rebase, going back as long as you need to encompass all the commits you want to combine.
   - The action for the commit you want to keep will either be 'pick', if you like the commit message, or 'reword' if you want to change the wording
   - The action for the commits you want to combine with the main commit will either be 'squash' or 'fixup'. 'squash' will insert the commit message into the new commit. 'fixup' will discard the message.
-  - In any case, you are not losing your work. The work from the squashed commits will be merged into the main commit.
+  - In any case, you are not losing your work. The work from the squashed/fixedup commits will be merged into the main commit.
   - After you finish your rebase, run `git log -p` to see that all of your changes are now under your main commit.
 - Scenario 4: You are working on a test branch, but since you started working, the master branch has changed. You need to keep your branch updated.
 
@@ -436,7 +440,7 @@ Making Mistakes
 
     $ git checkout file    # restores the file to the state it was at at the last commit. This is very destructive! You cannot recover from this!
 
-- Git will recommend using the syntax `git checkout -- file`. The -- is to protect you from accidentally adding flags to git checkout if the file name contains a -. If this doesn't make sense, it is just safer to use `git checkout -- file`.
+- Git will recommend using the syntax `git checkout -- file`. The `--` is to protect you from accidentally adding flags to git checkout if the file name contains a `-`. If this doesn't make sense, it is just safer to use `git checkout -- file`.
 
 ### Git Reset
 
@@ -462,7 +466,7 @@ Making Mistakes
 
 ### Git Revert
 
-- The problem with changing your commit history via git commit --amend or git reset is that, if you have already pushed your commits to a remote repository, your repo may have been used by someone else. Changing history completely breaks their ability to re-pull or to contribute back changes. If you have already publicized your mistakes, it is best to admit to it and fix it publicly.
+- The problem with changing your commit history via `git commit --amend` or `git reset` is that, if you have already pushed your commits to a remote repository, your repo may have been used by someone else. Changing history completely breaks their ability to re-pull or to contribute back changes. If you have already publicized your mistakes, it is best to admit to it and fix it publicly.
 
         $ git log  # Find the hash of the commit you want to revert
         $ git revert <hash>   # This will add a commit describing that you reverted a previous commit
@@ -508,6 +512,7 @@ Git and Github Etiquette
 Other things to cover:
 
 git cherry-pick
+git tag
 
 Advanced/miscellaneous
 .gitignore
@@ -516,7 +521,7 @@ additional git commands (git-thing in path)
 ssh keys
 
 --->
-For an excellent reference:
----------------------------
+More
+----
 
-Try http://git-scm.com/book
+Git is a complex beast. There are always more commands, subcommands, flags, and shortcuts to learn. For an excellent reference, try http://git-scm.com/book
