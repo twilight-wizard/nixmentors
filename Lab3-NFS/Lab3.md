@@ -14,11 +14,11 @@
    limitations under the License.
 --->
 
-Lab 3: NFS/LDAP/DNS
+Lab 3: NFS
 ===================
 
 
-In this lab you will be playing with NFS, the Network File System; LDAP, the Leightweight Directory Access Protocol, and DNS; the Domain Name Service. These are kindof the hardcore services. For Realz. Dis aint the Web Dump, homie.
+In this lab you will be playing with NFS, the Network File System. This is kindof a hardcore service. For Realz. Dis aint the Web Dump, homie.
 
 
 Section 1: Networking Basics
@@ -321,10 +321,3 @@ Run ``sudo shutdown -r now``
 
 Wait a couple of minutes, then run ``vagrant ssh nfsclient($NUM)``
 Run ``ls /datashare``. Can you see "file1"? (You should)
-
-Section 3: LDAP Client connection
----------------------------------------
-
-Section 4: DNS
----------------------------------------
-
