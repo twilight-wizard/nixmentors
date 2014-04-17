@@ -37,11 +37,11 @@ This file can be your reference for which machines have which names and ip addre
 ### Vagrant up
 
 ```shell
-vagrant up
+$ vagrant up
 ```
 
 ```shell
-hadron:Lab3-NFS-LDAP-DNS (master) $ vagrant status
+$ vagrant status
 
 Current machine states:
 
@@ -60,14 +60,14 @@ VM, run `vagrant status NAME`.
 Open up several terminal windows, change directory on all of them into the Lab3 directory.
 
 ```shell
-vagrant ssh nfsserver
+$ vagrant ssh nfsserver
 ```
 
 And in a different window:
 
 
 ```shell
-vagrant ssh nfsclient1
+$ vagrant ssh nfsclient1
 ```
 
 ### Exercises
@@ -76,26 +76,18 @@ vagrant ssh nfsclient1
 
 * Ping each host from one host
 
+From one of the hosts:
 ```shell
-hadron:Lab3-NFS-LDAP-DNS (master) $ vagrant ssh nfsserver
-Last login: Tue Apr 30 21:45:04 2013 from 10.0.2.2
-Welcome to your Vagrant-built virtual machine.
-vagrant@nfsserver: ~ > ping nfsclient1
-ping: unknown host nfsclient1
-vagrant@nfsserver: ~ > ping 192.168.1.11
-PING 192.168.1.11 (192.168.1.11) 56(84) bytes of data.
-64 bytes from 192.168.1.11: icmp_seq=1 ttl=64 time=0.283 ms
-64 bytes from 192.168.1.11: icmp_seq=2 ttl=64 time=0.268 ms
-^C
---- 192.168.1.11 ping statistics ---
-2 packets transmitted, 2 received, 0% packet loss, time 1611ms
-rtt min/avg/max/mdev = 0.268/0.275/0.283/0.018 ms
+$ ping 192.168.1.10
+$ ping 192.168.1.11
+$ ping 192.168.1.12
+$ ping 192.168.1.13
 ```
 
 * View the routing table for your virtual machines
 
 ```
-vagrant@nfsserver: ~ > netstat -rn
+$ netstat -rn
 Kernel IP routing table
 Destination     Gateway         Genmask         Flags   MSS Window  irtt Iface
 192.168.1.0     0.0.0.0         255.255.255.0   U         0 0          0 eth1
@@ -116,24 +108,24 @@ Iface: Interface to which packets are sent to
 - mike:   uid of your choice
 
 ```shell
-sudo useradd -u 2313 ashley
-sudo useradd -u 2121 bob
-sudo useradd -u $UID mike
+$ sudo useradd -u 2313 ashley
+$ sudo useradd -u 2121 bob
+$ sudo useradd -u $UID mike
 ```
 
 * Set passwords for the users (including root)
 
 ```shell
-sudo passwd $USERNAME
+$ sudo passwd $USERNAME
 ```
 
 * Create a file foo.txt with plain text in it, and copy it using scp from one host to another using your created users
 
 As each of the users you just created (on any host), create a file foo.txt and send it to different hosts (have destinations be different for each file)
 ```shell
-sudo su $USERNAME (not just for becoming root 0.0)
-echo "I AM A FILE!" > foo.txt
-scp $FILE_TO_SEND $USERNAME@$DEST_IP:$DEST_PATH
+$ sudo su $USERNAME (not just for becoming root 0.0)
+$ echo "I AM A FILE!" > foo.txt
+$ scp $FILE_TO_SEND $USERNAME@$DEST_IP:$DEST_PATH
 
 #Leaving out the username will use the user logged in as by default
 #ip address can be replaced with hostname if set
@@ -168,23 +160,24 @@ On a conceptual level, NFS is one computer letting another computer use its stor
 
 * Install the NFS packages on each of the hosts
 ```shell
-yum install nfs-utils
+$ sudo yum install nfs-utils
 ```
 
 * Start the daemon
 
 ```shell
-sudo service nfs start
+$ sudo service nfs start
 ```
 
 * Create directories /data/share1 through /data/share4 on nfsserver
 
+On nfsserver run:
 ```shell
-mkdir -p /data/share{1,2,3,4}
+$ sudo mkdir -p /data/share{1,2,3,4}
 ```
 Change the perms on the directories so anybody can create and edit files on them
 ```shell
-root@nfsserver: data > chmod 777 /data/share*
+$ chmod 777 /data/share*
 ```
 
 ### /etc/exports
@@ -201,10 +194,10 @@ We need to open ports 2049 (default port for nfs) and 111 (default port for port
 
 Run these commands on nfsserver
 ```shell
-sudo iptables -I INPUT -p tcp -s 192.168.1.0/24 -m state --state NEW,RELATED,ESTABLISHED --dport 2049 -j ACCEPT
-sudo iptables -I INPUT -p udp -s 192.168.1.0/24 -m state --state NEW,RELATED,ESTABLISHED --dport 2049 -j ACCEPT
-sudo iptables -I INPUT -p tcp -s 192.168.1.0/24 -m state --state NEW,RELATED,ESTABLISHED --dport 111 -j ACCEPT
-sudo iptables -I INPUT -p udp -s 192.168.1.0/24 -m state --state NEW,RELATED,ESTABLISHED --dport 111 -j ACCEPT
+$ sudo iptables -I INPUT -p tcp -s 192.168.1.0/24 -m state --state NEW,RELATED,ESTABLISHED --dport 2049 -j ACCEPT
+$ sudo iptables -I INPUT -p udp -s 192.168.1.0/24 -m state --state NEW,RELATED,ESTABLISHED --dport 2049 -j ACCEPT
+$ sudo iptables -I INPUT -p tcp -s 192.168.1.0/24 -m state --state NEW,RELATED,ESTABLISHED --dport 111 -j ACCEPT
+$ sudo iptables -I INPUT -p udp -s 192.168.1.0/24 -m state --state NEW,RELATED,ESTABLISHED --dport 111 -j ACCEPT
 ```
 This will add some rules to iptables that will allow nfs request packets to be accepted on nfsserver.  
 ``-I INPUT`` specifies what will be done with the packets. Option "INPUT" means this host will be recieving packets.  
@@ -216,8 +209,8 @@ This will add some rules to iptables that will allow nfs request packets to be a
 
 Save the changes and restart the service
 ```shell
-sudo service iptables save
-sudo service iptables restart
+$ sudo service iptables save
+$ sudo service iptables restart
 ```
 Check whether the settings were saved with ``iptables -L``
 
@@ -232,7 +225,7 @@ Execute ``exportfs -rv`` on nfsserver
 * Mount the filesystem on nfsclient1
 
 ```shell
-root@nfsclient1: ~ > mount -t nfs nfsserver:/data/share1 /mnt
+$ sudo mount -t nfs nfsserver:/data/share1 /mnt
 ```
 Check if the FS has been mounted
 ```shell
@@ -242,14 +235,14 @@ You should get some information on about the mounted FS.
 
 su into another user and try to make a file on the mounted filesystem
 ```shell
-touch /mnt/testfile
+$ touch /mnt/testfile
 ```
 Now mount share1 on another nfs_client. Can you see testfile there?
 su into the same user and edit the file. Go back to nfsclient1 and look at the file. Can you see the changes?
 
 Dont forget to unmount the filesystems when you are done with them
 ```shell
-umount /mnt
+$ umount /mnt
 ```
 
 NOTE: If you try to create a file as root on a share with root_squash on (on by default), it will be created under user "nobody".
@@ -277,6 +270,7 @@ Execute ``exportfs -rv`` on nfsserver.
 Now try mounting share3 on all of the nfsclients . Does this work? Check the mount using either of the previously specified methods
 
 Unmount share3 from all of the clients.
+
 * Share /data/share4 to all clients in your subnet but no other ip addresses, but turn off root squashing
 Add this to /etc/exports on nfsserver
 ```shell
@@ -303,11 +297,11 @@ Lets add share1 to be mounted on startup. We shouldnt mount this on /mnt because
 
 Create a directory any of the nfsclients for /data/share1 to me mounted to
 ```shell
-sudo mkdir /datashare
+$ sudo mkdir /datashare
 ```
 Now lets add this NFS share to be mounted on startup.
 ```shell
-sudo vim /etc/fstab
+$ sudo vim /etc/fstab
 
 #Though the file does not have headers for the columns, this is what each column specifies
 # Device                   mountpoint   fs-type   options       dump  fsckord
@@ -319,3 +313,6 @@ Run ``sudo shutdown -r now``
 
 Wait a couple of minutes, then run ``vagrant ssh nfsclient($NUM)``
 Run ``ls /datashare``. Can you see "file1"? (You should)
+
+
+
