@@ -166,7 +166,7 @@ On a conceptual level, NFS is one computer letting another computer use its stor
 
 ### Setting up the NFS packages
 
-* Install the NFS packages
+* Install the NFS packages on each of the hosts
 ```shell
 yum install nfs-utils
 ```
@@ -180,11 +180,7 @@ sudo service nfs start
 * Create directories /data/share1 through /data/share7 on nfsserver
 
 ```shell
-mkdir /data
-mkdir /data/share1
-mkdir /data/share2
-mkdir /data/share3
-mkdir /data/share4
+mkdir -p /data/share{1,2,3,4}
 ```
 Make some files in these shares on nfsserver
 ```shell
