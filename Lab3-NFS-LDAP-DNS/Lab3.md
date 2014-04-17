@@ -177,7 +177,7 @@ yum install nfs-utils
 sudo service nfs start
 ```
 
-* Create directories /data/share1 through /data/share7 on nfsserver
+* Create directories /data/share1 through /data/share4 on nfsserver
 
 ```shell
 mkdir -p /data/share{1,2,3,4}
@@ -226,6 +226,7 @@ Save the changes and restart the service
 sudo service iptables save
 sudo service iptables restart
 ```
+Check whether the settings were saved with ``iptables -L``
 
 * Set the directory /data/share1 to be shared with standard permissions to all hosts
 
