@@ -44,12 +44,12 @@ $ vagrant up
 $ vagrant status
 
 Current machine states:
-
+```
 nfsserver                 running (virtualbox)
 nfsclient1                running (virtualbox)
 nfsclient2                running (virtualbox)
 nfsclient3                running (virtualbox)
-
+```
 This environment represents multiple VMs. The VMs are all listed
 above with their current state. For more information about a specific
 VM, run `vagrant status NAME`.
@@ -112,6 +112,7 @@ $ sudo useradd -u 2313 ashley
 $ sudo useradd -u 2121 bob
 $ sudo useradd -u $UID mike
 ```
+You can see some information about the users with ``id $USER``
 
 * Set passwords for the users (including root)
 
@@ -175,9 +176,31 @@ On nfsserver run:
 ```shell
 $ sudo mkdir -p /data/share{1,2,3,4}
 ```
-Change the perms on the directories so anybody can create and edit files on them
+Create a group for users that should have access to the shares on each of the hosts
 ```shell
-$ chmod 777 /data/share*
+$ sudo groupadd -g 1050 datashare
+#NOTE: group ids 999 and below are usually reserved for system accounts
+```
+Add the users you created (and root) to the group you just created on each of the hosts
+```shell
+$ usermod -a -G datashare $USER
+```
+Check the which groups the user is a member of
+```shell
+$ groups $USER
+```
+
+Give group ownership of the data shares to group datashare (on nfsserver)
+```shell
+$ chgrp datashare /data/share*
+```
+Check the ownership of the shares (on nfsserver)
+```shell
+$ ls -l /data/
+```
+Change the perms on the directories so anybody in group datashare can create and edit files on them (on nfsserver)
+```shell
+$ chmod 664 /data/share*
 ```
 
 ### /etc/exports
