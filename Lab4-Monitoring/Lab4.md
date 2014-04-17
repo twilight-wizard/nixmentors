@@ -102,7 +102,47 @@ logrotate -f /etc/logrotate.d/rsyslog
 Section 2: Nagios
 -------------------
 
-Nagios is a popular open source monitoring tool designed to let system administrators know about problems in their infrastructure. In this lab Nagios will be monitoring the infrastructure on your vagrant vm.
+Nagios is a popular open source monitoring tool designed to let system administrators know about problems in their
+infrastructure. In this lab, you will install, configure, add hosts, add services, and set up nrpe.
 
-To get started point your web browser at `http://<your_vm_ip_address>/nagios3`. Then click on "Hosts (Unhandled)". You will see a lot of broken services. Your job is to fix them all by logging into the machine, finding the problem, performing a fix and then checking with Nagios to see if the service turns green.
+###Section 2.1: Install and Configure Nagios3
+
+First, ssh into the nagios3 vm. Install nagios3 using apt-get. You will be prompted for a how you want nagios to mail
+you and the default user. Select "local only" then type in 'vagrant@localhost'. You will also be prompted for a web 
+administration password you can create your own and remember it or simply type "ovan654".
+
+```bash
+vagrant ssh nagios3
+sudo apt-get update
+sudo apt-get install nagios3
+```
+
+After, nagios3 is installed head over to "http:localhost:8080/nagios3" you will be prompted by a username and password.
+The username is 'nagiosadmin' and password is whatever you entered when you were prompted during setup.
+
+Now, have some fun checking out the site, click on some links, ask questions about what something means if its
+confusing. Specifically checkout the Map tab, its gonna look really cool the more hosts you add especially on
+'circular'.
+
+###Section 2.2: Adding Hosts and Services
+
+Now its time to head down the deep rabbit hole of configs. Fire up an extra tab and head over to:
+  http://www.the-tech-tutorial.com/wp-content/uploads/2011/07/nagios-config.png
+This is just a guideline, the nagios.cfg file can be maintained as one long file containing all
+the hosts, hostgroups, services, commands, contacts, contactgroups, timeperiods, and more. However,
+splitting them up can make each host be there own file, making it simple to add, edit, and delete
+each host. Need to add a new employee to the contact list, throw them in the contacts file.
+
+Time to add a host. Specifically, webc.cat.pdx.edu,
+
+###Section 2.3: Testing, Testing, Testing
+###Section 2.4: NRPE
+
+
+
+
+
+
+
+
 
