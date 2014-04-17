@@ -324,7 +324,7 @@ fstab is the configuration file that manages filesystems on Unix operatings syst
 
 Lets add share1 to be mounted on startup. We shouldnt mount this on /mnt because it should be left for more dynamic mounts.
 
-Create a directory any of the nfsclients for /data/share1 to me mounted to
+Create a directory any of the nfsclient1 for /data/share1 to me mounted to
 ```shell
 $ sudo mkdir /datashare
 ```
@@ -343,5 +343,47 @@ Run ``sudo shutdown -r now``
 Wait a couple of minutes, then run ``vagrant ssh nfsclient($NUM)``
 Run ``ls /datashare``. Can you see "file1"? (You should)
 
+### Autofs
+
+You can set filesystems to be automatically mounted when it is needed. This could be useful when you have many mountable NFS shares, but dont always need all of them. You will have access to share you need without having to manually mount each share and have not have all of the shares mounted all of the time.
+
+* Configure a client to use autofs with share3
+
+Install the autofs package on nfsclient2
+```
+$ sudo yum install autofs
+```
+The primary configuration file for autofs is /etc/auto.master . We are going to create a automount point for share3
+
+Add the following line to /etc/auto.master (on nfsclient2) just under the line with ``/misc   /etc/auto.misc``
+```
+/share  /etc/auto.share
+```
+The first column specifies where the base mountpoint is, the second column points to the file where the NFS share is sourced at.
+
+Now create a file /etc/auto.share as root on nfsclient2 and put the following line in it:
+```
+share3 -fstype=nfs nfsserver:/data/share3 
+```
+Columns 1 specifies the directory that the FS will be mounted to (following the base mountpoint).  
+You should be able to recognize what columns 2 and 3 are all about by now.  
+More information on configurations for these files can be found at http://www.centos.org/docs/5/html/5.2/Deployment_Guide/s2-nfs-config-autofs.html
+
+Restart autofs
+```
+$ sudo service autofs restart
+```
+
+* Check to see if automount works
+- Run ``ls /``. You will see that the directory /share has been created for you  
+- Run ``ls /share``. Can you see share3? (you shouldnt, it has not been mounted yet)  
+- Use either ``df`` or ``mount | grep nfs`` to check the mounts on the host  
+- Automount creates the directory and mounts the NFS share right when the user attempts to open that file, but before that it will not be displayed or shown as mounted. To trigger automount, simply ``cd`` into the directory you know should be mounted. Here in the CAT we like to refer to that as "the leap of faith"  
+- Check your current directory with ``pwd``
+- Check the mount with either ``df`` or ``mount | grep nfs``
+
+### Excercises
+* Reboot nfsclient2 and run ``ls /share`` once its back up. What do you see?
+* Setup share4 to automount, but timeout if the share is not accessed for 5 minutes
 
 
