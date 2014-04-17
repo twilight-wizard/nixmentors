@@ -44,12 +44,12 @@ $ vagrant up
 $ vagrant status
 
 Current machine states:
-```
+
 nfsserver                 running (virtualbox)
 nfsclient1                running (virtualbox)
 nfsclient2                running (virtualbox)
 nfsclient3                running (virtualbox)
-```
+
 This environment represents multiple VMs. The VMs are all listed
 above with their current state. For more information about a specific
 VM, run `vagrant status NAME`.
@@ -64,7 +64,6 @@ $ vagrant ssh nfsserver
 ```
 
 And in a different window:
-
 
 ```shell
 $ vagrant ssh nfsclient1
@@ -160,15 +159,22 @@ On a conceptual level, NFS is one computer letting another computer use its stor
 ### Setting up the NFS packages
 
 * Install the NFS packages on each of the hosts
+
 ```shell
 $ sudo yum install nfs-utils
 ```
 
-* Start the daemon
+* Start the daemon on each of the hosts
 
 ```shell
 $ sudo service nfs start
 ```
+
+* Get NFS service to start upon booting
+
+We want our new service to start when the machine is booted. We manage this with "chkconfig".  
+You can see the the levels a service is set to run at with ``chkconfig --list nfs``.  
+Turn on levels 3,4,5 with ``chkconfig nfs on`` (3: runs the service under a multiuser mode, 4: unused, 5: runs on a xsession)
 
 * Create directories /data/share1 through /data/share4 on nfsserver
 
