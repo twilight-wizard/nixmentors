@@ -291,6 +291,7 @@ Mount share4 on any nfs_client. Trying making a file as root on the share. Run `
 
 * On the clients, verify that you can create a file on an NFS share with one user, and pull it off with another user on another system
 * On one client, create a large file and open it with vim. On another client, rm the file. What happens?
+* ``showmount -e nfsserver`` on any of the clients should show what is available to mount, but an error occurs. How can we fix this? (Hint: iptables...)
 
 ### Have NFS share mounted on boot
 
