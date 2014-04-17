@@ -182,13 +182,6 @@ sudo service nfs start
 ```shell
 mkdir -p /data/share{1,2,3,4}
 ```
-Make some files in these shares on nfsserver
-```shell
-touch /data/share1/file1
-touch /data/share2/file2
-touch /data/share3/file3
-touch /data/share4/file4
-```
 Change the perms on the directories so anybody can create and edit files on them
 ```shell
 root@nfsserver: data > chmod 777 /data/share*
@@ -241,10 +234,12 @@ Execute ``exportfs -rv`` on nfsserver
 ```shell
 root@nfsclient1: ~ > mount -t nfs nfsserver:/data/share1 /mnt
 ```
-Check if you can see file1
+Check if the FS has been mounted
 ```shell
-ls /mnt
+$ mount | grep nfsserver
 ```
+You should get some information on about the mounted FS.
+
 su into another user and try to make a file on the mounted filesystem
 ```shell
 touch /mnt/testfile
@@ -254,7 +249,8 @@ su into the same user and edit the file. Go back to nfsclient1 and look at the f
 
 Dont forget to unmount the filesystems when you are done with them
 ```shell
-umount /mnt```
+umount /mnt
+```
 
 NOTE: If you try to create a file as root on a share with root_squash on (on by default), it will be created under user "nobody".
 
@@ -266,7 +262,9 @@ Add this to /etc/exports on nfsserver
 ```
 Execute ``exportfs -rv`` on nfsserver
 Try mounting share2 on a nfsclient other than client2. Does it work? (it shouldnt)
-Now try mounting share2 on nfsclient2. Does this work? If no error messages pop up, check if you can see file2.
+Now try mounting share2 on nfsclient2. Does this work? (no error messages)
+
+Check the FS with ``df``
 
 Unmount the FS when you are done with it.
 * Share /data/share3 to only clients in the 192.168.1.0/24 subnets
@@ -275,8 +273,8 @@ Add this to /etc/exports on nfsserver
 ```shell
 /data/share3 192.168.1.0/24(rw)
 ```
-Execute ``exportfs -rv`` on nfsserver
-Now try mounting share3 on all of the nfsclients . Does this work? If no error messages pop up, check if you can see file3.
+Execute ``exportfs -rv`` on nfsserver.  
+Now try mounting share3 on all of the nfsclients . Does this work? Check the mount using either of the previously specified methods
 
 Unmount share3 from all of the clients.
 * Share /data/share4 to all clients in your subnet but no other ip addresses, but turn off root squashing
@@ -285,13 +283,13 @@ Add this to /etc/exports on nfsserver
 /data/share4 192.168.1.0/24(rw,no_root_squash)
 ```
 Run ``exportfs -rv`` on nfsserver
-Mount share4 on any nfs_client. Trying making a file as root on the share. Run ``ls -l``. Who is the owner of the file (with root squashing off, it should be "root")
+Mount share4 on any nfs_client. Check if it mounted. Trying making a file as root on the share. Run ``ls -l``. Who is the owner of the file (with root squashing off, it should be "root")
 
 ### Exercises
 
 * On the clients, verify that you can create a file on an NFS share with one user, and pull it off with another user on another system
 * On one client, create a large file and open it with vim. On another client, rm the file. What happens?
-* ``showmount -e nfsserver`` on any of the clients should show what is available to mount, but an error occurs. How can we fix this? (Hint: iptables...)
+* ``showmount -e nfsserver`` on any of the clients should show what is available to mount from the nfsserver, but an error occurs. How can we fix this? (Hint: iptables...)
 
 ### Have NFS share mounted on boot
 
