@@ -317,12 +317,12 @@ Intro to Github
 Remotes
 -------
 
-- A remote is a foreign location. This will be the identifier for your remote repository.
+- A remote is a foreign location. This will be the identifier for your remote repository. After you have created your repository, copy the HTTP url in the box under Quick setup and use it to add a remote:
 
-        $ git remote add origin git@github.com/cmurphy/myproject.git
+        $ git remote add origin https://github.com/cmurphy/myproject.git
         $ git remote -v
-        origin  git@github.com:cmurphy/test.git (fetch)
-        origin  git@github.com:cmurphy/test.git (push)
+        origin https://github.com/cmurphy/myproject.git (fetch)
+        origin https://github.com/cmurphy/myproject.git (push)
         $
 
 - Listing your remotes will give you two URLs, one to get data from and one to push data to. By default these are the same.
