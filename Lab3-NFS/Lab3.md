@@ -95,7 +95,7 @@ Destination     Gateway         Genmask         Flags   MSS Window  irtt Iface
 169.254.0.0     0.0.0.0         255.255.0.0     U         0 0          0 eth1
 0.0.0.0         10.0.2.2        0.0.0.0         UG        0 0          0 eth0
 ````
-Destination: The subnet for ip adress ranges, the final destenation. It the case of the first one, the addresses 192.168.1.0-255  
+Destination: The subnet for ip adress ranges, the final destination. It the case of the first one, the addresses 192.168.1.0-255  
 Gateway: The next level up for routing. A 0.0.0.0 gateway means "unspecified", and any ipaddress going through the netmask would be let through this gateway  
 Genmask: The netmask for the destination host  
 Flags: Flag U means that the interface is up, the G flag indicates a route to host via a gateway  
@@ -232,7 +232,7 @@ This will add some rules to iptables that will allow nfs request packets to be a
 ``-I INPUT`` specifies what will be done with the packets. Option "INPUT" means this host will be recieving packets.  
 ``-m state --state NEW,RELATED,ESTABLISHED`` defines the state of the connection that the rule should obey.  
 -NEW : The connection has not been seen before  
--RELATED : The connection is NEW, but is realated to a connection already permitted  
+-RELATED : The connection is NEW, but is related to a connection already permitted  
 -ESTABLISHED : The connection has been made before  
 ``-j ACCEPT`` tells the host what to do with the packet. "ACCEPT" tells it to accept the packet and stop reading the rule.
 
@@ -365,7 +365,7 @@ Now create a file /etc/auto.share as root on nfsclient2 and put the following li
 ```
 share3 -fstype=nfs nfsserver:/data/share3 
 ```
-Columns 1 specifies the directory that the FS will be mounted to (following the base mountpoint).  
+Column 1 specifies the directory that the FS will be mounted to (following the base mountpoint).  
 You should be able to recognize what columns 2 and 3 are all about by now.  
 More information on configurations for these files can be found at http://www.centos.org/docs/5/html/5.2/Deployment_Guide/s2-nfs-config-autofs.html
 
