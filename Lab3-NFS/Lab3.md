@@ -96,7 +96,7 @@ Destination     Gateway         Genmask         Flags   MSS Window  irtt Iface
 0.0.0.0         10.0.2.2        0.0.0.0         UG        0 0          0 eth0
 ````
 Destination: The subnet for ip adress ranges, the final destination. It the case of the first one, the addresses 192.168.1.0-255  
-Gateway: The next level up for routing. A 0.0.0.0 gateway means "unspecified" and any ipaddress going through the netmask would be let through this gateway  
+Gateway: The next level up for routing. A 0.0.0.0 gateway means "unspecified", and any ipaddress going through the netmask would be let through this gateway  
 Genmask: The netmask for the destination host  
 Flags: Flag U means that the interface is up, the G flag indicates a route to host via a gateway  
 Iface: Interface to which packets are sent to  
