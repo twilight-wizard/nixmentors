@@ -180,7 +180,7 @@ Turn on levels 3,4,5 with ``chkconfig nfs on`` (3: runs the service under a mult
 
 On nfsserver run:
 ```shell
-$ sudo mkdir -p /data/share{1,2,3,4}
+$ sudo mkdir -p /data/share{1..4}
 ```
 Create a group for users that should have access to the shares on each of the hosts
 ```shell
