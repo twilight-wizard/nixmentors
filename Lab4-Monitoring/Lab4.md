@@ -109,7 +109,7 @@ infrastructure. In this lab, you will install, configure, add hosts, add service
 
 First, ssh into the nagios3 vm. Install nagios3 using apt-get. You will be prompted for a how you want nagios to mail
 you and the default user. Select "local only" then type in 'vagrant@localhost'. You will also be prompted for a web 
-administration password you can create your own and remember it or simply type "ovan654".
+administration password you can create your own and remember it or simply type "avon654".
 
 ```bash
 vagrant ssh nagios3
@@ -117,12 +117,12 @@ sudo apt-get update
 sudo apt-get install nagios3
 ```
 
-After, nagios3 is installed head over to "http:localhost:8080/nagios3" you will be prompted by a username and password.
+After, nagios3 is installed head over to "http://<insert your hostname here>:8080/nagios3" you will be prompted by a username and password.
 The username is 'nagiosadmin' and password is whatever you entered when you were prompted during setup.
 
 Now, have some fun checking out the site, click on some links, ask questions about what something means if its
 confusing. Specifically checkout the Map tab, its gonna look really cool the more hosts you add especially on
-'circular'.
+'circular'. Its pretty boring right now, but thats why we are gonna add some hosts and services.
 
 ###Section 2.2: Adding Hosts and Services
 
@@ -130,10 +130,22 @@ Now its time to head down the deep rabbit hole of configs. Fire up an extra tab 
   http://www.the-tech-tutorial.com/wp-content/uploads/2011/07/nagios-config.png
 This is just a guideline, the nagios.cfg file can be maintained as one long file containing all
 the hosts, hostgroups, services, commands, contacts, contactgroups, timeperiods, and more. However,
-splitting them up can make each host be there own file, making it simple to add, edit, and delete
-each host. Need to add a new employee to the contact list, throw them in the contacts file.
+splitting them up can make each host, command, service, contact, be there own file, making it simple to add, edit, and delete
+each item, especially when using a configuration tool like puppet.
 
-Time to add a host. Specifically, webc.cat.pdx.edu,
+So before we add a host, command, service, and contact. cd into the /etc/nagios3/conf.d and make some folders.
+```bash
+cd /etc/nagios3/conf.d
+mkdir hosts commands services contacts
+```
+
+Time to add a host. Specifically, projects.cecs.pdx.edu:
+Copy the following files from /vagrant/nagios into /etc/nagios3/
+```bash
+cp 
+```
+
+
 
 ###Section 2.3: Testing, Testing, Testing
 ###Section 2.4: NRPE
