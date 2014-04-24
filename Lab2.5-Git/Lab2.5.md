@@ -388,7 +388,7 @@ Pull Requesting
         $ git push origin fix_lab2
 
 - Now use the Github UI to ask for your changes to be merged.
-  - Your fork should now have a "Compare & pull request" button. Click it.
+  - Your fork should now have a "Compare & pull request" button. Click it.  (If you don't see a button, go to that branch, click compare, and use that green button)
   - Write a comment about your change. You should include what the change is, and any documented issues/bugs that this change addresses.
   - Pay attention to the note on the right side of the comment section. If your branch is not able to merge cleanly, the maintainer will likely ask you to fix your conflicts.
   - Click the "Send pull request" button.
@@ -519,6 +519,7 @@ Advanced/miscellaneous
 aliases, other configs
 additional git commands (git-thing in path)
 ssh keys
+
 
 --->
 More
