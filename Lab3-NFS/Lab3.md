@@ -14,7 +14,7 @@
    limitations under the License.
 --->
 
-Lab 3: NFS
+Lab 3: NFS-Autofs
 ===================
 
 
