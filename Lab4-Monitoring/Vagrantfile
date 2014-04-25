@@ -11,23 +11,33 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # The url from where the 'config.vm.box' box will be fetched if it
   # doesn't already exist on the user's system.
-  config.vm.box_url = "/stash/nixmentors/boxes/centos-6.4-amd64.box"
 
   config.vm.define "syslogserver" do |syslogserver|
     syslogserver.vm.box = "centos64"
     syslogserver.vm.hostname = "syslogserver"
     syslogserver.vm.network :private_network, ip: "192.168.1.10"
+    syslogserver.vm.box_url = "/stash/nixmentors/boxes/centos-6.4-amd64.box"
   end
 
   config.vm.define "syslogclient1" do |syslogclient1|
     syslogclient1.vm.box = "centos64"
     syslogclient1.vm.hostname = "syslogclient1"
     syslogclient1.vm.network :private_network, ip: "192.168.1.11"
+    syslogclient1.vm.box_url = "/stash/nixmentors/boxes/centos-6.4-amd64.box"
   end
 
   config.vm.define "syslogclient2" do |syslogclient2|
     syslogclient2.vm.box = "centos64"
     syslogclient2.vm.hostname = "syslogclient2"
     syslogclient2.vm.network :private_network, ip: "192.168.1.12"
+    syslogclient2.vm.box_url = "/stash/nixmentors/boxes/centos-6.4-amd64.box"
+  end
+
+  config.vm.define "nagios3" do |nagios3|
+    nagios3.vm.box = "precise64"
+    nagios3.vm.hostname = "nagios3"
+    nagios3.vm.network :private_network, ip: "192.168.1.13"
+    nagios3.vm.network "forwarded_port", guest: 80, host: 8080
+    nagios3.vm.box_url = "/stash/nixmentors/boxes/precise64.box"
   end
 end
