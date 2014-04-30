@@ -93,16 +93,16 @@ okay, okay, hold your horses there cow{boy,girl}, I'm just having a little fun.
 When using `zpool` you have to understand how it takes its arguments. Thankfully
 its pretty straight forward and consistent in its style. Here is an example:
 
-`bunny:~# zpool create mpool mirror c9t0d0 c9t4d0 c12t0d0`
+`root@sunosfiler1:~# zpool create mpool mirror c9t1d0 c9t2d0 c9t3d0`
 
 Alright, we have a couple things going on here. Let's get this over with.
 
-* `bunny:~#` is my shell prompt, its at the begining of all of my commands
+* `root@sunosfiler1:~#` is my shell prompt, its at the begining of all of my commands
 * `zpool` is the name of the command, (if you didn't get this part, quietly leave the room)
 * `create` is the action we want to take, and in this case, will create a pool
 * `mpool` is the name of the pool we are referring to, in case of create, this better be new
 * `mirror` is the type if pool that we are aiming to create, in this case, mirror the disks
-* `c9t0d0 c9t4d0 c12t0d0` are the names of the disks that we want to include into our pool
+* `c9t1d0 c9t2d0 c9t3d0` are the names of the disks that we want to include into our pool
 
 After executing the command will should see no output, which is a great thing. It means
 that the command executed successfully and now we will have a newly created filesystem 
@@ -111,16 +111,15 @@ by listing the contents of root.
 
 ```
 bunny:~# ls /
-bin       cat       dev       etc       home      lib       mnt       net
-opt       platform  root      sbin      system    tmp       usr       volumes
-boot      cdrom     devices   export    kernel    media     mpool     nfs4
-pkgs      proc      rpool     stash     tftpboot  u         var       www
+bin       dev       export    lib       net       platform  rpool     tmp
+boot      devices   home      media     nfs4      proc      sbin      usr
+cdrom     etc       kernel    mnt       opt       root      system    var
 ```
 Before I go on much further, it is also very worth mentioning that there is a very
 handy command to check the status of a pool. `zpool status <PoolName>`
 
 ```
-bunny:~# zpool status mpool
+root@sunosfiler1:~# zpool status mpool
   pool: mpool
  state: ONLINE
   scan: none requested
@@ -129,9 +128,9 @@ config:
    NAME         STATE     READ WRITE CKSUM
    mpool        ONLINE       0     0     0
      mirror-0   ONLINE       0     0     0
-       c9t0d0   ONLINE       0     0     0
-       c9t4d0   ONLINE       0     0     0
-       c12t0d0  ONLINE       0     0     0
+       c9t1d0   ONLINE       0     0     0
+       c9t2d0   ONLINE       0     0     0
+       c9t3d0   ONLINE       0     0     0
 
    errors: No known data errors
 ```
@@ -157,14 +156,14 @@ command called `zpool destroy <PoolName>`. Lettuce try this shall we, by taking 
 the pool we so painstakenly worked our butt off to nurture and to hold and to take
 to those darn ukelele lessons...
 
-`bunny:~# zpool destroy mpool`
+`root@sunosfiler1:~# zpool destroy mpool`
 
 ... wait that was it? Our pool..you mean to tell me it just up and vanished just like
 that? Yes. It did. Remember young padawan, this is \*nix, which means no news is good
 news.
 
 ```
-bunny:~# zpool status mpool
+root@sunosfiler1:~# zpool status mpool
 cannot open 'mpool': no such pool
 ```
 
@@ -178,9 +177,9 @@ information like, how big it is, how mush is in use, how much is free, its healt
 and some other stuff i haven't read about yet.
 
 ```
-bunny:~# zpool list
-NAME   SIZE  ALLOC  FREE  CAP  DEDUP  HEALTH  ALTROOT
-rpool  464G  15.6G  448G   3%  1.00x  ONLINE  -
+root@sunosfiler1:~# zpool list
+NAME    SIZE  ALLOC   FREE  CAP  DEDUP  HEALTH  ALTROOT
+rpool  7.69G  3.69G  4.00G  48%  1.00x  ONLINE  -
 ```
 
 Pretty cool huh?
@@ -214,7 +213,7 @@ information stored on another.
 #### raidz[123]?
 Sorry about that regex there, but I couldn't help myself. raidz stripes disks, and
 provides multiple levels of parity (denoted by the trailing digit) that ensure a bit
-of safty in case a disk goes down. Lemme expound upon this a bit. When we stripe drives
+of safety in case a disk goes down. Lemme expound upon this a bit. When we stripe drives
 we save a block of data in pieces over each of the drives. So a parity drive, takes each
 piece and calculates a value that can be used later to recover the information if a drive
 goes down. Back in the day we would dedicate an entire drive to this, but now we prefer
@@ -238,7 +237,7 @@ Let's just jump straight to the point and use all of the new features we just we
 is going to be a blast.
 
 ```
-bunny:~# zpool create mypool raidz2 c8t1d0 c8t5d0 c7t1d0 c7t5d0 cache c10t2d0 log c10t6d0
+root@sunosfiler1:~# zpool create mypool raidz2 c9t1d0 c9t2d0 c9t3d0 c9t4d0 cache c9t5d0 log c9t6d0
 ```
 
 I'm going to go over this...again:
@@ -246,14 +245,14 @@ I'm going to go over this...again:
 * `zpool` is the command. duh...
 * `create` is the action, of course...
 * `mypool` is the name, you know this...
-* `raidz2 c8t1d0 c8t5d0 c7t1d0 c7t5d0` is going to create a striped RAID with two levels of parity
-* `cache c10t2d0` is going to allocate a drive to serve as a caching mechanism
-* `log c10t6d0` is going to log all of the things
+* `raidz2 c9t1d0 c9t2d0 c9t3d0 c9t4d0` is going to create a striped RAID with two levels of parity
+* `cache c9t5d0` is going to allocate a drive to serve as a caching mechanism
+* `log c9t6d0` is going to log all of the things
 
 Let's see what it ended up looking like:
 
 ```
-bunny:~# zpool status mypool
+root@sunosfiler1:~# zpool status mypool
   pool: mypool
  state: ONLINE
   scan: none requested
@@ -262,30 +261,30 @@ config:
         NAME        STATE     READ WRITE CKSUM
         mypool      ONLINE       0     0     0
           raidz2-0  ONLINE       0     0     0
-            c8t1d0  ONLINE       0     0     0
-            c8t5d0  ONLINE       0     0     0
-            c7t1d0  ONLINE       0     0     0
-            c7t5d0  ONLINE       0     0     0
+            c9t1d0  ONLINE       0     0     0
+            c9t2d0  ONLINE       0     0     0
+            c9t3d0  ONLINE       0     0     0
+            c9t4d0  ONLINE       0     0     0
         logs
-          c10t6d0   ONLINE       0     0     0
+          c9t6d0    ONLINE       0     0     0
         cache
-          c10t2d0   ONLINE       0     0     0
+          c9t5d0    ONLINE       0     0     0
 
 errors: No known data errors
 ```
 
-Okay we can see our drives all put together like. Our drives `c8t1d0 c8t5d0 c7t1d0 c7t5d0`
-became the base for the raidz2. `c10t6d0` is going to be used to manage the logging for the
-pool. And Finally `c10t2d0` is going to give us a cache drive to ensure that we have enough
+Okay we can see our drives all put together like. Our drives `c9t1d0 c9t2d0 c9t3d0 c9t4d0`
+became the base for the raidz2. `c9t6d0` is going to be used to manage the logging for the
+pool. And Finally `c9t5d0` is going to give us a cache drive to ensure that we have enough
 space to keep track of all crazy stats and references that we need.
 
 If we look at the pool's listing using `zpool list <PoolName>` we can see how much space we
 are able to use, and such and such and so forth...
 
 ```
-bunny:~# zpool list mypool
+root@sunosfiler1:~# zpool list mypool
 NAME     SIZE  ALLOC   FREE  CAP  DEDUP  HEALTH  ALTROOT
-mypool  1.81T   351K  1.81T   0%  1.00x  ONLINE  -
+mypool  3.94G   267K  3.94G   0%  1.00x  ONLINE  -
 ```
 
 ### What!? Another sweet example traveling by way of limo!?
@@ -302,10 +301,10 @@ a heartwarming tale. Let's watch!
 First, let's revisit our command with a little bit of extra sour cream (I KNOW IT'S EXTRA!!!)
 added on top.
 ```
-bunny:~# zpool create mypool raidz2 c8t1d0 c8t5d0 c7t1d0 c7t5d0 cache c10t2d0 log c10t6d0 spare c12t2d0 c12t6d0
+root@sunosfiler1:~# zpool create mypool raidz2 c9t1d0 c9t2d0 c9t3d0 c9t4d0 cache c9t5d0 log c9t6d0 spare c9t7d0 c9t8d0
 ```
 
-All we did was add the `spare` clause at the end, followed by the disks `c12t2d0 c12t6d0` that
+All we did was add the `spare` clause at the end, followed by the disks `c9t7d0 c9t8d0` that
 we wanted chill on the bench and wait to be called in like a that scrawny kid that no one ever
 thought would end up bunting the ball that would allow the runner on third to come in and score
 the winning run in the state championship game.
@@ -313,7 +312,7 @@ the winning run in the state championship game.
 We can see those kids just sitting there, again with `zpool status <PoolName>`
 
 ```
-bunny:~# zpool status mypool
+root@sunosfiler1:~# zpool status mypool
   pool: mypool
  state: ONLINE
   scan: none requested
@@ -322,17 +321,17 @@ config:
         NAME        STATE     READ WRITE CKSUM
         mypool      ONLINE       0     0     0
           raidz2-0  ONLINE       0     0     0
-            c8t1d0  ONLINE       0     0     0
-            c8t5d0  ONLINE       0     0     0
-            c7t1d0  ONLINE       0     0     0
-            c7t5d0  ONLINE       0     0     0
+            c9t1d0  ONLINE       0     0     0
+            c9t2d0  ONLINE       0     0     0
+            c9t3d0  ONLINE       0     0     0
+            c9t4d0  ONLINE       0     0     0
         logs
-          c10t6d0   ONLINE       0     0     0
+          c9t6d0    ONLINE       0     0     0
         cache
-          c10t2d0   ONLINE       0     0     0
+          c9t5d0    ONLINE       0     0     0
         spares
-          c12t2d0   AVAIL
-          c12t6d0   AVAIL
+          c9t7d0    AVAIL   
+          c9t8d0    AVAIL   
 
 errors: No known data errors
 ```
@@ -340,14 +339,14 @@ errors: No known data errors
 Yup, and there they are, did our pool change much in size?
 
 ```
-bunny:~# zpool list mypool
+root@sunosfiler1:~# zpool list mypool
 NAME     SIZE  ALLOC   FREE  CAP  DEDUP  HEALTH  ALTROOT
-mypool  1.81T   378K  1.81T   0%  1.00x  ONLINE  -
+mypool  3.94G   285K  3.94G   0%  1.00x  ONLINE  -
 ```
 
 Nope, but that is fine, I don't think we really should have expected it to.
 
-### What did you say lassie? c8t1d0 is failing!?
+### What did you say lassie? c9t1d0 is failing!?
 
 ![And Lassie then proceeded to text her buttocks off](http://www.davidrdudley.com/davidrdudley.com/Lassie_texting_files/lassie_Dudley_forWeb.jpg)
 
@@ -356,7 +355,7 @@ now we got to sstep in and save the pool. Easy, because we have
 `zpool replace <PoolName> <FailDisk> <SpareDisk>` to come and rescue us proper.
 
 ```
-bunny:~# zpool replace mypool c8t1d0 c12t2d0
+root@sunosfiler1:~# zpool replace mypool c9t1d0 c9t7d0
 ```
 
 And now we can see the spare step in and save the day, taking the place of the poor
@@ -364,28 +363,28 @@ failing disk and holding it up like a Vietnam soldier intent on getting is comra
 home in hopes that the guys wife makes a dank apple pie.
 
 ```
-bunny:~# zpool status mypool
+root@sunosfiler1:~# zpool status mypool
   pool: mypool
  state: ONLINE
-  scan: resilvered 60K in 0h0m with 0 errors on Wed Feb 12 03:11:26 2014
+  scan: resilvered 58.5K in 0h0m with 0 errors on Thu May  1 06:05:03 2014
 config:
 
-        NAME           STATE     READ WRITE CKSUM
-        mypool         ONLINE       0     0     0
-          raidz2-0     ONLINE       0     0     0
-            spare-0    ONLINE       0     0     0
-              c8t1d0   ONLINE       0     0     0
-              c12t2d0  ONLINE       0     0     0
-            c8t5d0     ONLINE       0     0     0
-            c7t1d0     ONLINE       0     0     0
-            c7t5d0     ONLINE       0     0     0
+        NAME          STATE     READ WRITE CKSUM
+        mypool        ONLINE       0     0     0
+          raidz2-0    ONLINE       0     0     0
+            spare-0   ONLINE       0     0     0
+              c9t1d0  ONLINE       0     0     0
+              c9t7d0  ONLINE       0     0     0
+            c9t2d0    ONLINE       0     0     0
+            c9t3d0    ONLINE       0     0     0
+            c9t4d0    ONLINE       0     0     0
         logs
-          c10t6d0      ONLINE       0     0     0
+          c9t6d0      ONLINE       0     0     0
         cache
-          c10t2d0      ONLINE       0     0     0
+          c9t5d0      ONLINE       0     0     0
         spares
-          c12t2d0      INUSE
-          c12t6d0      AVAIL
+          c9t7d0      INUSE   
+          c9t8d0      AVAIL   
 
 errors: No known data errors
 ```
