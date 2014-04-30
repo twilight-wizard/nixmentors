@@ -21,7 +21,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     end
     # Create six disks for a zpool
     v.vm.provider :virtualbox do |vb|
-      ["1","2","3","4","5","6"].each do |disk|
+      ["1","2","3","4","5","6","7","8"].each do |disk|
        diskname = "/disk/trump/minerals/#{ENV['USER']}/sun-sata#{disk}.vdi"
        vb.customize ['createhd', '--filename', diskname, '--size', 1024]
        vb.customize ['storageattach', :id, '--storagectl', 'SATA Controller', '--port', disk, '--device', 0, '--type', 'hdd', '--medium', diskname]
@@ -44,7 +44,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     end
     # Create six disks for a zpool
     v.vm.provider :virtualbox do |vb|
-      ["1","2","3","4","5","6"].each do |disk|
+      ["1","2","3","4","5","6","7","8"].each do |disk|
        diskname = "/disk/trump/minerals/#{ENV['USER']}/sun2-sata#{disk}.vdi"
        vb.customize ['createhd', '--filename', diskname, '--size', 1024]
        vb.customize ['storageattach', :id, '--storagectl', 'SATA Controller', '--port', disk, '--device', 0, '--type', 'hdd', '--medium', diskname]
