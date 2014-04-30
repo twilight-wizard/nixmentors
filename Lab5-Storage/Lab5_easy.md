@@ -110,7 +110,7 @@ that will live, by default in the root of the whole \*nix filesystem. We can see
 by listing the contents of root.
 
 ```
-bunny:~# ls /
+root@sunosfiler1:~# ls /
 bin       dev       export    lib       net       platform  rpool     tmp
 boot      devices   home      media     nfs4      proc      sbin      usr
 cdrom     etc       kernel    mnt       opt       root      system    var
