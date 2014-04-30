@@ -53,7 +53,7 @@ Modify the rsyslog configuration file: /etc/rsyslog.conf
 
 On the server, uncomment these lines.
 The first line loads the UDP server module.
-The second amkes the UDP server start and listen on port 514.
+The second makes the UDP server start and listen on port 514.
 
 ```bash
  #$ModLoad imudp
@@ -65,9 +65,9 @@ have the following format:
 
 facility.level  destination
 
-You can see examples of this in the rsyslog.conf file where commented
-lines describe who gets what messagae go. We want the server to get 
-everything that our client gets or does.
+You can see examples of this in the rsyslog.conf file where the commented
+lines describe who gets what messages. In this case want the server to receive all the 
+log events of the client.
   
 On the clients, at the bottom, add these lines:
 ```bash
