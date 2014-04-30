@@ -22,9 +22,16 @@ In this lab you will be learning about monitoring services and machines.
 Setup
 -----
 
+Start the VMs for the lab, ensure all four are running, and then ssh into 
+the syslog server and the other machines. Like the last lab, you may find
+it convenient to have several windows open.
+
 ```bash
-vagrant up
-vagrant ssh
+$ vagrant up
+$ vagrant status
+$ vagrant ssh syslogserver
+$ vagrant ssh syslogclient1
+etc..
 ```
 
 Section 1: Syslog
@@ -32,84 +39,104 @@ Section 1: Syslog
 
 Syslog is used by services to log errors and other information.
 
-Install rsyslog, a leading syslog implementation, on all of the systems:
+Install rsyslog, a leading syslog implementation, on the 
+syslog clients and server, but not the nagios system:
+
+We are using yum because this is a Red Hat distro of linux.
+
 ```bash
 sudo yum install rsyslog
 ```
+Consider going "sudo -i" at this point.
 
 Modify the rsyslog configuration file: /etc/rsyslog.conf
 
-On the server, uncomment these lines:
+On the server, uncomment these lines.
+The first line loads the UDP server module.
+The second makes the UDP server start and listen on port 514.
+
 ```bash
  #$ModLoad imudp
  #$UDPServerRun 514
 ```
 
-On the clients, add these lines:
+On the client side we want to set some message filter rules. These rules
+have the following format:
+
+facility.level  destination
+
+You can see examples of this in the rsyslog.conf file where the commented
+lines describe who gets what messages. In this case want the server to receive all the 
+log events of the client.
+  
+On the clients, at the bottom, add these lines:
 ```bash
-* @syslogserver
+*.* @syslogserver
 ```
+
+Vagrant networking has specified some IPs for us to use that we saw in the
+last lab. You can see this by examining the Vagrantfile; also you can run
+netstat-rn to get a view of how networking is configured. Generally, unless
+you alter some config files, we can expect networking to be start at
+192.168.1.10, which should be the IP of the server.
 
 Add the server to the /etc/hosts file on the clients:
 ```bash
 192.168.1.10 syslogserver
 ```
 
-Allow traffic in the server's firewalling rules, /etc/sysconfig/iptables
-
+Allow traffic in the firewalling rules for the server at /etc/sysconfig/iptables
+Recall how we started the UDP server module on port 514...
 Add the following line before "-A INPUT -j REJECT":
 ```bash
 -A INPUT -p udp --dport 514 -j ACCEPT
 ```
 
-Restore from the configuration file:
+Restore (like reload) from the configuration file we just edited:
 ```bash
 sudo iptables-restore /etc/sysconfig/iptables
 ```
 
-Restart rsyslog on each of the systems:
+Restart the rsyslog service on each of the three systems:
 ```bash
 sudo service rsyslog restart
 ```
+
+Test it out. Send a message from one of the clients ...
+
+While sending test messages to syslog from the clients:
+```bash
+logger test
+```
+and tail the message log to see it.
 
 Watch the logs on the server:
 ```bash
 tail -F /var/log/messages
 ```
 
-While sending test messages to syslog from the clients:
-```bash
-logger test
-```
-
 You should see your message added to the log file on the syslog server.
-
-###Section 1.1: Log Rotation
-
-Now log rotation will be configured to organize the log files on
-syslogserver. Take a look at the manpage of logrotate and the default
-file "/etc/logrotate.d/rsyslog".
-
-* Configure logrotate to move old files to a different directory
-* Change the way logrotate renames files to include the date
-* Have logrotate log to syslog when it has finished
-
-You can use the following command to force log rotation:
-```bash
-logrotate -f /etc/logrotate.d/rsyslog
-```
+If you do not, perhaps you made a typo in editing the /etc/hosts on the
+clients, editing the iptables or forgot to restart something along the 
+way. If you edit any of the .conf files, be sure to restart the related
+service and rsyslog.
 
 Section 2: Nagios
 -------------------
 
-Nagios is a popular open source monitoring tool designed to let system administrators know about problems in their
-infrastructure. In this lab, you will install, configure, add hosts, add services, and set up nrpe.
+Nagios is a popular open source monitoring tool designed to let system administrators
+know about problems in their infrastructure. Kinds of things monitored include:
+whether an application is running or not, network problems (we have all seen Nagios
+complain in robots), security issues and even planning for events. In this lab, you 
+will install, configure, add hosts, add services, and set up nrpe.
 
 ###Section 2.1: Install and Configure Nagios3
 
-First, ssh into the nagios3 vm. Install nagios3 using apt-get. You will be prompted for a how you want nagios to mail
-you and the default user. Select "local only" then type in 'vagrant@localhost'. You will also be prompted for a web 
-administration password you can create your own and remember it or simply type "avon654".
+First, ssh into the nagios3 vm. Update, but DO NOT upgrade at this time. Install nagios3 
+using apt-get (not yum because Nagios is running on a Ubuntu VM). You will 
+be prompted for a how you want nagios to mail you and the default user. Select "local only" 
+then type in 'vagrant@localhost'. You will also be prompted for a web administration 
+password you can create your own and remember it or simply type "password".
 
 ```bash
 vagrant ssh nagios3
@@ -119,6 +146,9 @@ sudo apt-get install nagios3
 
 After, nagios3 is installed head over to "http://localhost:8080/nagios3" you will be prompted by a username and password.
 The username is 'nagiosadmin' and password is whatever you entered when you were prompted during setup.
+
+If you are on a laptop or sshing into a machine on which the VM is running you should use
+the name of the machine not localhost.
 
 Now, have some fun checking out the site, click on some links, ask questions about what something means if its
 confusing. Specifically checkout the Map tab, its gonna look really cool the more hosts you add especially on
@@ -133,7 +163,8 @@ the hosts, hostgroups, services, commands, contacts, contactgroups, timeperiods,
 splitting them up can make each host, command, service, contact, be there own file, making it simple to add, edit, and delete
 each item, especially when using a configuration tool like Puppet.
 
-So before we add a host, command, service, and contact. cd into the /etc/nagios3/conf.d and make some folders.
+So before we add a host, command, service, and contact. cd into the /etc/nagios3/conf.d 
+and make some folders.
 
 ```bash
 cd /etc/nagios3/conf.d
@@ -141,11 +172,13 @@ mkdir hosts commands services contacts
 ```
 #### Section 2.2.1: Adding Hosts
 
-Time to add a host. Specifically, projects.cecs.pdx.edu:
-Copy the following files from /vagrant/nagios into /etc/nagios3/
+Time to add a host for Nagios to monitor. Specifically, projects.cecs.pdx.edu:
+Copy the following files from /vagrant/nagios into /etc/nagios3/ then change
+the permissions and reload nagios3.
 
 ```bash
 cp /vagrant/nagios/hosts/projects.cfg hosts/
+chmod 644 hosts/projects.cfg
 service nagios3 reload
 ```
 Now go back to the Nagios web app and click on hosts. projects.cecs.pdx.edu should be listed as a host in addition to localhost.
@@ -156,6 +189,7 @@ Let start with dns. Copy the config file for the dnsservers into the hosts direc
 
 ```bash
 cp /vagrant/nagios/hosts/dnsservers.cfg hosts/
+chmod 644 hosts/dnsservers.cfg
 service nagios3 reload
 ```
 #### Section 2.2.2: Adding Services
@@ -166,36 +200,46 @@ Now that we have our dns hosts defined we can add a service check
 cp /vagrant/nagios/services/dns.cfg services/dns.cfg
 service nagios3 reload
 ```
-
-In the Nagios web app click on services to see your pending DNS check. If you don't want to wait to see it turn green, click on the DNS link and then click "Re-schedule the next check of this service" and then click commit.
+When you do this own your own at some point, how you will know what to put in the 
+Nagios3 configuration directory is based on what Nagios documentation says (of course)
+but also on what you are trying to monitor.  In the Nagios web app click on services to 
+see your pending DNS check. If you do not want to wait to see it turn green, click on 
+the DNS link and then click "Re-schedule the next check of this service" and then 
+click commit.
 
 Once it turns green in the services tab you should see 
 
 
     DNS OK: 0.016 seconds response time. www.google.com returns 173.194.33.16,173.194.33.17,173.194.33.18,173.194.33.19,173.194.33.20
 
-You can reproduce what Nagios is doing via the command line by calling the scripts directly.
-
-```bash
-$ /usr/lib/nagios/plugins/check_dns -H newton.cat.pdx.edu
-DNS OK: 0.014 seconds response time. newton.cat.pdx.edu returns 131.252.221.9|time=0.014311s;;;0.000000
-```
-
-Nagios commands are usually just bash or perl scripts. You can easily write your own scripts and have Nagios run them for you.
-
-In order to use the check_dns plugin, Nagios needs to have a command defined. Lucky for you Debian ships these configuration files for you. You can look at the DNS one by opening the file shown below.
+These Nagios commands that are used by the web interface are usually just bash or perl 
+scripts. You can easily write your own scripts and have Nagios run them for you. In this
+case the one being used is the check_dns plugin. Before they can be used Nagios needs to 
+have a command (like check_dns) defined.  Lucky for you Debian ships these configuration 
+files for you. You can look at the DNS one by opening the file shown below.
 
 ```bash
 cat /etc/nagios-plugins/config/dns.cfg
 ```
 
-Now create your own service check for canhazdns. Remember we've already defined the host so all you need to do is modify services/dns.cfg.
+Now create your own service check for canhazdns. This service check is used by the web
+interface.  Remember we have already defined the host so all you need to do is modify 
+services/dns.cfg.  You will likely need to apt-get install vim prior to editing that file.
+
+
+By the way, you can reproduce what Nagios is doing straight from the command line by 
+calling the scripts directly, in this case a script called check_dns from the nagios plugins library.
+
+```bash
+$ /usr/lib/nagios/plugins/check_dns -H google.com -s newton.cat.pdx.edu
+```
 
 ###Section 2.3: NRPE
 
-So far we've monitored hosts remotely from the Nagios server. Now we want to run a local command on a target client. SSH has some extra overhead so most Nagios administrators prefer using NRPE or the Nagios Remote Plugin Executor.
+So far we have monitored hosts remotely from the Nagios server. Now we want to run a local command on a target client. SSH has some extra overhead so most Nagios administrators prefer using NRPE or the Nagios Remote Plugin Executor.
 
-NRPE works by running a client on the target host and waiting for connections from the Nagios server. Once a connection is made the Nagios server instructs the client to run a predefined command on the client and report back the status. An example of this would be check the space left on a disk.
+NRPE works by running a client on the target host and waiting for connections from the Nagios server. Once a connection is made the Nagios server instructs the client to run a predefined command on the client and 
+report back the status. An example of this would be check the space left on a disk.
 
 
 On the Nagios server
@@ -257,7 +301,8 @@ PORT   STATE SERVICE
 MAC Address: 08:00:27:16:FE:61 (Cadmus Computer Systems)
 ```
 
-Create an Iptables rule for NRPE on the SyslogServer
+Create an Iptables rule for NRPE on the SyslogServer. Rather than modify the iptables
+file manually like in the first part, we can use a one-liner to add in what we want.
 
 ```bash
 iptables -I INPUT -p tcp -m tcp --dport 5666 -j ACCEPT
@@ -282,21 +327,22 @@ Nmap done: 1 IP address (1 host up) scanned in 5.32 seconds
 
 This time port 5666 is open and connections from the Nagios Server will work.
 
-Let run the check_nrpe plugin again.
+Let run the check_nrpe plugin again on the nagios vm.
 
 ```bash
 /usr/lib/nagios/plugins/check_nrpe -H 192.168.1.10 -c check_load
 NRPE: Unable to read output
 ```
 
-Gah another issue! A quick google search will suggest that your plugins are not installed on the client. Lets check the syslogserver for the check_load plugin.
+Gah another issue! A quick google search will suggest that your plugins are not installed 
+on the client. Lets check the syslogserver for the check_load plugin.
 
 ```bash
 ls /usr/lib64/nagios/plugins/check_load
 ls: cannot access /usr/lib64/nagios/plugins/check_load: No such file or directory
 ```
 
-Alas it is not there. Lets install the package
+Alas it is not there; install the package on the syslogserver.
 
 ```bash
 yum install nagios-plugins-load
@@ -304,7 +350,7 @@ yum install nagios-plugins-load
 
 Note: RHEL has a package for every plugin, Debian bundles them in one package.
 
-Let's try our check_nrpe command again
+Try our check_nrpe command again on the nagios vm:
 
 ```bash
 /usr/lib/nagios/plugins/check_nrpe -H 192.168.1.10 -c check_load 
