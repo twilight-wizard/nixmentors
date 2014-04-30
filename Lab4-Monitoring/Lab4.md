@@ -22,9 +22,16 @@ In this lab you will be learning about monitoring services and machines.
 Setup
 -----
 
+Start the VMs for the lab, ensure all four are running, and then ssh into 
+the syslog server and the other machines. Like the last lab, you may find
+it convenient to have several windows open.
+
 ```bash
-vagrant up
-vagrant ssh
+$ vagrant up
+$ vagrant status
+$ vagrant ssh syslogserver
+$ vagrant ssh syslogclient1
+etc..
 ```
 
 Section 1: Syslog
@@ -32,57 +39,87 @@ Section 1: Syslog
 
 Syslog is used by services to log errors and other information.
 
-Install rsyslog, a leading syslog implementation, on all of the systems:
+Install rsyslog, a leading syslog implementation, on the 
+syslog clients and server, but not the nagios system:
+
+We are using yum because this is a Red Hat distro of linux.
+
 ```bash
 sudo yum install rsyslog
 ```
+Consider going "sudo -i" at this point.
 
 Modify the rsyslog configuration file: /etc/rsyslog.conf
 
-On the server, uncomment these lines:
+On the server, uncomment these lines.
+The first line loads the UDP server module.
+The second amkes the UDP server start and listen on port 514.
+
 ```bash
  #$ModLoad imudp
  #$UDPServerRun 514
 ```
 
-On the clients, add these lines:
+On the client side we want to set some message filter rules. These rules
+have the following format:
+
+facility.level  destination
+
+You can see examples of this in the rsyslog.conf file where commented
+lines describe who gets what messagae go. We want the server to get 
+everything that our client gets or does.
+  
+On the clients, at the bottom, add these lines:
 ```bash
-* @syslogserver
+*.* @syslogserver
 ```
+
+Vagrant networking has specified some IPs for us to use that we saw in the
+last lab. You can see this by examining the Vagrantfile; also you can run
+netstat-rn to get a view of how networking is configured. Generally, unless
+you alter some config files, we can expect networking to be start at
+192.168.1.10, which should be the IP of the server.
 
 Add the server to the /etc/hosts file on the clients:
 ```bash
 192.168.1.10 syslogserver
 ```
 
-Allow traffic in the server's firewalling rules, /etc/sysconfig/iptables
-
+Allow traffic in the firewalling rules for the server at /etc/sysconfig/iptables
+Recall how we started the UDP server module on port 514...
 Add the following line before "-A INPUT -j REJECT":
 ```bash
 -A INPUT -p udp --dport 514 -j ACCEPT
 ```
 
-Restore from the configuration file:
+Restore (like reload) from the configuration file we just edited:
 ```bash
 sudo iptables-restore /etc/sysconfig/iptables
 ```
 
-Restart rsyslog on each of the systems:
+Restart the rsyslog service on each of the three systems:
 ```bash
 sudo service rsyslog restart
 ```
+
+Test it out. Send a message from one of the clients ...
+
+While sending test messages to syslog from the clients:
+```bash
+logger test
+```
+and tail the message log to see it.
 
 Watch the logs on the server:
 ```bash
 tail -F /var/log/messages
 ```
 
-While sending test messages to syslog from the clients:
-```bash
-logger test
-```
-
 You should see your message added to the log file on the syslog server.
+If you do not, perhaps you made a typo in editing the /etc/hosts on the
+clients, editing the iptables or forgot to restart something along the 
+way. If you edit any of the .conf files, be sure to restart the related
+service and rsyslog.
 
 ###Section 1.1: Log Rotation
 
