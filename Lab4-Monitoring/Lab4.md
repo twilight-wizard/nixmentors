@@ -121,21 +121,6 @@ clients, editing the iptables or forgot to restart something along the
 way. If you edit any of the .conf files, be sure to restart the related
 service and rsyslog.
 
-###Section 1.1: Log Rotation
-
-Now log rotation will be configured to organize the log files on
-syslogserver. Take a look at the manpage of logrotate and the default
-file "/etc/logrotate.d/rsyslog".
-
-* Configure logrotate to move old files to a different directory
-* Change the way logrotate renames files to include the date
-* Have logrotate log to syslog when it has finished
-
-You can use the following command to force log rotation:
-```bash
-logrotate -f /etc/logrotate.d/rsyslog
-```
-
 Section 2: Nagios
 -------------------
 
