@@ -365,8 +365,11 @@ Ok, now that we know that NRPE works manually its time to configure it in Nagios
 
 ```bash
 cp /vagrant/nagios/commands/load.cfg commands/
+chmod 644 commands/load.cfg
 cp /vagrant/nagios/hosts/syslogserver.cfg hosts/
+chmod 644 hosts/syslogserver.cfg
 cp /vagrant/nagios/services/load.cfg services/
+chmod 644 services/load.cfg
 service nagios3 reload
 ```
 
