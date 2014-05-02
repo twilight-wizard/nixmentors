@@ -76,7 +76,7 @@ On the clients, at the bottom, add these lines:
 
 Vagrant networking has specified some IPs for us to use that we saw in the
 last lab. You can see this by examining the Vagrantfile; also you can run
-netstat-rn to get a view of how networking is configured. Generally, unless
+netstat -rn to get a view of how networking is configured. Generally, unless
 you alter some config files, we can expect networking to be start at
 192.168.1.10, which should be the IP of the server.
 
