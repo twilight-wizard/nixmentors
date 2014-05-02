@@ -392,6 +392,49 @@ We can see now that the spare is `INUSE` and that it is aiding the poor disk in
 combat.
 
 
+#### Enable zfs snapshots
+
+Now for something completely different...
+
+Since ZFS is a copy-on-write file-system, we can use something called snapshoting.
+A snapshot is a read-only version of a file-system or volume at a given point in time.
+Snapshots can be made almost instantly and consume a trivial amount of space in the zpool.
+However, the amount of space a dataset occupies will increase as the data within an active dataset changes.
+
+(For extra fun, investigate zfs snapshot clones.)
+
+Lets try first creating a dataset (aka file-system) and then a snapshot of it:
+```
+root@sunosfiler1:~# zfs create mypool/dataset1
+root@sunosfiler1:~# zfs snapshot mypool/dataset1@snap1
+root@sunosfiler1:~# zfs list
+root@sunosfiler1:~# zfs list -t snapshot
+```
+This creates a dataset called 'dataset1' then creates a snapshot of it called 'dataset1@snap1'.
+We then list all the zfs file-systems, and the zfs snapshots.
+Notice that the snapshots don't show-up in the list of zfs file-systems.
+
+
+#### Setting a quota on a dataset
+
+Now that we have a dataset created, suppose that we'd like to limit the amount space in the pool
+which it can occupy. We can do this by applying a quota to it.
+
+To set a quota of 5GB on 'dataset1', try this:
+```
+root@sunosfiler1:~# zfs set quota=5G mypool/dataset1
+root@sunosfiler1:~# zfs get all mypool/dataset1 | grep quota
+```
+Notice that the last command shows us that there is a 5GB quota on 'dataset1' as we set, but also
+that there is a property called refquota which has value 'none'.
+A quota is a hard-limit on a dataset which included all snapshots and sub-file-systems (aka decendents) of it.
+A refquota is a hard-limit that DOES NOT include snapshots and decendents.
+
+
+
+
+
+
 [Mirroring]: http://en.wikipedia.org/wiki/Mirroring_disks
 [Parity]: http://en.wikipedia.org/wiki/Parity_drive
 [Striping]: http://en.wikipedia.org/wiki/Data_striping
