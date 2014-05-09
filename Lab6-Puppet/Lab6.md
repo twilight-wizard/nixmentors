@@ -29,7 +29,7 @@ If you did the pre-lab, you can see that setting up some basic configuration tak
 
 ### Why not use an SSH for-loop to do this?
 
-An SSH for-loop is a sysadmin's Swiss Army knife for Getting Stuff Done. We use it a lot at the CAT. The idea is to write a use a bash script to SSH in to a number of hosts and do some configuration on each one. This is a basic form of automation and for many cases, this works great. So what does Puppet get us that SSH for-loops don't?
+An SSH for-loop is a sysadmin's Swiss Army knife for Getting Stuff Done. We use it a lot at the CAT. The idea is to write a bash script to SSH in to a number of hosts and do some configuration on each one. This is a basic form of automation, and for many cases, this works great. So what does Puppet get us that SSH for-loops don't?
 
 The keyword that configuration management hipsters love to say is **[idempotency](http://en.wikipedia.org/wiki/Idempotence)**. It means that if an action needs to be performed to maintain a certain state, the action will be done. If the system is already in the desired state, Puppet doesn't try to reapply configuration, which might result in errors. This means that you don't get errors from trying to ensure something is the way you want it -- e.g. you don't have to run `service apache2 start` twice, which would result in an error the second time.
 
@@ -41,61 +41,77 @@ The Puppet software is written in Ruby. The only reason this is important is bec
 
 Bring up your two machines in the Lab6-Puppet directory.
 
-```vagrant up
+```
+$ vagrant up
+```
+
+SSH in to both of them. It will probably be helpful to have two terminal windows open.
+
+```
+$ vagrant ssh puppetmaster
+$ vagrant ssh client
 ```
 
 ## Configure DNS
 
 Add the following to your /etc/hosts file on the puppetmaster:
 
-```192.168.1.11 client.local client
+```
+192.168.1.11 client.local client
 ```
 
 Add the following to your /etc/hosts file on the client:
 
-```192.168.1.10 puppet.local puppet
+```
+192.168.1.10 puppet.local puppet
 ```
 
 Add the PuppetLabs apt repository to the master and client:
 
-```$ wget https://apt.puppetlabs.com/puppetlabs-release-precise.deb
-   $ sudo dpkg -i puppetlabs-release-precise.deb
-   $ sudo apt-get update
+```
+$ wget https://apt.puppetlabs.com/puppetlabs-release-precise.deb
+$ sudo dpkg -i puppetlabs-release-precise.deb
+$ sudo apt-get update
 ```
 
 Install the puppetmaster
 
 On the puppetmaster machine, install the puppetmaster and a webserver:
-```$ sudo apt-get install puppetmaster-passenger
+```
+$ sudo apt-get install puppetmaster-passenger
 ```
 
 The Puppet client-server model is a lot like the Apache client-server model. The Puppet master runs a web server. Puppet clients run a daemon, called an agent, that periodically makes web requests to the Puppet master. Installing puppetmaster-passenger automatically installs Apache and configures a vhost for us.
 
 On the client, install the puppet agent:
 
-```$ sudo apt-get install puppet
+```
+$ sudo apt-get install puppet
 ```
 
 The client needs to request a certificate from the master. By default, it will automatically request a certificate the first time the agent runs. Trigger it by running
 
-```$ sudo puppet agent --test
+```
+$ sudo puppet agent --test
 ```
 
 View outstanding certificate requests on the master with
 
-```$ sudo puppet cert list
+```
+$ sudo puppet cert list
 ```
 
 It is important to verify this certificate request! Anyone could request a certificate. It's important that certs are only signed for hosts you trust.
 
 Sign the certificate with
 
-```$ sudo puppet cert sign client.local
+```
+$ sudo puppet cert sign client.local
 ```
 
 Verify it worked by running the agent again.
 
-We have successfully configured a puppetmaster and client. We now need to write puppet code to configure out client.
+We have successfully configured a puppetmaster and client. We now need to write Puppet code to configure our client.
 
 # Todo:
 
@@ -114,3 +130,6 @@ mcollective
 puppetdb
 puppetboard
 foreman
+forge
+testing
+custom facts, functions, types, and providers
