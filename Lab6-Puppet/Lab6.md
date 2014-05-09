@@ -210,7 +210,7 @@ user { 'krinkle':
 
 These two ordering attributes accomplish the same thing. Which one you use depends on what makes sense in a particular context.
 
-There is another syntax for resource ordering, [described in the documenation](http://docs.puppetlabs.com/learning/ordering.html).
+There is another syntax for resource ordering, [described in the documentation](http://docs.puppetlabs.com/learning/ordering.html).
 
 # Todo:
 
@@ -223,11 +223,11 @@ There is another syntax for resource ordering, [described in the documenation](h
 
 # Post-Lab
 
-hiera
-mcollective
-puppetdb
-puppetboard
-foreman
-forge
-testing
-custom facts, functions, types, and providers
+- hiera
+- mcollective
+- puppetdb
+- puppetboard
+- foreman
+- forge
+- testing
+- custom facts, functions, types, and providers
