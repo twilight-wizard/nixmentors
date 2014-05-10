@@ -41,7 +41,8 @@ The Puppet software is written in Ruby. The only reason this is important is bec
 
 Puppet is pretty complicated. Puppet Labs charges a lot of money for three-day long training courses, and that just covers the basics. This lab is meant to get you used to the idea of the Puppet setup, resources, and modules. It's not going to cover everything. Puppet Labs has a great [free tutorial](http://docs.puppetlabs.com/learning) that you can use to cover Puppet more in-depth. It covers Puppet Enterprise, the closed-source version of Puppet, so somethings will be slightly different than what you learn here, but the overall concepts are the same as open-source Puppet and the tutorial is much more complete.
 
-# Setting Up a Master and Agent
+Setting Up a Master and Agent
+-----------------------------
 
 Bring up your two machines in the Lab6-Puppet directory.
 
@@ -58,7 +59,7 @@ $ vagrant ssh client
 
 ## Configure DNS
 
-Add the following to your /etc/hosts file on the puppetmaster:
+Add the following to your /etc/hosts file on the Puppet master:
 
 ```
 192.168.1.11 client.local client
@@ -78,16 +79,16 @@ $ sudo dpkg -i puppetlabs-release-precise.deb
 $ sudo apt-get update
 ```
 
-Install the puppetmaster
+Install the Puppet master
 
-On the puppetmaster machine, install the puppetmaster and a webserver:
+On the puppetmaster machine, install the Puppet master and a webserver:
 ```
 $ sudo apt-get install puppetmaster-passenger
 ```
 
 The Puppet client-server model is a lot like the Apache client-server model. The Puppet master runs a web server. Puppet clients run a daemon, called an agent, that periodically makes web requests to the Puppet master. Installing puppetmaster-passenger automatically installs Apache and configures a vhost for us.
 
-On the client, install the puppet agent:
+On the client, install the Puppet agent:
 
 ```
 $ sudo apt-get install puppet
@@ -115,9 +116,12 @@ $ sudo puppet cert sign client.local
 
 Verify it worked by running the agent again.
 
-We have successfully configured a puppetmaster and client. We now need to write Puppet code to configure our client.
+We have successfully configured a Puppet master and client. We now need to write Puppet code to configure our client.
 
-# Resources
+
+
+Resources
+---------
 
 Puppet organizes configuration into units called resources. There are many different types of resources. Some examples are:
 
@@ -132,7 +136,7 @@ The full list of resources Puppet can manage and how it can configure them can b
 
 Let's try one out. Let's create a user on our system.
 
-As root, create and open the file `/etc/puppet/manifests/site.pp` **on the puppetmaster** in your editor. Add the following to it:
+As root, create and open the file `/etc/puppet/manifests/site.pp` **on the Puppet master** in your editor. Add the following to it:
 
 ```
 user { 'krinkle':
@@ -152,7 +156,7 @@ Now apply the configuration to the client. Run:
 $ sudo puppet agent --test --noop
 ```
 
-At this point let me point out a few things. The typical mode for a puppet agent is to run as a daemon and check in with the Puppet master every thirty or so minutes to see if new configuration is available. Since we don't want to wait that long for the agent to check in on its own, we run `puppet agent --test` to trigger it right now, and show us the output. We also use the `--noop` flag to tell Puppet to not actually make any real changes *yet*. We want to see the output and make sure it is what we expect before we make any real changes. If we run Puppet without --noop and we realize we've made a mistake, there is not necessarily a simple way to roll back.
+At this point let me point out a few things. The typical mode for a Puppet agent is to run as a daemon and check in with the Puppet master every thirty or so minutes to see if new configuration is available. Since we don't want to wait that long for the agent to check in on its own, we run `puppet agent --test` to trigger it right now, and show us the output. We also use the `--noop` flag to tell Puppet to not actually make any real changes *yet*. We want to see the output and make sure it is what we expect before we make any real changes. If we run Puppet without --noop and we realize we've made a mistake, there is not necessarily a simple way to roll back.
 
 If there is a problem with your configuration (such as a syntax error), Puppet will tell you in red.
 
@@ -177,7 +181,7 @@ file { '/tmp/krinklesfile':
 
 This will create a file called /tmp/krinklesfile. It will ensure that the file is a regular file, as opposed to a directory or symlink. It will give it some content. It will give it an owner, and set permissions on it. Run the agent on your client again to make the file come into existence.
 
-Notice that this file resource depended on the user resource already existing. What happens if the user krinkle doesn't exist? Try removing the krinkle user by changing the ensure line to `ensure => absent` in the user resource and running puppet again.
+Notice that this file resource depended on the user resource already existing. What happens if the user krinkle doesn't exist? Try removing the krinkle user by changing the ensure line to `ensure => absent` in the user resource and running Puppet again.
 
 We can't and shouldn't depend on Puppet to figure out this dependency. We can't even depend on Puppet to read the file in order, so it doesn't matter that the user resource was declared before the file resource. (In practice, Puppet can kind of figure this out, but when you have a complex Puppet ecosystem you should not depend on it.) We need to tell Puppet explicitly what depends on what. One way to do this is with the `require` attribute. Change the ensure attribute back to present for the user resource. Then make your file resource look like this:
 
@@ -193,7 +197,7 @@ file { '/tmp/krinklesfile':
 
 Notice the capitalized User. Puppet uses this notation when it is wants to refer to a resource that is declared somewhere else. In this case it is looking up its table of users for one called 'krinkle'. It tells Puppet to make sure to create this resource after the 'krinkle' user is created.
 
-Delete the file and the user from your client. Make sure that re-running puppet properly creates the user and the file.
+Delete the file and the user from your client. Make sure that re-running Puppet properly creates the user and the file.
 
 You can do this going the other way. Remove the require line from the file resource, and make your user resource look like this:
 
@@ -210,20 +214,101 @@ user { 'krinkle':
 
 These two ordering attributes accomplish the same thing. Which one you use depends on what makes sense in a particular context.
 
-There is another syntax for resource ordering, [described in the documentation](http://docs.puppetlabs.com/learning/ordering.html).
+There is an alternate syntax for resource ordering, [described in the documentation](http://docs.puppetlabs.com/learning/ordering.html).
+
+#### Exercise
+
+(Feel free to move past this and come back to it later since this will be a long lab.)
+
+Task: use the [ssh_authorized_key](http://docs.puppetlabs.com/references/latest/type.html#sshauthorizedkey) resource to manage krinkle's public key. You can use your own public key or generate one specially for krinkle. Then put it in Puppet.
+
+# Package, File, Service
+
+You might have noticed from previous labs that configuring a server to do a particular task often involves three things:
+
+- installing a package from a repository
+- changing a configuration file to meet our particular needs
+- starting or restarting the service
+
+While Puppet provides us with many resources, the package, file, and service resources are absolutely the most important ones. More than anything else, configuring a server involves these three parts. 
+
+Since we have already played with [rsyslog in a different lab](../Lab4-Monitoring/Lab4.md), let's try configuring it with Puppet. Tutorials will commonly have you configure either SSH or NTP as an introduction to Package-File-Service. If we accidently break SSH on our vagrant vm, it can be painful to fix. And NTP is boring. So we're doing rsyslog.
+
+Add a package resource for rsyslog to site.pp:
+
+```
+package { 'rsyslog':
+  ensure => installed,
+}
+```
+
+This will install the service for us, but it won't configure the file for us. We could write the configuration file from scratch, or we could take the one that rsyslog installs by default, copy it into a place that Puppet can access, and make the changes we need to it. Let's do that: on the client, copy /etc/rsyslog.conf into /root/puppet/ (you will have to create the directory puppet in /root). Make the changes indicated in Lab 4. Make one additional change: add a comment to the top of the file indicating that this file is managed by Puppet, so that everyone knows that this file is managed by Puppet and that Puppet will undo any manual changes made to it. Then add a file resource to site.pp on the Puppet master:
+
+```
+file { '/etc/rsyslog.conf':
+  ensure => file,
+  source => '/root/puppet/rsyslog.conf',
+}
+```
+
+This will tell Puppet to look for a file at /root/puppet/rsyslog.conf on the client, and to place it at /etc/rsyslog.conf.
+
+Now we need to manage the rsyslog service. Add a service resource to site.pp on the Puppet master:
+
+```
+service { 'rsyslog':
+  ensure => running,
+  enable => true,
+}
+```
+
+This tells Puppet to make sure that the rsyslog daemon is running and that it will be started on boot.
+
+We have a package, file, and resource, but we're not finished yet. Like before, these three resources depend on one another in specific ways. Not only does one have to exist  before another, but we actually want the state of one to change when the state of another changes. If we make any changes to the configuration file, the rsyslog service needs to be restarted, otherwise it wouldn't pick up the changes. We have two new attributes to manage this kind of dependency: subscribe and notify.
+
+Let's try subscribe first. Change your service resource to look like this:
+
+```
+service { 'rsyslog':
+  ensure    => running,
+  enable    => true,
+  subscribe => File['/etc/rsyslog.conf'],
+}
+```
+
+Subscribe is analogous to require, except that not only does it require the file to exist, it will also restart the service if the file ever changes.
+
+Before we try notify, let's get all of these resources to work. There is still a dependency between the package and the configuration file: we want to install the package before trying to change the configuration file (otherwise installing the package would change the file back to default). Add a before attribute to the package resource (or, alternatively, add a require attribute to the file resource).
+
+Now you can run the agent on the client and see if it works.
+
+Now try using notify instead of subscribe. Notify is analogous to before. If the file changes, it will tell the service to restart. Remove the subscribe attribute from the service resource and make your file resource look like this:
+
+```
+file { '/etc/rsyslog.conf':
+  ensure => file,
+  source => '/root/puppet/rsyslog.conf',
+  notify => Service['rsyslog'],
+}
+```
+
+Run Puppet on the client again to make sure it still works. Try changing or deleting the file in /etc/rsyslog.conf. When you run Puppet again, what happens?
+
+If you feel comfortable with this Package-File-Service concept, you have mastered the core of what it means to do configuration management. The rest is fluff and syntax.
 
 # Todo:
 
-- package-file-service, subscribe and notify
 - nodes
 - directory layout and using the source/content attributes of the file resource
 - classes and modules
 - defined types
+- variables and notify
 - conditionals and facter
 
 # Post-Lab
 
 - hiera
+- using forge modules to configure services
 - mcollective
 - puppetdb
 - puppetboard
