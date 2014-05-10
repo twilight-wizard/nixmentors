@@ -302,18 +302,33 @@ Run Puppet on the client again to make sure it still works. Try changing or dele
 
 If you feel comfortable with this Package-File-Service concept, you have mastered the core of what it means to do configuration management. The rest is fluff and syntax.
 
+Nodes
+-----
+
+So far we have been putting all of our code in site.pp. This works if you want the same configuration to apply to every hosts in your network, but often that won't be the case. site.pp is usually the place where we list nodes, each of which gets configuration specific to it. Alternatively, you can specify your nodes in an [external node classifier](http://docs.puppetlabs.com/guides/external_nodes.html), but this is much more advanced and we won't go into it here. 
+
+In site.pp on the Puppet master, enclose your resources in a node statement like this:
+
+```
+node 'client.local' {
+   # Resources
+} 
+```
+
+If you had additional nodes, you would give each a similar node definition. You could use a regular expression or a comma-separated list of nodes to group nodes together, if you like. Feel free to add more hosts to the Vagrantfile if you want to play with more than one node.
+
 # Todo:
 
-- nodes
 - directory layout and using the source/content attributes of the file resource
 - classes and modules
 - defined types
-- variables and notify
+- variables, templates, and notify
 - conditionals and facter
 
 # Post-Lab
 
 - hiera
+- enc
 - using forge modules to configure services
 - mcollective
 - puppetdb
