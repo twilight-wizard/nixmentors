@@ -57,7 +57,7 @@ $ vagrant ssh puppetmaster
 $ vagrant ssh client
 ```
 
-## Configure DNS
+### Configure DNS
 
 Add the following to your /etc/hosts file on the Puppet master:
 
@@ -70,6 +70,8 @@ Add the following to your /etc/hosts file on the client:
 ```
 192.168.1.10 puppet.local puppet
 ```
+
+### Install Puppet
 
 Add the PuppetLabs apt repository to the master and client:
 
@@ -93,6 +95,8 @@ On the client, install the Puppet agent:
 ```
 $ sudo apt-get install puppet
 ```
+
+### Sign Certs
 
 The client needs to request a certificate from the master. By default, it will automatically request a certificate the first time the agent runs. Trigger it by running
 
@@ -191,7 +195,7 @@ file { '/tmp/krinklesfile':
   content   => 'This file belongs to krinkle',
   owner     => 'krinkle',
   mode      => '0644',
-  require   => User['krinkle']
+  require   => User['krinkle'],
 }
 ```
 
