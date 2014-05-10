@@ -185,9 +185,11 @@ file { '/tmp/krinklesfile':
 
 This will create a file called /tmp/krinklesfile. It will ensure that the file is a regular file, as opposed to a directory or symlink. It will give it some content. It will give it an owner, and set permissions on it. Run the agent on your client again to make the file come into existence.
 
+### Resource Dependencies
+
 Notice that this file resource depended on the user resource already existing. What happens if the user krinkle doesn't exist? Try removing the krinkle user by changing the ensure line to `ensure => absent` in the user resource and running Puppet again.
 
-We can't and shouldn't depend on Puppet to figure out this dependency. We can't even depend on Puppet to read the file in order, so it doesn't matter that the user resource was declared before the file resource. (In practice, Puppet can kind of figure this out, but when you have a complex Puppet ecosystem you should not depend on it.) We need to tell Puppet explicitly what depends on what. One way to do this is with the `require` attribute. Change the ensure attribute back to present for the user resource. Then make your file resource look like this:
+We can't and shouldn't depend on Puppet to figure out this dependency. We can't even depend on Puppet to read site.pp from top to bottom, so it doesn't matter that the user resource was declared before the file resource. (In practice, Puppet can kind of figure this out, but when you have a complex Puppet ecosystem you should not depend on it.) We need to tell Puppet explicitly what depends on what. One way to do this is with the require attribute. Change the ensure attribute back to present for the user resource. Then make your file resource look like this:
 
 ```
 file { '/tmp/krinklesfile':
@@ -199,7 +201,7 @@ file { '/tmp/krinklesfile':
 }
 ```
 
-Notice the capitalized User. Puppet uses this notation when it is wants to refer to a resource that is declared somewhere else. In this case it is looking up its table of users for one called 'krinkle'. It tells Puppet to make sure to create this resource after the 'krinkle' user is created.
+Notice the capitalized User. Puppet uses this notation when it is wants to refer to a resource that is declared somewhere else. In this case it is looking up a user called 'krinkle' in a table of users. It tells Puppet to make sure to create this resource after the 'krinkle' user is created.
 
 Delete the file and the user from your client. Make sure that re-running Puppet properly creates the user and the file.
 
@@ -226,7 +228,7 @@ There is an alternate syntax for resource ordering, [described in the documentat
 
 Task: use the [ssh_authorized_key](http://docs.puppetlabs.com/references/latest/type.html#sshauthorizedkey) resource to manage krinkle's public key. You can use your own public key or generate one specially for krinkle. Then put it in Puppet.
 
-# Package, File, Service
+## Package, File, Service
 
 You might have noticed from previous labs that configuring a server to do a particular task often involves three things:
 
@@ -246,7 +248,7 @@ package { 'rsyslog':
 }
 ```
 
-This will install the service for us, but it won't configure the file for us. We could write the configuration file from scratch, or we could take the one that rsyslog installs by default, copy it into a place that Puppet can access, and make the changes we need to it. Let's do that: on the client, copy /etc/rsyslog.conf into /root/puppet/ (you will have to create the directory puppet in /root). Make the changes indicated in Lab 4. Make one additional change: add a comment to the top of the file indicating that this file is managed by Puppet, so that everyone knows that this file is managed by Puppet and that Puppet will undo any manual changes made to it. Then add a file resource to site.pp on the Puppet master:
+This will install the service for us, but it won't configure the file for us. We could write the configuration file from scratch, or we could take the one that rsyslog installs by default, copy it into a place that Puppet can access, and make the changes we need to it. Let's do that: on the client, copy /etc/rsyslog.conf into /root/puppet/ (you will have to create the directory puppet in /root). Make the changes indicated in Lab 4. You can either configure this to be a syslog client or server, your choice. Make one additional change: add a comment to the top of the file indicating that this file is managed by Puppet, so that everyone knows that this file is managed by Puppet and that Puppet will undo any manual changes made to it. Then add a file resource to site.pp on the Puppet master:
 
 ```
 file { '/etc/rsyslog.conf':
@@ -268,7 +270,7 @@ service { 'rsyslog':
 
 This tells Puppet to make sure that the rsyslog daemon is running and that it will be started on boot.
 
-We have a package, file, and resource, but we're not finished yet. Like before, these three resources depend on one another in specific ways. Not only does one have to exist  before another, but we actually want the state of one to change when the state of another changes. If we make any changes to the configuration file, the rsyslog service needs to be restarted, otherwise it wouldn't pick up the changes. We have two new attributes to manage this kind of dependency: subscribe and notify.
+We have a package, file, and service, but we're not finished yet. Like before, these three resources depend on one another in specific ways. But now, not only does one have to exist  before another, but we actually want the state of one to change when the state of another changes. If we make any changes to the configuration file, the rsyslog service needs to be restarted, otherwise it wouldn't pick up the changes. We have two new attributes to manage this kind of dependency: subscribe and notify.
 
 Let's try subscribe first. Change your service resource to look like this:
 
