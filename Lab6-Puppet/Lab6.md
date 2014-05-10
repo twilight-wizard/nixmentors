@@ -39,7 +39,7 @@ The Puppet software is written in Ruby. The only reason this is important is bec
 
 ### Learning Puppet
 
-Puppet is pretty complicated. Puppet Labs charges a lot of money for three-day long training courses, and that just covers the basics. This lab is meant to get you used to the idea of the Puppet setup, resources, and modules. It's not going to cover everything. Puppet Labs has a great [free tutorial](http://docs.puppetlabs.com/learning) that you can use to cover Puppet more in-depth. It covers Puppet Enterprise, the closed-source version of Puppet, so somethings will be slightly different than what you learn here, but the overall concepts are the same as open-source Puppet and the tutorial is much more complete.
+Puppet is pretty complicated. Puppet Labs charges a lot of money for three-day long training courses, and that just covers the basics. This lab is meant to get you used to the idea of the Puppet setup, resources, and modules. It's not going to cover everything. Puppet Labs has a great [free tutorial](http://docs.puppetlabs.com/learning) that you can use to cover Puppet more in-depth. The tutorial uses Puppet Enterprise, the closed-source version of Puppet, so some things will be slightly different than what you learn here, but the overall concepts are the same as open-source Puppet and the tutorial is much more complete.
 
 Setting Up a Master and Agent
 -----------------------------
