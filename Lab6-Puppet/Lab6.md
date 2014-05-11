@@ -248,16 +248,16 @@ package { 'rsyslog':
 }
 ```
 
-This will install the service for us, but it won't configure the file for us. We could write the configuration file from scratch, or we could take the one that rsyslog installs by default, copy it into a place that Puppet can access, and make the changes we need to it. Let's do that: on the client, copy /etc/rsyslog.conf into /root/puppet/ (you will have to create the directory puppet in /root). Make the changes indicated in Lab 4. You can either configure this to be a syslog client or server, your choice. Make one additional change: add a comment to the top of the file indicating that this file is managed by Puppet, so that everyone knows that this file is managed by Puppet and that Puppet will undo any manual changes made to it. Then add a file resource to site.pp on the Puppet master:
+This will install the service for us, but it won't configure the file for us. We could write the configuration file from scratch, or we could take the one that rsyslog installs by default, copy it into a place that Puppet can access, and make the changes we need to it. Let's do that: on the client, copy /etc/rsyslog.conf into /home/vagrant/puppet/ (you will have to create the directory puppet in /root). Make the changes indicated in Lab 4. You can either configure this to be a syslog client or server, your choice. Make one additional change: add a comment to the top of the file indicating that this file is managed by Puppet, so that everyone knows that this file is managed by Puppet and that Puppet will undo any manual changes made to it. Then add a file resource to site.pp on the Puppet master:
 
 ```
 file { '/etc/rsyslog.conf':
   ensure => file,
-  source => '/root/puppet/rsyslog.conf',
+  source => '/home/vagrant/puppet/rsyslog.conf',
 }
 ```
 
-This will tell Puppet to look for a file at /root/puppet/rsyslog.conf on the client, and to place it at /etc/rsyslog.conf.
+This will tell Puppet to look for a file at /home/vagrant/puppet/rsyslog.conf on the client, and to place it at /etc/rsyslog.conf.
 
 Now we need to manage the rsyslog service. Add a service resource to site.pp on the Puppet master:
 
@@ -293,7 +293,7 @@ Now try using notify instead of subscribe. Notify is analogous to before. If the
 ```
 file { '/etc/rsyslog.conf':
   ensure => file,
-  source => '/root/puppet/rsyslog.conf',
+  source => '/home/vagrant/puppet/rsyslog.conf',
   notify => Service['rsyslog'],
 }
 ```
@@ -305,25 +305,91 @@ If you feel comfortable with this Package-File-Service concept, you have mastere
 Nodes
 -----
 
-So far we have been putting all of our code in site.pp. This works if you want the same configuration to apply to every hosts in your network, but often that won't be the case. site.pp is usually the place where we list nodes, each of which gets configuration specific to it. Alternatively, you can specify your nodes in an [external node classifier](http://docs.puppetlabs.com/guides/external_nodes.html), but this is much more advanced and we won't go into it here. 
+So far we have been putting all of our code in site.pp. This works if you want the same configuration to apply to every hosts in your network, but often that won't be the case. site.pp is usually the place where we list nodes, each of which gets configuration specific to it. Alternatively, you can specify your nodes in an [external node classifier](http://docs.puppetlabs.com/guides/external_nodes.html), but this is much more advanced and we won't go into it here.
 
 In site.pp on the Puppet master, enclose your resources in a node statement like this:
 
 ```
 node 'client.local' {
    # Resources
-} 
+}
 ```
 
 If you had additional nodes, you would give each a similar node definition. You could use a regular expression or a comma-separated list of nodes to group nodes together, if you like. Feel free to add more hosts to the Vagrantfile if you want to play with more than one node.
 
+Classes
+-------
+
+You can get a lot done just by knowing about resources and how to string them together. Once you get more nodes and more services, declaring all your resources can get messy and could mean hundreds of lines of code for each node. We split off resources into classes to clean things up.
+
+**Define** a class in site.pp on the Puppet master (outside of the node definition):
+
+```
+class syslog {
+}
+```
+
+Copy all the resources related to syslog from the node definition into the class, inbetween the curly braces. Remove them from the node definition.
+
+Classes in Puppet are kind of like classes in other language. Right now we just have a class definition. It won't do anything by itself, in the same way a class in other languages won't do anything until you make an instance of it. You can uninstall rsyslog or modify your rsyslog.conf and rerun Puppet to see it not doing anything.
+
+To make it do something, you have to **declare** it. Add this line to your node definition, where you used to have syslog resources:
+
+```
+include syslog
+```
+
+Rerun Puppet on your client and make sure your syslog server is properly configured.
+
+Classes can only be included on a node once. Including this class on our node makes the node definition easier to read: we can tell that this node is a syslog server without having to know how syslog is configured.
+
+Modules
+-------
+
+Classes shouldn't actually be defined in site.pp. Having it there still causes site.pp to look long and messy. Instead, we put classes in modules.
+
+A **module** is like a Puppet package, kind of like gems are Ruby packages or RPMs are RedHat packages. It is a bundle of code, data, and metadata that gets run through the Puppet application and output as server configuration. Modules are used to organize your classes and files into logical units. A module has a very specific directory structure. The two parts that matter right now are the manifests directory and the files directory.
+
+- **manifests/** - Where your Puppet code goes. A manifest is like a Puppet program.
+- **files/** - Where configuration files, like rsyslog.conf, go. Putting your files in a Puppet module like this makes it so that the file doesn't have to already exist on the client, which is what we've been doing until now.
+
+Let's make a module! In /etc/puppet/modules on the Puppet master, make a directory called syslog. In that directory, make directories called manifests and files.
+
+In the manifests directory, make a file called init.pp. This file is kind of like the main() function in other languages. If there are other manifests in your manifests/ directory, Puppet knows to look at init.pp first. Copy the syslog class from your site.pp into the init.pp manifest. Remove it from site.pp.
+
+Mess up your client configuration by destroying /etc/rsyslog.conf or uninstalling the package. Run Puppet again to make sure your syslog server is restored.
+
+To finish the module, we need get the syslog configuration file out of vagrant's homedir on the client and into Puppet. Copy the config file from the client to the Puppet master:
+
+```
+$ scp client:/home/vagrant/puppet/rsyslog.conf /etc/puppet/modules/syslog/files/
+```
+Remove the file from /home/vagrant/puppet on the client. We don't need it there, nor would we want to depend on it being there.
+
+Now, however, if we run Puppet again, we will get an error. Take a look at the file resource in the syslog manifest: it still refers to the path /home/vagrant/puppet/rsyslog.conf on the client, which is now incorrect. In order to get it to look on the Puppet master for the file, change the source attribute of the file resource to look like this:
+
+```
+file { '/etc/rsyslog.conf':
+  ensure => file,
+  source => 'puppet:///modules/syslog/rsyslog.conf',
+}
+```
+The URI scheme "puppet:///" (yes, there are three '/'s) tells Puppet to look for the file on the Puppet master. The first part of the path needs to be modules/, then the name of the module, and then the path of the file relative to the files/ directory. Notice that the directory files/ is not included in this URI. Puppet knows that files come from files/, so you don't need to specify it.
+
+Try running Puppet on the client again to make sure there are no errors.
+
+### Exercises
+
+(Again, you can skip these and come back to it later.)
+
+- Write a module to configure NTP.
+- Write a module to configure Postgres.
+
 # Todo:
 
-- directory layout and using the source/content attributes of the file resource
-- classes and modules
-- defined types
 - variables, templates, and notify
 - conditionals and facter
+- defined types
 
 # Post-Lab
 
