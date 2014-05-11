@@ -341,7 +341,7 @@ include syslog
 
 Rerun Puppet on your client and make sure your syslog server is properly configured.
 
-Classes can only be included on a node once. Including this class on our node makes the node definition easier to read: we can tell that this node is a syslog server without having to know how syslog is configured.
+Including this class on our node makes the node definition easier to read: we can tell that this node is a syslog server without having to know how syslog is configured.
 
 Modules
 -------
