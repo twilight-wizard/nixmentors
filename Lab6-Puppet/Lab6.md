@@ -380,7 +380,7 @@ Try running Puppet on the client again to make sure there are no errors.
 
 ### Exercises
 
-- Write a module called users to add the user krinkle and krinkle's .plan file. Remove those resources from site.pp and include the new module on the client node.
+- Write a module called plan to add the user krinkle and krinkle's .plan file. Remove those resources from site.pp and include the new module on the client node.
 
 Optional (or come back to these later):
 - Write a module to configure NTP.
@@ -389,51 +389,63 @@ Optional (or come back to these later):
 Variables
 ---------
 
-Puppet can use variables. Variables in Puppet are prepended with a $. Classes can accept variables as parameters, so a module can be made to behave in different ways depending on its parameters.
+Puppet can use variables. Variables in Puppet are prepended with a $.
 
-Change your syslog class to look like this:
+In your users module, define a variable:
 
 ```
-class syslog (
-  $running = true,
+$username = 'blkperl'
+```
+
+Use the notify resource to test out your variable:
+
+```
+notify { "The user's name is $username": }
+```
+
+Run Puppet on your client. The notify resource is like a print statement in other languages. It can print out messages, but makes no configurations changes. Notice the use of double-quotes for this string. We use double-quotes here because the string needs to be interpolated, that is, the variable needs to be evaluated rather than printed as literally "$username". Try it with single-quotes to see the difference.
+
+A variable on its own is not very helpful. We can use the variable in a resource to make it more dynamic. Change the name of your user resource to $username. Change all other references to krinkle to $username. Don't forget to change your quotes:
+
+```
+user { $username:
+  ensure     => present,
+  comment    => "$username is awesome",
+  managehome => true,
+  home       => "/home/$username",
+  shell      => '/bin/bash',
+  before     => File["/home/$username/.plan"],
+}
+```
+
+You'll have to change your file resource as well. Run Puppet on your client to create the new blkperl user.
+
+Classes can accept variables as parameters, so a module can be made to behave in different ways depending on its parameters.
+
+Change your plan class to look like this:
+
+```
+class plan (
+  $username,
 ) {
   # Resources ...
 }
 ```
 
-Then change the service resource in your syslog class to look like this:
+Remove the variable definition line from the class. The variable is now being passed into the class.
+
+Open site.pp. Change the line that says `include plan` to look like this:
 
 ```
-service { 'rsyslog':
-  ensure => $running,
-  enable => true,
-  subscribe => File['/etc/rsyslog.conf'],
+class { 'plan':
+  username => 'nightfly',
 }
 ```
 
-What happened? If you run Puppet on the client again, nothing will have changed. We made the ensure attribute of the rsyslog service into a variable, so we could control dynamically whether we want it running or not. Then we specified that the class would take a parameter called $running, and that it's default value would be true. Since we haven't passed any parameters to the class, the value remains true and the service stays running.
+The syntax for declaring a class now looks as if we're declaring a resource. We specify the value for $username by making username an attribute of this "resource".
 
-Now visit site.pp. Change the line that says `include syslog` to look like this:
+Run Puppet on your client to create the new user.
 
-```
-class { 'syslog':
-  running => false,
-}
-```
-
-The syntax for declaring a class now looks as if we're declaring a resource. We specify the value for $running by making running an attribute of this "resource".
-
-Run Puppet on your client to see the service stop.
-
-### Notify
-
-Sometimes your code is large and complicated and it's not clear what value a variable has. There is a special resource called notify that is helpful for debugging. It is analogous to a print statement in other languages. It makes no actual configuration changes. You can use it like this:
-
-notify { "The value of \$running is: $running": }
-
-Run Puppet on the client to see this string being printed as part of the output.
-
-Notice the use of double-quotes for this string. We use double-quotes here because the string needs to be interpolated, that is, the variable needs to be evaluated rather than printed as literally "$running". Try it with single-quotes to see the difference.
 
 # Todo:
 
