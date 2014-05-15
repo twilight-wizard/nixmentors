@@ -175,15 +175,15 @@ User krinkle should now exist on the client. You can check by looking in the fil
 Let's try another resource. Add the following to the site.pp file on the Puppet master:
 
 ```
-file { '/tmp/krinklesfile':
+file { '/home/krinkle/.plan':
   ensure    => file,
-  content   => 'This file belongs to krinkle',
+  content   => 'krinkle\'s plan',
   owner     => 'krinkle',
   mode      => '0644',
 }
 ```
 
-This will create a file called /tmp/krinklesfile. It will ensure that the file is a regular file, as opposed to a directory or symlink. It will give it some content. It will give it an owner, and set permissions on it. Run the agent on your client again to make the file come into existence.
+This will create a file called /home/krinkle/.plan. It will ensure that the file is a regular file, as opposed to a directory or symlink. It will give it some content. It will give it an owner, and set permissions on it. Run the agent on your client again to make the file come into existence.
 
 ### Resource Dependencies
 
@@ -192,9 +192,9 @@ Notice that this file resource depended on the user resource already existing. W
 We can't and shouldn't depend on Puppet to figure out this dependency. We can't even depend on Puppet to read site.pp from top to bottom, so it doesn't matter that the user resource was declared before the file resource. (In practice, Puppet can kind of figure this out, but when you have a complex Puppet ecosystem you should not depend on it.) We need to tell Puppet explicitly what depends on what. One way to do this is with the require attribute. Change the ensure attribute back to present for the user resource. Then make your file resource look like this:
 
 ```
-file { '/tmp/krinklesfile':
+file { '/home/krinkle/.plan':
   ensure    => file,
-  content   => 'This file belongs to krinkle',
+  content   => 'krinkle\'s plan',
   owner     => 'krinkle',
   mode      => '0644',
   require   => User['krinkle'],
@@ -214,7 +214,7 @@ user { 'krinkle':
   managehome => true,
   home       => '/home/krinkle',
   shell      => '/bin/bash',
-  before     => File['/tmp/krinklesfile'],
+  before     => File['/home/krinkle/.plan'],
 }
 ```
 
@@ -380,8 +380,9 @@ Try running Puppet on the client again to make sure there are no errors.
 
 ### Exercises
 
-(Again, you can skip these and come back to it later.)
+- Write a module called users to add the user krinkle and krinkle's .plan file. Remove those resources from site.pp and include the new module on the client node.
 
+Optional (or come back to these later):
 - Write a module to configure NTP.
 - Write a module to configure Postgres.
 
@@ -424,7 +425,7 @@ The syntax for declaring a class now looks as if we're declaring a resource. We 
 
 Run Puppet on your client to see the service stop.
 
-#### Notify
+### Notify
 
 Sometimes your code is large and complicated and it's not clear what value a variable has. There is a special resource called notify that is helpful for debugging. It is analogous to a print statement in other languages. It makes no actual configuration changes. You can use it like this:
 
