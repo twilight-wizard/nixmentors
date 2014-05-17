@@ -405,7 +405,7 @@ notify { "The user's name is $username": }
 
 Run Puppet on your client. The notify resource is like a print statement in other languages. It can print out messages, but makes no configurations changes. Notice the use of double-quotes for this string. We use double-quotes here because the string needs to be interpolated, that is, the variable needs to be evaluated rather than printed as literally "$username". Try it with single-quotes to see the difference.
 
-A variable on its own is not very helpful. We can use the variable in a resource to make it more dynamic. Change the name of your user resource to $username. Change all other references to krinkle to $username. Don't forget to change your quotes:
+A variable on its own is not very helpful. We can use the variable in a resource to make the resource more dynamic. Change the name of your user resource to $username. Change all other references to krinkle to $username. Don't forget to change your quotes:
 
 ```
 user { $username:
@@ -419,6 +419,8 @@ user { $username:
 ```
 
 You'll have to change your file resource as well. Run Puppet on your client to create the new blkperl user.
+
+### Parameters in Classes
 
 Classes can accept variables as parameters, so a module can be made to behave in different ways depending on its parameters.
 
@@ -452,6 +454,8 @@ Puppet uses several built-in variables to provide information about a node. Thes
 
 To use these values within Puppet, you just use a variable like `$::osfamily`. The double-colon at the beginning means this is a "top-scope" variable, which just means that the variable is available anywhere in your Puppet code. We won't talk much more about scope here.
 
+Often you will want your module to change behavior depending on the value of a variable or a fact. For instance, if you are writing an SSH module, the SSH service is called "ssh" on Debian systems and "sshd" on Redhat systems. You can use the $::osfamily fact and conditional statements to change the name of the service depending on the type of operating system the agent is running on. A conditional is something like an if statement or case statement and should be familiar to you from other languages. There are too many types of conditionals in Puppet to discuss them here, but they are fairly self-explanatory and discussed in [the learning documentation](http://docs.puppetlabs.com/learning/variables.html#conditional-statements).
+
 #### Exercises
 
 - Use a notify resource in one of your modules to examine the values of `$::osfamily`, `$::operatingsystem`, `$::hostname`, and `$::fqdn`.
@@ -460,7 +464,7 @@ To use these values within Puppet, you just use a variable like `$::osfamily`. T
 Templates
 ---------
 
-Now that you know about variables, we can talk about templates. Templates are the same as files, except they are able to take variables from your manifests in order to generate different files based on different criteria. Templates live in the templates/ directory instead of the files/ directory. A file resource refers to a template with something like `content => template('rsyslog.conf.erb')` rather than with the source attribute. Puppet templates are written in the ERB templating language, which is plain text with embedded Ruby.
+Now that you know about variables, we can talk about templates. Templates are the same as files, except they are able to take variables from your manifests in order to generate different files based on different criteria. Templates live in the templates/ directory instead of the files/ directory. A file resource refers to a template with something like `content => template('syslog/rsyslog.conf.erb')` rather than with the source attribute. Puppet templates are written in the ERB templating language, which is plain text with embedded Ruby (I lied slightly about Ruby's importance to writing Puppet code).
 
 In your plan module, make a directory called templates/. In it, make a file called plan.erb with the contents:
 
@@ -478,6 +482,7 @@ file { "/home/$username/.plan":
   content   => template('plan/plan.erb'),
   # ...
 }
+```
 
 Using the template function is different from specifying a source attribute. It still knows to look in templates/ for templates, but you do not have to start the file path with puppet:/// nor do you have to specify the modules/ part of the path.
 
@@ -524,7 +529,7 @@ Most important:
 - Learn about writing custom facts, functions, types, and providers
 - Learn about testing your modules with rspec-puppet and beaker
 
-Set these services up:
+Other cool services:
 - r10k
 - external node classifiers
 - mcollective
