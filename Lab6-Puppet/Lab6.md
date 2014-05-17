@@ -483,20 +483,51 @@ Using the template function is different from specifying a source attribute. It 
 
 Run Puppet again to see your template get applied, with the variables substituted for the values you defined for them!
 
+Defined Types
+-------------
 
-# Todo:
+The last major topic to be aware of is defined types. To explain defined types, we first need to give a better explanation of classes.
 
-- defined types
+Classes are declared on a node exactly once. You can't, for instance, declare the syslog class twice on a node because you wouldn't (typically) have two syslog servers running at the same time on a node. Sometimes, however, we want to have multiples of something. For instance, if we defined an Apache vhost class, we would potentially want to use it more than once on a single node, since it makes sense to have more than one vhost on a node. Classes won't let us do this. Instead, we can create new, custom resources, that we can use more than once. We call these **defined types** or **defined resource types**. We define them a lot like a class, but you can think of it as more like a resource akin to a file resource, package resource, etc. They are *custom* resources.
 
-# Post-Lab
+Since we might want to have more than one user with a plan on a given node, let's change our plan class into a defined type. All you need to do is change the keyword `class` to `define`. Then in your node definition, you need to declare your new type like this:
 
-- hiera
-- enc
-- using forge modules to configure services
+```
+plan { 'askore':
+  username => 'askore',
+}
+```
+
+The text before the ":" can be referred to in your manifest by the variable `$title`. You could replace instances of $username with $title, or you could set the default value of $username to $title, since it makes sense for them to be the same here (this is back in the plan manifest):
+
+```
+define plan(
+  $username = $title
+) {
+  #...
+```
+
+Then you can just say `plan { 'askore': }` in your node definition. You can now define multiple plans. Add a nightfly plan and a blkperl plan.
+
+Post-Lab
+--------
+
+We touched on several topics but did not go into a lot of depth on any of them. There are many details and gotchas that we didn't touch on. Check out the tutorial linked above for a more complete learning experience.
+
+Ask a claw to add your public SSH key to nightshade so that you can clone the CAT's Puppet repository and check out our code. When you see USN/RHN tickets, ask us how to complete them with Puppet.
+
+There are other products and services that go along with Puppet. Research and set these things up in the combs:
+
+Most important:
+- Use a forge module to configure a service (http://forge.puppetlabs.com)
+- Use hiera to store your data
+- Learn about writing custom facts, functions, types, and providers
+- Learn about testing your modules with rspec-puppet and beaker
+
+Set these services up:
+- r10k
+- external node classifiers
 - mcollective
 - puppetdb
 - puppetboard
 - foreman
-- forge
-- testing
-- custom facts, functions, types, and providers
