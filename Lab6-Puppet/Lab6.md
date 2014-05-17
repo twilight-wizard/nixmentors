@@ -391,7 +391,7 @@ Variables
 
 Puppet can use variables. Variables in Puppet are prepended with a $.
 
-In your users module, define a variable:
+In your plan module, define a variable:
 
 ```
 $username = 'blkperl'
