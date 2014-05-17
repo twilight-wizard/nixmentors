@@ -457,9 +457,35 @@ To use these values within Puppet, you just use a variable like `$::osfamily`. T
 - Use a notify resource in one of your modules to examine the values of `$::osfamily`, `$::operatingsystem`, `$::hostname`, and `$::fqdn`.
 - In your plan module, make the content of the plan file contain a fact.
 
+Templates
+---------
+
+Now that you know about variables, we can talk about templates. Templates are the same as files, except they are able to take variables from your manifests in order to generate different files based on different criteria. Templates live in the templates/ directory instead of the files/ directory. A file resource refers to a template with something like `content => template('rsyslog.conf.erb')` rather than with the source attribute. Puppet templates are written in the ERB templating language, which is plain text with embedded Ruby.
+
+In your plan module, make a directory called templates/. In it, make a file called plan.erb with the contents:
+
+```
+This is <%= @username %>'s plan!
+```
+
+You can use any variables from your manifest or facter in your template, but here they are preceded by "@" instead of "$". Feel free to add more content and variables to your template.
+
+Change the file resource in your plan module to refer to the template instead of a single string:
+
+```
+file { "/home/$username/.plan":
+  # ...
+  content   => template('plan/plan.erb'),
+  # ...
+}
+
+Using the template function is different from specifying a source attribute. It still knows to look in templates/ for templates, but you do not have to start the file path with puppet:/// nor do you have to specify the modules/ part of the path.
+
+Run Puppet again to see your template get applied, with the variables substituted for the values you defined for them!
+
+
 # Todo:
 
-- templates
 - defined types
 
 # Post-Lab
