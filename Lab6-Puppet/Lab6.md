@@ -446,11 +446,20 @@ The syntax for declaring a class now looks as if we're declaring a resource. We 
 
 Run Puppet on your client to create the new user.
 
+### Facter
+
+Puppet uses several built-in variables to provide information about a node. These are useful for finding out things like the node's operating system, architecture, IP address, or other properties that a node has that we don't want to define ourselves. Puppet uses a separate utility called facter to get this information. You can play with facter yourself. If you run `facter` on a node, it should print out everything it knows about the node. You can run facter with a single argument from the list of facts to print out that particular fact, e.g. `facter osfamily`.
+
+To use these values within Puppet, you just use a variable like `$::osfamily`. The double-colon at the beginning means this is a "top-scope" variable, which just means that the variable is available anywhere in your Puppet code. We won't talk much more about scope here.
+
+#### Exercises
+
+- Use a notify resource in one of your modules to examine the values of `$::osfamily`, `$::operatingsystem`, `$::hostname`, and `$::fqdn`.
+- In your plan module, make the content of the plan file contain a fact.
 
 # Todo:
 
 - templates
-- conditionals and facter
 - defined types
 
 # Post-Lab
