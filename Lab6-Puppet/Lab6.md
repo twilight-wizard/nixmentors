@@ -201,7 +201,7 @@ file { '/home/krinkle/.plan':
 }
 ```
 
-Notice the capitalized User. Puppet uses this notation when it is wants to refer to a resource that is declared somewhere else. In this case it is looking up a user called 'krinkle' in a table of users. It tells Puppet to make sure to create this resource after the 'krinkle' user is created.
+Notice the capitalized User. Puppet uses this notation when it wants to refer to a resource that is declared somewhere else. In this case it is looking up a user called 'krinkle' in its collection of user resources. It tells Puppet to make sure to create the file resource after the 'krinkle' user is created.
 
 Delete the file and the user from your client. Make sure that re-running Puppet properly creates the user and the file.
 
