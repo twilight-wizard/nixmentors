@@ -76,8 +76,8 @@ Add the following to your /etc/hosts file on the client:
 Add the PuppetLabs apt repository to the master and client:
 
 ```
-$ wget https://apt.puppetlabs.com/puppetlabs-release-precise.deb
-$ sudo dpkg -i puppetlabs-release-precise.deb
+$ wget https://apt.puppetlabs.com/puppetlabs-release-trusty.deb
+$ sudo dpkg -i puppetlabs-release-trusty.deb
 $ sudo apt-get update
 ```
 
