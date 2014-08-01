@@ -9,9 +9,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box_url = "/stash/nixmentors/boxes/trusty64.box"
 
 
-  config.vm.define "puppetmaster" do |puppetmaster|
+  config.vm.define "puppet" do |puppet|
     puppetmaster.vm.box = "trusty64"
-    puppetmaster.vm.hostname = "puppetmaster.local"
+    puppetmaster.vm.hostname = "puppet.local"
     puppetmaster.vm.network :private_network, ip: "192.168.1.10"
   end
 
