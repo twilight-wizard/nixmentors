@@ -315,7 +315,7 @@ So far we have been putting all of our code in site.pp. This works if you want t
 In site.pp on the Puppet master, enclose your resources in a node statement like this:
 
 ```
-node 'client.local' {
+node 'client' {
    # Resources
 }
 ```
