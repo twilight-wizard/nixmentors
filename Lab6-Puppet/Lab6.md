@@ -253,7 +253,7 @@ package { 'rsyslog':
 }
 ```
 
-This will install the service for us, but it won't configure the file for us. We could write the configuration file from scratch, or we could take the one that rsyslog installs by default, copy it into a place that Puppet can access, and make the changes we need to it. Let's do that: on the client, copy /etc/rsyslog.conf into /home/vagrant/puppet/ (you will have to create the directory puppet in /root). Make the changes indicated in Lab 4. You can either configure this to be a syslog client or server, your choice. Make one additional change: add a comment to the top of the file indicating that this file is managed by Puppet, so that everyone knows that this file is managed by Puppet and that Puppet will undo any manual changes made to it. Then add a file resource to site.pp on the Puppet master:
+This will install the service for us, but it won't configure the file for us. We could write the configuration file from scratch, or we could take the one that rsyslog installs by default, copy it into a place that Puppet can access, and make the changes we need to it. Let's do that: on the client, copy /etc/rsyslog.conf into /home/vagrant/puppet/ (you will have to create the directory puppet in /home/vagrant). Make the changes indicated in Lab 4. You can either configure this to be a syslog client or server, your choice. Make one additional change: add a comment to the top of the file indicating that this file is managed by Puppet, so that everyone knows that this file is managed by Puppet and that Puppet will undo any manual changes made to it. Then add a file resource to site.pp on the Puppet master:
 
 ```
 file { '/etc/rsyslog.conf':
