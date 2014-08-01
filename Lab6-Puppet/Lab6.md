@@ -115,10 +115,15 @@ It is important to verify this certificate request! Anyone could request a certi
 Sign the certificate with
 
 ```
-$ sudo puppet cert sign client.local
+$ sudo puppet cert sign client
 ```
 
-Verify it worked by running the agent again.
+Verify it worked by running the agent again:
+
+```
+$ sudo puppet agent --enable
+$ sudo puppet agent --test
+```
 
 We have successfully configured a Puppet master and client. We now need to write Puppet code to configure our client.
 
