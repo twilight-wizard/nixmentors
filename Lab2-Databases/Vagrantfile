@@ -14,4 +14,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # The url from where the 'config.vm.box' box will be fetched if it
   # doesn't already exist on the user's system.
   config.vm.box_url = '/stash/nixmentors/boxes/precise64.box'
+
+  config.vm.provision :shell, inline: 'apt-get update'
+
+  config.vm.provision :puppet do |puppet|
+    puppet.manifest_file     = 'init.pp'
+    puppet.manifests_path    = '../puppet/manifests'
+  end
 end
