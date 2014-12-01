@@ -47,6 +47,7 @@ Clone the Repo
 ```bash
 git clone https://github.com/pdxcat/nixmentors.git
 cd nixmentors
+cp .sample-nixmentors.yml .nixmentors.yml
 ```
 
 Lab 1

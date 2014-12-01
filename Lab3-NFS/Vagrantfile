@@ -1,40 +1,36 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-# Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
-VAGRANTFILE_API_VERSION = "2"
+VAGRANTFILE_API_VERSION = '2'
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-# centos64 base box is from https://cat.pdx.edu/~nibz/vagrant/centos-6.4-amd64.box
-# but basically any (functional) centos6 box should work
-# the centos6 box on vagrantbox.es was broken at time of writing
 
-  # The url from where the 'config.vm.box' box will be fetched if it
-  # doesn't already exist on the user's system.
-  config.vm.box_url = "/stash/nixmentors/boxes/centos-6.4-amd64.box"
-
-  config.vm.define "nfsserver" do |nfsserver|
-    nfsserver.vm.box = "centos64"
-    nfsserver.vm.hostname = "nfsserver.local"
-    nfsserver.vm.network :private_network, ip: "192.168.1.10"
+  require 'yaml'
+  conf = YAML.load_file('../.nixmentors.yml')
+  if conf['local_boxes']
+    config.vm.box_url = conf['local_boxes_path'] + '/centos-6.5-64-puppet.box'
   end
 
-  config.vm.define "nfsclient1" do |nfsclient1|
-    nfsclient1.vm.box = "centos64"
-    nfsclient1.vm.hostname = "nfsclient1.local"
-    nfsclient1.vm.network :private_network, ip: "192.168.1.11"
+  config.vm.box = 'puppetlabs/centos-6.5-64-puppet'
+
+  config.vm.define 'nfsserver' do |nfsserver|
+    nfsserver.vm.hostname = 'nfsserver.local'
+    nfsserver.vm.network :private_network, ip: '192.168.1.10'
   end
 
-  config.vm.define "nfsclient2" do |nfsclient2|
-    nfsclient2.vm.box = "centos64"
-    nfsclient2.vm.hostname = "nfsclient2.local"
-    nfsclient2.vm.network :private_network, ip: "192.168.1.12"
+  config.vm.define 'nfsclient1' do |nfsclient1|
+    nfsclient1.vm.hostname = 'nfsclient1.local'
+    nfsclient1.vm.network :private_network, ip: '192.168.1.11'
   end
 
-  config.vm.define "nfsclient3" do |nfsclient3|
-    nfsclient3.vm.box = "centos64"
-    nfsclient3.vm.hostname = "nfsclient3.local"
-    nfsclient3.vm.network :private_network, ip: "192.168.1.13"
+  config.vm.define 'nfsclient2' do |nfsclient2|
+    nfsclient2.vm.hostname = 'nfsclient2.local'
+    nfsclient2.vm.network :private_network, ip: '192.168.1.12'
+  end
+
+  config.vm.define 'nfsclient3' do |nfsclient3|
+    nfsclient3.vm.hostname = 'nfsclient3.local'
+    nfsclient3.vm.network :private_network, ip: '192.168.1.13'
   end
 
 end
