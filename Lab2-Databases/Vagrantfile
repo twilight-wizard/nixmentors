@@ -5,20 +5,27 @@ VAGRANTFILE_API_VERSION = '2'
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
-  config.vm.box = 'precise64'
-  config.vm.hostname = 'lab2.local'
+  require 'yaml'
+  conf = YAML.load_file('../.nixmentors.yml')
+  if conf['local_boxes']
+    config.vm.box_url = conf['local_boxes_path'] + '/ubuntu-14.04-x86_64-virtualbox-puppet-1.0.0.box'
+  end
+
+  config.vm.box = 'puppetlabs/ubuntu-14.04-64-puppet'
+  config.vm.hostname = 'lab2.vagrant'
   config.vm.network 'forwarded_port', guest: 80, host: 8080
   config.vm.network 'forwarded_port', guest: 443, host: 8443
   config.vm.network 'forwarded_port', guest: 5432, host: 8543
-
-  # The url from where the 'config.vm.box' box will be fetched if it
-  # doesn't already exist on the user's system.
-  config.vm.box_url = '/stash/nixmentors/boxes/precise64.box'
 
   config.vm.provision :shell, inline: 'apt-get update'
 
   config.vm.provision :puppet do |puppet|
     puppet.manifest_file     = 'init.pp'
     puppet.manifests_path    = '../puppet/manifests'
+    puppet.module_path       = '../puppet/modules'
+    puppet.facter = {
+      'fqdn' => 'lab2.vagrant'
+    }
   end
+
 end
