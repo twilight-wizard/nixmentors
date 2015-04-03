@@ -142,7 +142,7 @@ Committing
         $ git commit
 
 - This command will open the editor you set in the beginning of the workshop. Write a descriptive message. Your message can span multiple lines, but if you have a multiple-line commit message the first line needs to be separated from the rest by an empty line. This is a kind of subject / message format.
-- If you don't want to use an editor you can make a commit message via the command line. This only supports one-line commits.
+- If you don't want to use an editor you can make a commit message via the command line.
 
         $ git commit -m "Descriptive message"
         [master (root-commit) f2240c8] Descriptive message
