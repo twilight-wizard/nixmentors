@@ -1,12 +1,121 @@
-Intro to Git and Github
-=======================
+Intro to Version Control, Git and Github
+========================================
 
+<!--
 You will not need a vagrant vm for this lab. The lab computers all have git installed.
+-->
 
 Why Version Control?
 --------------------
 
 Version control is a way of recording changes to a set of files over time. You can use it to make sure new changes don't break the work you've already done. It is critical for collaboration on projects, since it keeps track of who made what changes when and provides means to resolve conflicts between two people's changes. In many version control systems, it allows for a central server where the versioned files are stored, which can serve as a remote backup mechanism.
+
+Why RCS?
+--------
+
+<!-- Thank you http://archive.oreilly.com/pub/a/perl/excerpts/system-admin-with-perl/five-minute-rcs-tutorial.html -->
+
+RCS is good for managing files that live on a single system. Unlike many version control systems, it does not have any remote backup mechanism, and the files are all stored on the local filesystem. However, it does allow for recording the history of changes and you must lock files for editing, which lets other people know you are working on the file. This makes it useful for tracking local configuration files as an administrator or keeping history of meeting agendas.
+
+Initial Setup
+-------------
+
+We need a playground to experiment with RCS in. To do that create an "rcs-playground" directory, change your working directory to it, and create an RCS directory within, which rcs will use to keep its tracking files in if we create it:
+
+        $ mkdir rcs-playground
+        $ cd rcs-playground
+        $ mkdir RCS
+        $
+
+The Basics: managing a file
+---------------------------
+
+To add or update a file in the RCS history, you use "ci -u filename". If we create an "example.txt" file, initially adding it will ask for a description to be associated with the file:
+
+        $ echo testing > example.txt
+        $ ci -u example.txt
+        RCS/example.txt,v  <--  example.txt
+        enter description, terminated with single '.' or end of file:
+        NOTE: This is NOT the log message!
+        >> This is my example file 
+        >> .
+        initial revision: 1.1
+        done
+        $
+
+Notice it says "initial revision: 1.1". This revision number identifies this unique version of the file in the history. Now that the file is tracked in the RCS system, you must lock it before making further changes with "co -l filename":
+
+        $ co -l example.txt 
+        RCS/example.txt,v  -->  example.txt
+        revision 1.1 (locked)
+        done                                                                                                                                                                                                                                                                          $
+
+After making changes, you can use "rcsdiff -u filename" to see the changes you have made to the file:
+
+        $ rcsdiff example.txt
+        ===================================================================
+        RCS file: RCS/example.txt,v
+        retrieving revision 1.1
+        diff -r1.1 example.txt
+        --- example.txt 2015/04/03 18:40:56     1.1
+        +++ example.txt 2015/04/03 18:46:19
+        @@ -1 +1,2 @@
+         testing
+        +testing again
+        $
+
+Then, we can use "ci -u" again to add another revision to the tracking history of the file. This will also "unlock" the file, allowing other people to lock it for their own changes, if they were waiting to acquire the lock:
+
+        $ echo testing again >> example.txt
+        $ ci -u example.txt                                                                                                                                                                                                                
+        $ ci -u example.txt                                                                                                                                                                                                                
+        RCS/example.txt,v  <--  example.txt
+        new revision: 1.2; previous revision: 1.1
+        enter log message, terminated with single '.' or end of file:
+        >> I have added more testing now!
+        >> .
+        done
+
+You can also use "co -l" to check out the file again, if you want to make further changes.
+
+The Payoff: examining history
+-----------------------------
+
+Now that we have a history recorded, we can see the history of changes that have happened for a given file with "rlog filename":
+
+        $ rlog example.txt
+        
+        RCS file: RCS/example.txt,v
+        Working file: example.txt
+        head: 1.2
+        branch:
+        locks: strict
+        access list:
+        symbolic names:
+        keyword substitution: kv
+        total revisions: 2;     selected revisions: 2
+        description:
+        This is my example file
+        ----------------------------
+        revision 1.2
+        date: 2015/04/03 18:46:19;  author: ryan52;  state: Exp;  lines: +1 -0
+        I have added more testing now!
+        ----------------------------
+        revision 1.1
+        date: 2015/04/03 18:40:56;  author: ryan52;  state: Exp;
+        Initial revision
+        =============================================================================
+        $
+
+You can also view the file as it existed at a previous version by using "co -px.y filename", such as:
+
+        $ co -p1.1 example.txt
+        RCS/example.txt,v  -->  standard output
+        revision 1.1
+        testing
+        $
+
+There are other options for these commands that can compare revisions in the history or undo to a previous revision, if you need to do that as well.
 
 Why Git?
 --------
