@@ -247,7 +247,7 @@ Branching
         Switched to branch 'master'
         $
 
-- View the history of the orinal branch. How many commits do you have?
+- View the history of the original branch. How many commits do you have?
 
 - List the files in your current directory with `ls`. Is testfile.txt there?
 
