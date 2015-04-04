@@ -53,7 +53,7 @@ Notice it says "initial revision: 1.1". This revision number identifies this uni
 After making changes, you can use "rcsdiff -u filename" to see the changes you have made to the file:
 
         $ echo testing again >> example.txt
-        $ rcsdiff example.txt
+        $ rcsdiff -u example.txt
         ===================================================================
         RCS file: RCS/example.txt,v
         retrieving revision 1.1
