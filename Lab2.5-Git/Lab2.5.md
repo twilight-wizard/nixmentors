@@ -122,8 +122,8 @@ Why Git?
 <!---
 Largely based on http://thkoch2001.github.io/whygitisbetter
 -->
-- Git allows for local development, which means less network overhead
-- Git is fast, partly because of the lack of network overhead and partly because of its snapshotting design
+- Unlike RCS, repositories in git are shareable across networks
+- Like RCS, git allows for local development
 - Git is distributed: every client copy is a full backup of the server copy
 - Git is versatile: there are innumerable ways to use git
 - Git is the standard: modern companies are moving away from older version control technologies toward git
